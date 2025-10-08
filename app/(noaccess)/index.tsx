@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 
 const InitialScreen = () => {
   
@@ -9,11 +9,17 @@ const InitialScreen = () => {
       <StatusBar style='light'/>
       
       <View>
-        <Text className="text-white text-2xl" style={{fontFamily: 'HankenGrotesk_600SemiBold'}}>blink</Text>
+        <View>
+          <Image
+            style={styles.image}
+            resizeMode="contain"
+            source={require('../../assets/images/icon.png')}
+          />
+        </View>
         <ActivityIndicator
-            size={30}
-            animating={true}
-            color={'white'}
+          size={'large'}
+          animating={true}
+          color={'white'}
         />
       </View>
     </View>
@@ -25,8 +31,13 @@ export default InitialScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#016FEC",
+    backgroundColor: "#0066CC",
     alignItems: "center",
     justifyContent: "center",
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
   },
 });

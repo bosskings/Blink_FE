@@ -38,8 +38,7 @@ export default function RootLayout() {
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-      HankenGrotesk_100Thin,
+    HankenGrotesk_100Thin,
     HankenGrotesk_300Light,
     HankenGrotesk_400Regular,
     HankenGrotesk_500Medium,
@@ -49,7 +48,6 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
   return (
