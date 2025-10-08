@@ -12,7 +12,7 @@ const Onboarding = () => {
 
     const handleContinue = async () => {
       // await AsyncStorage.setItem("blink_onboarding", "true");
-      router.replace("/register");
+      router.push("/(noaccess)/register");
     };
   return (
     <View className="flex-1">
