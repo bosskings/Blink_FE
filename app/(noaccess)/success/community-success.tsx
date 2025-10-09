@@ -1,4 +1,5 @@
 import { SolidMainButton } from '@/components/Btns';
+import { router } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -48,7 +49,7 @@ const CommunitySuccess = () => {
       </View>
 
        <Animated.View className="mb-4 w-full" entering={FadeInDown.duration(600).delay(400).springify()}>
-            <SolidMainButton text="Find Communities"/>
+            <SolidMainButton text="Find Communities" onPress={()=>router.push('/(access)/(stacks)/community-verification-flow/findCommunity')}/>
         </Animated.View>
     </View>
   );

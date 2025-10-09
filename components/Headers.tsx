@@ -8,7 +8,7 @@ interface ButtonProps {
 }
 export const Headers = ({text, onPress, ...props}: ButtonProps)=>{
     return (
-        <TouchableOpacity className='self-start mb-6' onPress={onPress}>
+        <TouchableOpacity className='self-start' onPress={onPress}>
             <View className='rounded-full border border-gray-300 items-center justify-center' style={{width: 45, height: 45}} {...props}>
                 <Ionicons
                     name="arrow-back"

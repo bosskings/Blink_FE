@@ -67,7 +67,7 @@ const Register = () => {
       <StatusBar style='dark'/>
       
       <ScrollView className='flex-1'>
-        <View className='px-7 mt-6'>
+        <View className='px-6 mt-6'>
           {/* Header */}
           <View className='items-center mb-8'>
             
