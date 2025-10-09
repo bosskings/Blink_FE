@@ -1,5 +1,8 @@
+import { SolidMainButton } from "@/components/Btns"
+import { Headers } from "@/components/Headers"
 import { Ionicons } from "@expo/vector-icons"
 import { ErrorMessage } from "@hookform/error-message"
+import { router } from "expo-router"
 import { StatusBar } from 'expo-status-bar'
 import React, { useState } from 'react'
 import { Controller, useForm } from "react-hook-form"
@@ -51,10 +54,12 @@ const Register = () => {
 
   const onPhoneSubmit = (data: any) => {
     console.log('Phone registration:', data)
+    router.push('/(noaccess)/success/community-success')
   }
 
   const onEmailSubmit = (data: any) => {
     console.log('Email registration:', data)
+    router.push('/(noaccess)/success/community-success')
   }
 
   return (
@@ -62,21 +67,14 @@ const Register = () => {
       <StatusBar style='dark'/>
       
       <ScrollView className='flex-1'>
-        <View className='px-7 mt-10'>
+        <View className='px-7 mt-6'>
           {/* Header */}
           <View className='items-center mb-8'>
-            <TouchableOpacity className='self-start mb-6'>
-              <View className='w-10 h-10 rounded-full border border-gray-300 items-center justify-center'>
-                <Ionicons
-                  name="arrow-back"
-                  size={20}
-                  color="#3A3541"
-                />
-              </View>
-            </TouchableOpacity>
+            
+            <Headers text="Verification Tier" onPress={()=> router.back()}/>
             
             <View className='items-center'>
-              <Text className='text-xs text-gray-600 mb-2' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
+              <Text className='text-sm text-gray-600 mb-2' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
                 Returning user? <Text className='text-blue-600 font-semibold'>Login</Text>
               </Text>
               <Text className='text-2xl font-bold text-center mb-2' style={{fontFamily: 'HankenGrotesk_700Bold'}}>
@@ -89,7 +87,7 @@ const Register = () => {
           </View>
 
           {/* Tab Selector */}
-          {/* <View className='flex-row mb-6 bg-gray-100 rounded-lg p-1'>
+          <View className='flex-row mb-6 bg-gray-100 rounded-lg p-1'>
             <TouchableOpacity
               className={`flex-1 py-3 rounded-lg ${activeTab === 'phone' ? 'bg-white' : ''}`}
               onPress={() => setActiveTab('phone')}
@@ -115,7 +113,7 @@ const Register = () => {
                 Email
               </Text>
             </TouchableOpacity>
-          </View> */}
+          </View>
 
           {/* Phone Number Form */}
           {activeTab === 'phone' && (
@@ -213,14 +211,9 @@ const Register = () => {
                 <View className='w-5 h-5 border-2 border-gray-300 rounded' />
               </View>
 
-              <TouchableOpacity 
-                className='bg-blue-600 py-4 rounded-lg mb-4'
-                onPress={handlePhoneSubmit(onPhoneSubmit)}
-              >
-                <Text className='text-white text-center font-semibold text-base' style={{fontFamily: 'HankenGrotesk_600SemiBold'}}>
-                  Continue
-                </Text>
-              </TouchableOpacity>
+              <View className="mb-4">
+                <SolidMainButton text="Continue" onPress={handlePhoneSubmit(onPhoneSubmit)}/>
+              </View>
             </View>
           )}
 
@@ -314,14 +307,9 @@ const Register = () => {
                 <View className='w-5 h-5 border-2 border-gray-300 rounded' />
               </View>
 
-              <TouchableOpacity 
-                className='bg-blue-600 py-4 rounded-lg mb-4'
-                onPress={handleEmailSubmit(onEmailSubmit)}
-              >
-                <Text className='text-white text-center font-semibold text-base' style={{fontFamily: 'HankenGrotesk_600SemiBold'}}>
-                  Continue
-                </Text>
-              </TouchableOpacity>
+              <View className="mb-4">
+                <SolidMainButton text="Continue" onPress={handleEmailSubmit(onEmailSubmit)}/>
+              </View>
             </View>
           )}
 
@@ -379,6 +367,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     fontFamily: "HankenGrotesk_400Regular",
     backgroundColor: '#F6F6F6',
+    color: '#3A3541',
   },
 
   titleStyle: {
@@ -390,13 +379,5 @@ const styles = StyleSheet.create({
   },
 
   activeTab: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
   }
 })
