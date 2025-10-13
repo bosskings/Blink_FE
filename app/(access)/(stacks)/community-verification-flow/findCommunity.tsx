@@ -1,16 +1,19 @@
 import { Headers } from '@/components/Headers'
+import SuccessModal from '@/components/modals/SuccessModal'
 import { Ionicons } from '@expo/vector-icons'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const FindCommunity = () => {
   const [selectedCommunity, setSelectedCommunity] = useState<number | null>(null)
   const [location, setLocation] = useState<Location.LocationObject | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   // All available communities with their coordinates
   const allCommunities = [
@@ -140,37 +143,36 @@ const FindCommunity = () => {
         </View>
 
         {/* Header Section */}
-        <View className='mb-6'>
-          <View className='flex-row justify-between items-center mb-4'>
-            <Text className='text-blue-600 text-base' style={{fontFamily: 'HankenGrotesk_500Medium'}}>
-              Community Discovery
-            </Text>
-            <TouchableOpacity onPress={() => router.back()}>
-              <Text className='text-gray-600 text-base' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
-                Skip →
-              </Text>
-            </TouchableOpacity>
-          </View>
+            <Animated.View className="mb-6" entering={FadeInDown.duration(600).springify()}>
+                <View className='flex-row justify-between items-center mb-4'>
+                    <Text className='text-blue-600 text-sm' style={{fontFamily: 'HankenGrotesk_500Medium'}}>
+                    Community Discovery
+                    </Text>
+                    <TouchableOpacity onPress={() => router.back()}>
+                    <Text className='text-gray-600 text-base' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
+                        Skip →
+                    </Text>
+                    </TouchableOpacity>
+                </View>
 
-          <Text className='text-2xl font-bold mb-2' style={{fontFamily: 'HankenGrotesk_700Bold'}}>
-            Get in a Community
-          </Text>
-          <Text className='text-gray-600 text-base' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
-            Select one community around you
-          </Text>
-        </View>
+                <Text className='text-xl font-bold mb-2' style={{fontFamily: 'HankenGrotesk_700Bold'}}>
+                    Get in a Community
+                </Text>
+                <Text className='text-gray-600 text-base' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
+                    Select one community around you
+                </Text>
+            </Animated.View>
 
         {/* Loading State */}
         {loading ? (
-          <View className='flex-1 items-center justify-center'>
-            <ActivityIndicator size="large" color="#2563eb" />
-            <Text className='text-gray-600 mt-4' style={{fontFamily: 'HankenGrotesk_500Medium'}}>
+          <View className='flex-1 items-center pt-[10rem]'>
+            <ActivityIndicator size="small" color="#2563eb" />
+            <Text className='text-gray-600 mt-4 text-sm' style={{fontFamily: 'HankenGrotesk_500Medium'}}>
               Finding communities near you...
             </Text>
           </View>
         ) : (
           <>
-            {/* Communities List */}
             <ScrollView 
               showsVerticalScrollIndicator={false}
               className='flex-1'
@@ -189,7 +191,6 @@ const FindCommunity = () => {
                       className='w-full h-full'
                       resizeMode='cover'
                     />
-                    {/* Gradient Overlay */}
                     <View className='absolute inset-0 bg-black/40' />
                     
                     {/* Content */}
@@ -232,30 +233,44 @@ const FindCommunity = () => {
               ))}
             </ScrollView>
 
+
             {/* Join Button */}
-            <View className='absolute bottom-6 left-6 right-6'>
-              <TouchableOpacity 
-                className={`py-4 rounded-xl ${
-                  selectedCommunity !== null ? 'bg-[#0066CC]' : 'bg-gray-300'
-                }`}
-                disabled={selectedCommunity === null}
-                onPress={() => {
-                  Alert.alert('Success', `Joined ${communities.find(c => c.id === selectedCommunity)?.name}`)
-                }}
-              >
-                <Text 
-                  className={`text-center text-base font-semibold ${
-                    selectedCommunity !== null ? 'text-white' : 'text-gray-400'
-                  }`}
-                  style={{fontFamily: 'HankenGrotesk_600SemiBold'}}
-                >
-                  Join Community
-                </Text>
-              </TouchableOpacity>
+            <View className='absolute bottom-0 bg-white left-0 right-0'>
+                <View className='w-[90%] self-center py-4'>
+                    <TouchableOpacity 
+                        className={`py-4 rounded-xl ${
+                        selectedCommunity !== null ? 'bg-[#0066CC]' : 'bg-gray-300'
+                        }`}
+                        disabled={selectedCommunity === null}
+                        onPress={() => {
+                            const selectedCommunityData = communities.find(c => c.id === selectedCommunity);
+                            setShowSuccessModal(true);
+                        }}
+                    >
+                        <Text 
+                        className={`text-center text-base font-semibold ${
+                            selectedCommunity !== null ? 'text-white' : 'text-gray-400'
+                        }`}
+                        style={{fontFamily: 'HankenGrotesk_600SemiBold'}}
+                        >
+                            Join Community
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
           </>
         )}
       </View>
+
+      <SuccessModal
+            visible={showSuccessModal}
+            onClose={() => setShowSuccessModal(false)}
+            communityName={communities.find(c => c.id === selectedCommunity)?.name || ''}
+            onProceed={() => {
+                setShowSuccessModal(false);
+                router.push('/(access)/(stacks)/community-verification-flow/packageverification'); // or your route
+            }}
+        />
     </SafeAreaView>
   )
 }
