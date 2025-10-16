@@ -9,7 +9,7 @@ const InitialScreen = () => {
       <StatusBar style='light'/>
       
       <View>
-        <View>
+        <View className="mb-6">
           <Image
             style={styles.image}
             resizeMode="contain"
@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   image: {
-    width: 300,
-    height: 300,
+    width: 80,
+    height: 80,
     marginBottom: 20,
   },
 });

@@ -5,7 +5,7 @@ import React, { useRef, useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const OTPPhone = () => {
+const OTPEmail = () => {
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
@@ -96,4 +96,4 @@ const OTPPhone = () => {
   );
 };
 
-export default OTPPhone;
+export default OTPEmail;

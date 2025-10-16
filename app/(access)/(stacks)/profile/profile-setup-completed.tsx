@@ -49,7 +49,7 @@ const ProfileSetupCompleted = () => {
             className="text-base text-gray-600 text-center"
             style={{ fontFamily: "HankenGrotesk_400Regular" }}
           >
-            Start trading, connecting, and thriving in your community.
+            Start trading, connecting, {'\n'} and thriving in your community.
           </Text>
         </Animated.View>
       </View>
@@ -60,7 +60,7 @@ const ProfileSetupCompleted = () => {
       >
         <SolidMainButton
           text="Let's Go"
-          onPress={() => router.push("/(access)/(tabs)/home")}
+          onPress={() => router.replace("/(access)/(tabs)/home")}
         />
       </Animated.View>
     </View>

@@ -1,4 +1,5 @@
 import { SolidMainButton } from '@/components/Btns'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React from 'react'
@@ -12,7 +13,7 @@ const { width, height } = Dimensions.get('window')
 const Onboarding = () => {
 
     const handleContinue = async () => {
-      // await AsyncStorage.setItem("blink_onboarding", "true");
+      await AsyncStorage.setItem("blink_onboarding", "true");
       router.push("/(noaccess)/register");
     };
   return (

@@ -14,7 +14,7 @@ const StackPagesLayout = () => {
         }
 
         if (onboarded) {
-          router.replace("/login");
+          router.replace("/home");
           return;
         } else {
           router.replace("/onboarding");

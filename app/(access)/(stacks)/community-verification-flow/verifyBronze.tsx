@@ -51,7 +51,7 @@ const VerifyBronze = () => {
           <TouchableOpacity className="ml-2 p-2 bg-gray-100 rounded-full">
             <Ionicons name="pencil" size={16} color="#9CA3AF" />
           </TouchableOpacity>
-          <TouchableOpacity className="bg-blue-600 px-6 py-2 rounded-full ml-2">
+          <TouchableOpacity onPress={()=>router.push('/(access)/(stacks)/community-verification-flow/phoneOTP')} className="bg-blue-600 px-6 py-2 rounded-full ml-2">
             <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-white text-sm font-semibold">Verify</Text>
           </TouchableOpacity>
         </View>
@@ -62,7 +62,7 @@ const VerifyBronze = () => {
                 <Ionicons name="checkmark" size={14} color="#727272ff" />
             </View>
             <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="flex-1 text-gray-400">No email found</Text>
-            <TouchableOpacity className="bg-blue-600 px-4 py-2 rounded-full">
+            <TouchableOpacity onPress={()=>router.push('/(access)/(stacks)/community-verification-flow/emailVerification')} className="bg-blue-600 px-4 py-2 rounded-full">
                 <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-white font-semibold text-sm">Add an email</Text>
             </TouchableOpacity>
         </View>

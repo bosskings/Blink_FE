@@ -141,7 +141,7 @@ export default function ProfileDetails() {
               rules={{
                 required: "Bio is required",
                 minLength: {
-                  value: 250,
+                  value: 10,
                   message: "Bio must be at least 250 characters",
                 },
               }}

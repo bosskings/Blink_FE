@@ -72,7 +72,6 @@ export default function RootLayout() {
               name="dangerous"
               size={22}
               color={"#fff"}
-              
             />
           }
           successIcon={

@@ -184,7 +184,7 @@ const FindCommunity = () => {
             </Text>
             <TouchableOpacity
               onPress={() =>
-                router.push("/(access)/(stacks)/profile/choose-avatar")
+                router.push('/(access)/(stacks)/profile/choose-avatar')
               }
             >
               <Text
