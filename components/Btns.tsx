@@ -21,3 +21,21 @@ export const SolidMainButton = ({ text, onPress, ...props }: ButtonProps) => {
     </TouchableOpacity>
   );
 };
+
+
+export const SolidGrayButton = ({ text, onPress, ...props }: ButtonProps) => {
+  return (
+    <TouchableOpacity
+      {...props}
+      onPress={onPress}
+      className="flex items-center gap-4 bg-[#F3F4F6] p-4 w-full rounded-lg"
+    >
+      <Text
+        className="text-[#374151] text-base"
+        style={{ fontFamily: "HankenGrotesk_700Bold" }}
+      >
+        {text}
+      </Text>
+    </TouchableOpacity>
+  );
+};

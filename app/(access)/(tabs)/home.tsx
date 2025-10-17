@@ -1,4 +1,6 @@
+import { SolidGrayButton, SolidMainButton } from '@/components/Btns';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import {
@@ -7,13 +9,14 @@ import {
   FlatList,
   Image,
   Modal,
+  Pressable,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { height } = Dimensions.get('window');
 
@@ -22,18 +25,23 @@ const HomeScreen = () => {
   const [viewMode, setViewMode] = React.useState('list');
   const [filterVisible, setFilterVisible] = React.useState(false);
   const slideAnim = React.useRef(new Animated.Value(height)).current;
+  const insets = useSafeAreaInsets()
 
   const products = [
     {
       id: '1',
       title: 'Road Bicycle',
       price: '₦45,000',
-      description: 'Great condition, perfect for city rides. Includes helmet and lock',
-      distance: '0.3km away',
+      description: "Great condition road bicycle, perfect for city rides and weekend adventures. Recently serviced with new brake pads and chain. Includes helmet",
       timePosted: '2h ago',
+      distance: '0.7km away',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop',
       tag: 'SALE',
-      forYou: true
+      images: [
+        'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800',
+        'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800',
+        'https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=800'
+      ],
     },
     {
       id: '2',
@@ -44,7 +52,11 @@ const HomeScreen = () => {
       timePosted: '5h ago',
       image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop',
       tag: 'RENT',
-      forYou: false
+      images: [
+        'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=600&fit=crop'
+      ]
     },
     {
       id: '3',
@@ -55,7 +67,11 @@ const HomeScreen = () => {
       timePosted: '1d ago',
       image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop',
       tag: 'SERVICE',
-      forYou: true
+      images: [
+        'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&h=600&fit=crop'
+      ]
     }
   ];
 
@@ -123,14 +139,14 @@ const HomeScreen = () => {
         >
           {/* Handle Bar */}
           <View style={{ alignItems: 'center', paddingVertical: 12 }}>
-            <View style={{ width: 40, height: 4, backgroundColor: '#D1D5DB', borderRadius: 2 }} />
+            <View style={{width: 40, height: 4, backgroundColor: '#D1D5DB', borderRadius: 2 }} />
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ padding: 20 }}>
               {/* Header */}
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#111827' }}>Filters</Text>
+                <Text style={{ fontFamily: 'HankenGrotesk_500Medium', fontSize: 20, fontWeight: 'bold', color: '#111827' }}>Filters</Text>
                 <TouchableOpacity onPress={closeFilter}>
                   <Ionicons name="close" size={24} color="#6B7280" />
                 </TouchableOpacity>
@@ -138,21 +154,21 @@ const HomeScreen = () => {
 
               {/* Category */}
               <View style={{ marginBottom: 24 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 12, color: '#111827' }}>Category</Text>
+                <Text style={{ fontSize: 14, fontWeight: '600', marginBottom: 12, color: '#111827' }}>Category</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {['All', 'Electronics', 'Furniture', 'Clothing', 'Books', 'Sports'].map((cat) => (
                     <TouchableOpacity
                       key={cat}
                       style={{
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
-                        borderRadius: 20,
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        borderRadius: 50,
                         backgroundColor: cat === 'All' ? '#2563EB' : '#F3F4F6',
                         borderWidth: 1,
                         borderColor: cat === 'All' ? '#2563EB' : '#E5E7EB'
                       }}
                     >
-                      <Text style={{ color: cat === 'All' ? '#FFFFFF' : '#374151', fontWeight: '500' }}>
+                      <Text className='text-xs' style={{ fontFamily: 'HankenGrotesk_500Medium', color: cat === 'All' ? '#FFFFFF' : '#374151', fontWeight: '500' }}>
                         {cat}
                       </Text>
                     </TouchableOpacity>
@@ -162,23 +178,25 @@ const HomeScreen = () => {
 
               {/* Price Range */}
               <View style={{ marginBottom: 24 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 12, color: '#111827' }}>Price Range</Text>
+                <Text  style={{ fontFamily: 'HankenGrotesk_500Medium', fontSize: 14, fontWeight: 'bold', marginBottom: 12, color: '#111827' }}>Price Range</Text>
                 <View style={{ flexDirection: 'row', gap: 12 }}>
-                  <View style={{ flex: 1, backgroundColor: '#F9FAFB', borderRadius: 8, padding: 12, borderWidth: 1, borderColor: '#E5E7EB' }}>
-                    <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 4 }}>Min</Text>
+                  <View style={{ flex: 1, borderRadius: 8 }}>
+                    <Text style={{fontFamily: 'HankenGrotesk_500Medium', fontSize: 12, color: '#6B7280', marginBottom: 2 }}>Min</Text>
                     <TextInput
                       placeholder="₦0"
                       placeholderTextColor="#9CA3AF"
-                      style={{ fontSize: 16, color: '#111827' }}
+                      className='p-3 rounded-lg'
+                      style={{ fontSize: 14, color: '#111827', borderWidth: 1, borderColor: '#E5E7EB',  }}
                       keyboardType="numeric"
                     />
                   </View>
-                  <View style={{ flex: 1, backgroundColor: '#F9FAFB', borderRadius: 8, padding: 12, borderWidth: 1, borderColor: '#E5E7EB' }}>
-                    <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 4 }}>Max</Text>
+                  <View style={{ flex: 1, borderRadius: 8 }}>
+                    <Text style={{fontFamily: 'HankenGrotesk_500Medium', fontSize: 12, color: '#6B7280', marginBottom: 2 }}>Max</Text>
                     <TextInput
                       placeholder="₦100,000"
                       placeholderTextColor="#9CA3AF"
-                      style={{ fontSize: 16, color: '#111827' }}
+                      className='p-3 rounded-lg'
+                      style={{fontFamily: 'HankenGrotesk_500Medium', borderWidth: 1, borderColor: '#E5E7EB', fontSize: 14, color: '#111827' }}
                       keyboardType="numeric"
                     />
                   </View>
@@ -187,21 +205,21 @@ const HomeScreen = () => {
 
               {/* Distance */}
               <View style={{ marginBottom: 24 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 12, color: '#111827' }}>Distance</Text>
+                <Text style={{fontFamily: 'HankenGrotesk_500Medium', fontSize: 14, fontWeight: 'bold', marginBottom: 12, color: '#111827' }}>Distance</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {['1km', '5km', '10km', '25km', '50km'].map((dist) => (
                     <TouchableOpacity
                       key={dist}
                       style={{
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
                         borderRadius: 20,
                         backgroundColor: dist === '5km' ? '#2563EB' : '#F3F4F6',
                         borderWidth: 1,
                         borderColor: dist === '5km' ? '#2563EB' : '#E5E7EB'
                       }}
                     >
-                      <Text style={{ color: dist === '5km' ? '#FFFFFF' : '#374151', fontWeight: '500' }}>
+                      <Text className='text-xs' style={{ color: dist === '5km' ? '#FFFFFF' : '#374151', fontWeight: '500' }}>
                         {dist}
                       </Text>
                     </TouchableOpacity>
@@ -211,7 +229,7 @@ const HomeScreen = () => {
 
               {/* Condition */}
               <View style={{ marginBottom: 24 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 12, color: '#111827' }}>Condition</Text>
+                <Text  style={{ fontFamily: 'HankenGrotesk_500Medium', fontSize: 14, fontWeight: 'bold', marginBottom: 12, color: '#111827' }}>Condition</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {['New', 'Like New', 'Good', 'Fair'].map((cond) => (
                     <TouchableOpacity
@@ -225,38 +243,20 @@ const HomeScreen = () => {
                         borderColor: '#E5E7EB'
                       }}
                     >
-                      <Text style={{ color: '#374151', fontWeight: '500' }}>{cond}</Text>
+                      <Text className='text-xs' style={{fontFamily: 'HankenGrotesk_500Medium', color: '#374151', fontWeight: '500' }}>{cond}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
               </View>
 
               {/* Buttons */}
-              <View style={{ flexDirection: 'row', gap: 12, paddingTop: 8 }}>
-                <TouchableOpacity
-                  onPress={closeFilter}
-                  style={{
-                    flex: 1,
-                    paddingVertical: 14,
-                    borderRadius: 12,
-                    backgroundColor: '#F3F4F6',
-                    alignItems: 'center'
-                  }}
-                >
-                  <Text style={{ color: '#374151', fontWeight: '600', fontSize: 16 }}>Reset</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={closeFilter}
-                  style={{
-                    flex: 1,
-                    paddingVertical: 14,
-                    borderRadius: 12,
-                    backgroundColor: '#2563EB',
-                    alignItems: 'center'
-                  }}
-                >
-                  <Text style={{ color: '#FFFFFF', fontWeight: '600', fontSize: 16 }}>Apply Filters</Text>
-                </TouchableOpacity>
+              <View className='flex-row gap-2 justify-between items-center mt-4 mb-8'>
+                <View className='flex-1'>
+                  <SolidGrayButton onPress={()=>{console.log('clicked')}} text="Apply Filters"/>
+                </View>
+                <View className='flex-1'>
+                  <SolidMainButton onPress={()=>{console.log('clicked')}} text="Apply Filters"/>
+                </View>
               </View>
             </View>
           </ScrollView>
@@ -362,36 +362,39 @@ const HomeScreen = () => {
     </View>
   );
 
+
+
+  const handleRedirectItem = (item: any) => {
+    router.push({
+      pathname: "/(access)/(stacks)/item/[id]",
+      params: { id: item.id, itemData: JSON.stringify(item) }
+    })
+  }
+
   const renderProduct = ({ item }: any) => (
-    <View className="mb-4 bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <Pressable onPress={()=>handleRedirectItem(item)} className="mb-4 bg-white rounded-xl border border-gray-200 overflow-hidden">
       <View className="relative">
         {item.tag === 'SALE' && (
-          <View className="absolute top-3 left-3 bg-[#0066CC] px-3 py-2 rounded-full z-10">
-            <Text className="text-white text-xs font-bold" >{item.tag}</Text>
+          <View className="absolute top-3 left-3 border border-blue-500 bg-[#0066CC] px-3 py-2 rounded-full z-10">
+            <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-white text-xs font-bold" >{item.tag}</Text>
           </View>
         )}
 
         {item.tag === 'SERVICE' && (
-          <View className="absolute top-3 left-3 bg-[#800080] px-3 py-2 rounded-full z-10">
-            <Text className="text-white text-xs font-bold" >{item.tag}</Text>
+          <View className="absolute top-3 left-3 border border-green-500 bg-[#045e28] px-3 py-2 rounded-full z-10">
+            <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-white text-xs font-bold" >{item.tag}</Text>
           </View>
         )}
 
-        {item.tag === 'FREE' && (
-          <View className="absolute top-3 left-3 bg-[#00AA44] px-3 py-2 rounded-full z-10">
-            <Text className="text-white text-xs font-bold" >{item.tag}</Text>
-          </View>
-        )}
-
-        {item.tag === 'RENT' && (
-          <View className="absolute top-3 left-3 bg-[#F9B917] px-3 py-2 rounded-full z-10">
-            <Text className="text-white text-xs font-bold" >{item.tag}</Text>
+        {item.tag  === 'RENT' && (
+          <View className="absolute top-3 left-3 border border-yellow-500 bg-[#e4a403] px-3 py-2 rounded-full z-10">
+            <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-white text-xs font-bold" >{item.tag}</Text>
           </View>
         )}
         
         <Image
           source={{ uri: item.image }}
-          className="w-full h-48"
+          className="w-full h-56"
           resizeMode="cover"
         />
       </View>
@@ -400,22 +403,21 @@ const HomeScreen = () => {
           <Text className="font-bold text-lg flex-1">
             {item.title}
           </Text>
-          <Text className="text-[#0066CC] font-bold text-lg">{item.price}</Text>
+          <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-[#0066CC] font-bold text-lg">{item.price}</Text>
         </View>
-        <Text className="text-gray-600 text-sm mb-3">{item.description}</Text>
+        <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-gray-600 text-sm mb-3">{item.description}</Text>
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center">
             <Ionicons name="location-outline" size={14} color="#6B7280" />
-            <Text className="text-xs text-gray-500 ml-1 mr-3">{item.distance}</Text>
-            <Ionicons name="time-outline" size={14} color="#6B7280" />
-            <Text className="text-xs text-gray-500 ml-1">{item.timePosted}</Text>
+            <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-xs text-gray-500 ml-1 mr-3">{item.distance}</Text>
           </View>
-          <TouchableOpacity className="bg-[#0066CC] px-4 py-2 rounded-lg">
-            <Text className="text-white text-sm font-semibold">View Item</Text>
-          </TouchableOpacity>
+          <View className='flex-row items-cente'> 
+              <Ionicons name="time-outline" size={14} color="#6B7280" />
+              <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-xs text-gray-500 ml-1">{item.timePosted}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 
   return (
@@ -468,14 +470,17 @@ const HomeScreen = () => {
         keyExtractor={item => item.id}
         ListHeaderComponent={renderHeader}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: insets.bottom + 80,
+        }}
       />
       
       {/* Filter Modal */}
       <FilterBottomSheet />
       
       {/* Floating Action Button */}
-      <TouchableOpacity className="absolute bottom-32 right-6 border-4 border-white bg-[#0066CC] w-16 h-16 rounded-full items-center justify-center shadow-lg">
-        <Ionicons name="add" size={28} color="#fff" />
+      <TouchableOpacity className="absolute bottom-32 right-6 border-2 border-white bg-[#0066CC] w-14 h-14 rounded-full items-center justify-center shadow-lg">
+        <Ionicons name="add" size={30} color="#fff" />
       </TouchableOpacity>
     </SafeAreaView>
   );
