@@ -1,10 +1,12 @@
 import { Headers } from "@/components/Headers";
+import { ErrorMessage } from "@hookform/error-message";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -92,14 +94,14 @@ export default function ProfileDetails() {
             </Text>
             <TextInput
               className="w-full bg-gray-50 rounded-lg px-4 py-3 text-base"
-              style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
+              style={styles.inputStyle}
               value={blinkTag}
               onChangeText={(text) => {
                 setBlinkTag(text);
                 checkAvailability(text);
               }}
               placeholder="Lasman Ade"
-              placeholderTextColor="#999999"
+              placeholderTextColor="#AFAFAF"
             />
             {blinkTag.length > 0 && (
               <View
@@ -148,14 +150,21 @@ export default function ProfileDetails() {
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   className="w-full bg-gray-50 rounded-lg px-4 py-3 text-base min-h-[150px]"
-                  style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
+                  style={styles.inputStyle}
                   value={value}
                   onChangeText={onChange}
                   placeholder="Write something about yourself..."
-                  placeholderTextColor="#999999"
+                  placeholderTextColor="#AFAFAF"
                   multiline
                   textAlignVertical="top"
                 />
+              )}
+            />
+            <ErrorMessage
+              errors={errors}
+              name="bio"
+              render={({ message }) => (
+                <Text className="pt-3 text-sm text-red-600">{message}</Text>
               )}
             />
 
@@ -163,12 +172,6 @@ export default function ProfileDetails() {
             <Text className="text-gray-500 mt-2 text-sm">
               {bio.trim().length < 250 && `${remaining} more characters to go`}
             </Text>
-
-            {errors.bio && (
-              <Text className="text-red-600 mt-2 text-sm">
-                {errors.bio.message}
-              </Text>
-            )}
           </View>
         </View>
       </ScrollView>
@@ -202,3 +205,14 @@ export default function ProfileDetails() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  inputStyle: {
+    borderRadius: 7,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    fontFamily: "HankenGrotesk_400Regular",
+    backgroundColor: "#F6F6F6",
+    color: "#3A3541",
+  },
+});
