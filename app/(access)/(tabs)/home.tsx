@@ -43,7 +43,7 @@ const HomeScreen = () => {
       distance: '0.5km away',
       timePosted: '5h ago',
       image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop',
-      tag: null,
+      tag: 'RENT',
       forYou: false
     },
     {
@@ -54,7 +54,7 @@ const HomeScreen = () => {
       distance: '1.2km away',
       timePosted: '1d ago',
       image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop',
-      tag: 'SALE',
+      tag: 'SERVICE',
       forYou: true
     }
   ];
@@ -324,7 +324,9 @@ const HomeScreen = () => {
         </View>
         <View className="bg-gray-50 rounded-lg p-2 flex-row items-center justify-between">
           <View className="flex-row items-center">
-            <View className="w-8 h-8 bg-yellow-400 rounded-full mr-2" />
+              <View className="w-10 h-10 bg-orange-400 rounded-full object-fit overflow-hidden items-center justify-center mr-2">
+              <Image source={require('../../../assets/avatars/avatar3.png')} className='object-contain w-full h-full'/>
+            </View>
             <View>
               <Text className="font-semibold text-sm" style={{fontFamily: 'HankenGrotesk_400Regular'}}>Anna Montana</Text>
               <Text className="text-xs text-gray-500" style={{fontFamily: 'HankenGrotesk_400Regular'}}>0.2km away</Text>
@@ -338,29 +340,24 @@ const HomeScreen = () => {
 
       {/* Suggested Communities */}
       <View className="px-4 mb-4 pt-6">
-        <Text className="font-bold text-lg mb-3">
+        <Text className="font-bold text-lg mb-3" style={{fontFamily: 'HankenGrotesk_500Medium'}}>
           Suggested Communities
         </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {communities.map((community) => (
-            <View key={community.id} className="mr-3">
+            <View key={community.id} className="mr-3 bg-white rounded shadow mb-5">
               <Image
                 source={{ uri: community.image }}
-                className="w-32 h-24 rounded-lg mb-2"
+                className="w-32 h-20 rounded-t mb-1"
               />
-              <Text className="font-semibold text-sm">{community.name}</Text>
-              <Text className="text-xs text-gray-500">{community.members}</Text>
+
+              <View className='flex-row items-center justify-between px-2 pb-2'>
+                <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="font-semibold text-xs">{community.name}</Text>
+                <Text style={{fontFamily: 'HankenGrotesk_400Regular'}} className="text-xs text-gray-500">{community.members}</Text>
+              </View>
             </View>
           ))}
         </ScrollView>
-      </View>
-
-      {/* For You Tag */}
-      <View className="px-4 mb-3">
-        <View className="bg-[#0066CC] px-3 py-1 rounded-full self-start flex-row items-center">
-          <Text className="text-white mr-1">⭐</Text>
-          <Text className="text-white font-semibold text-sm">For you</Text>
-        </View>
       </View>
     </View>
   );
@@ -368,11 +365,30 @@ const HomeScreen = () => {
   const renderProduct = ({ item }: any) => (
     <View className="mb-4 bg-white rounded-xl border border-gray-200 overflow-hidden">
       <View className="relative">
-        {item.tag && (
-          <View className="absolute top-3 left-3 bg-[#0066CC] px-2 py-1 rounded z-10">
+        {item.tag === 'SALE' && (
+          <View className="absolute top-3 left-3 bg-[#0066CC] px-3 py-2 rounded-full z-10">
             <Text className="text-white text-xs font-bold" >{item.tag}</Text>
           </View>
         )}
+
+        {item.tag === 'SERVICE' && (
+          <View className="absolute top-3 left-3 bg-[#800080] px-3 py-2 rounded-full z-10">
+            <Text className="text-white text-xs font-bold" >{item.tag}</Text>
+          </View>
+        )}
+
+        {item.tag === 'FREE' && (
+          <View className="absolute top-3 left-3 bg-[#00AA44] px-3 py-2 rounded-full z-10">
+            <Text className="text-white text-xs font-bold" >{item.tag}</Text>
+          </View>
+        )}
+
+        {item.tag === 'RENT' && (
+          <View className="absolute top-3 left-3 bg-[#F9B917] px-3 py-2 rounded-full z-10">
+            <Text className="text-white text-xs font-bold" >{item.tag}</Text>
+          </View>
+        )}
+        
         <Image
           source={{ uri: item.image }}
           className="w-full h-48"
