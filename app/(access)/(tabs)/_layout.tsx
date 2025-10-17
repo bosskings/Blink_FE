@@ -29,9 +29,9 @@ export default function TabLayout() {
           borderLeftWidth: 3,
           borderRightWidth: 3,
           borderStyle: 'solid',
-          height: 65,
+          height: 60,
           display: 'flex',
-          marginHorizontal: 10,
+          marginHorizontal: 15,
           backgroundColor: '#0066CC',
           shadowColor: "#000",
           shadowOffset: {
@@ -44,6 +44,8 @@ export default function TabLayout() {
         tabBarIconStyle: {
           width: '100%',
           height: 50,
+          top: -2,
+          marginHorizontal: 0
         },
         tabBarItemStyle: {
           marginHorizontal: 0,
@@ -60,11 +62,11 @@ export default function TabLayout() {
             <>
               {focused? 
                 <View className='items-center flex-row bg-white rounded-full p-2 px-4'>
-                    <MaterialIcons size={23} name={'home-filled'} color={'#3D68FF'} />
+                    <MaterialIcons size={20} name={'home-filled'} color={'#3D68FF'} />
                 </View>:
 
                 <View>
-                    <MaterialIcons size={23} name={'home-filled'} color={'#61ADFA'} />
+                    <MaterialIcons size={20} name={'home-filled'} color={'#61ADFA'} />
                 </View>
               }
             </>
@@ -79,11 +81,11 @@ export default function TabLayout() {
               <>
               {focused? 
                 <View className='items-center flex-row bg-white rounded-full p-2 px-4'>
-                    <MaterialIcons size={25} name={'people'} color={'#3D68FF'} />
+                    <MaterialIcons size={20} name={'people'} color={'#3D68FF'} />
                 </View>:
 
                 <View>
-                    <MaterialIcons size={25} name={'people'} color={'#61ADFA'} />
+                    <MaterialIcons size={20} name={'people'} color={'#61ADFA'} />
                 </View>
               }
             </>
@@ -99,11 +101,11 @@ export default function TabLayout() {
               <>
               {focused? 
                 <View className='items-center flex-row bg-white rounded-full p-2 px-4'>
-                    <AntDesign size={25} name={'message'} color={'#3D68FF'} />
+                    <AntDesign size={20} name={'message'} color={'#3D68FF'} />
                 </View>:
 
                 <View>
-                    <AntDesign size={25} name={'message'} color={'#61ADFA'} />
+                    <AntDesign size={20} name={'message'} color={'#61ADFA'} />
                 </View>
               }
             </>
@@ -120,11 +122,11 @@ export default function TabLayout() {
               <>
               {focused? 
                 <View className='items-center flex-row bg-white rounded-full p-2 px-4'>
-                    <MaterialIcons size={25} name={'person'} color={'#3D68FF'} />
+                    <MaterialIcons size={20} name={'person'} color={'#3D68FF'} />
                 </View>:
 
                 <View>
-                    <MaterialIcons size={25} name={'person'} color={'#61ADFA'} />
+                    <MaterialIcons size={20} name={'person'} color={'#61ADFA'} />
                 </View>
               }
             </>
