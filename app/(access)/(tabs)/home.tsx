@@ -43,7 +43,7 @@ const HomeScreen = () => {
       distance: '0.5km away',
       timePosted: '5h ago',
       image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop',
-      tag: 'LEASE',
+      tag: 'RENT',
       forYou: false
     },
     {
@@ -383,7 +383,7 @@ const HomeScreen = () => {
           </View>
         )}
 
-        {item.tag === 'LEASE' && (
+        {item.tag === 'RENT' && (
           <View className="absolute top-3 left-3 bg-[#F9B917] px-3 py-2 rounded-full z-10">
             <Text className="text-white text-xs font-bold" >{item.tag}</Text>
           </View>
