@@ -1,6 +1,6 @@
 import { Headers } from "@/components/Headers";
 import AntDesign from "@expo/vector-icons/AntDesign";
-// import * as ImagePicker from "expo-image-picker";
+import { Asset } from "expo-asset";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
@@ -14,25 +14,22 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const generateAvatars = () => {
-  const types = ["boy", "girl"];
-  return Array.from({ length: 6 }).map((_, i) => ({
-    id: i + 1,
-    uri: `https://avatar.iran.liara.run/public/${
-      types[Math.floor(Math.random() * 2)]
-    }?v=${Date.now()}-${i}`,
-  }));
-};
-
 export default function ProfileSetup() {
-  const [avatars, setAvatars] = useState(generateAvatars());
+  const [avatars, setAvatars] = useState([
+    { id: 1, uri: require("../../../../assets/avatars/avatar1.png") },
+    { id: 2, uri: require("../../../../assets/avatars/avatar2.png") },
+    { id: 3, uri: require("../../../../assets/avatars/avatar3.png") },
+    { id: 4, uri: require("../../../../assets/avatars/avatar2.png") },
+    { id: 5, uri: require("../../../../assets/avatars/avatar1.png") },
+    { id: 6, uri: require("../../../../assets/avatars/avatar3.png") },
+  ]);
+
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
-  // shimmer animation effect
+  // 🌀 shimmer effect animation
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
@@ -50,31 +47,44 @@ export default function ProfileSetup() {
     ).start();
   }, []);
 
-  // Simulate network loading for avatars
+  // 🕒 simulate short load delay
   useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 1000);
+    const timeout = setTimeout(() => setLoading(false), 800);
     return () => clearTimeout(timeout);
-  }, [avatars]);
+  }, []);
 
-  const handleProceed = () => {
+  // ✅ handle proceed and send file
+  const handleProceed = async () => {
     if (!customImage && selectedAvatar === null) {
       alert("Please select or upload an image first!");
       return;
     }
 
-    const selectedImageUri = customImage
-      ? customImage
-      : avatars[selectedAvatar!]?.uri;
+    const selected = customImage
+      ? { uri: customImage }
+      : avatars[selectedAvatar!];
 
-    console.log("✅ Proceeding with:", selectedImageUri);
+    let imageUri = selected.uri;
+
+    // if it's a local asset (require() returns number)
+    if (typeof imageUri !== "string") {
+      const asset = Asset.fromModule(imageUri);
+      await asset.downloadAsync();
+      imageUri = asset.localUri;
+    }
+
+    // ✅ prepare FormData
+    const formData = new FormData();
+    formData.append("avatar", {
+      uri: imageUri,
+      type: "image/png",
+      name: "avatar.png",
+    } as any);
+
+    console.log("✅ Uploaded:", formData);
+
+    // proceed to next page
     router.push("/(access)/(stacks)/profile/profile-details");
-  };
-
-  const refreshAvatars = () => {
-    setLoading(true);
-    setAvatars(generateAvatars());
-    setSelectedAvatar(null);
-    setCustomImage(null);
   };
 
   return (
@@ -87,7 +97,7 @@ export default function ProfileSetup() {
         {/* Header */}
         <View className="mt-6 mb-6 flex-row items-center justify-between">
           <Headers text="Verification Tier" onPress={() => router.back()} />
-          <TouchableOpacity onPress={refreshAvatars}>
+          <TouchableOpacity onPress={() => setLoading(true)}>
             <AntDesign name="reload" size={22} color="#0066FF" />
           </TouchableOpacity>
         </View>
@@ -103,7 +113,7 @@ export default function ProfileSetup() {
         {/* Avatar Grid */}
         <View className="flex-row flex-wrap justify-center gap-4 mb-8">
           {loading
-            ? Array.from({ length: 6 }).map((_, i) => (
+            ? Array.from({ length: avatars.length }).map((_, i) => (
                 <Animated.View
                   key={i}
                   style={{
@@ -132,7 +142,7 @@ export default function ProfileSetup() {
                     }`}
                   >
                     <Image
-                      source={{ uri: avatar.uri }}
+                      source={avatar.uri}
                       className="w-[95px] h-[95px] rounded-full"
                       onLoadEnd={() => setLoading(false)}
                     />
