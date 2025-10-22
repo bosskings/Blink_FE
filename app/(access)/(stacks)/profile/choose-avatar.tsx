@@ -96,7 +96,7 @@ export default function ProfileSetup() {
       >
         {/* Header */}
         <View className="mt-6 mb-6 flex-row items-center justify-between">
-          <Headers text="Verification Tier" onPress={() => router.back()} />
+          <Headers onPress={() => router.back()} />
           <TouchableOpacity onPress={() => setLoading(true)}>
             <AntDesign name="reload" size={22} color="#0066FF" />
           </TouchableOpacity>
