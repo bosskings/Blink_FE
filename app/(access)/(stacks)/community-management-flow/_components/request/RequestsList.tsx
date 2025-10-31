@@ -1,13 +1,6 @@
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
-import {
-  Image,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   FadeInRight,
   FadeOutRight,
@@ -24,28 +17,22 @@ interface RequestItem {
 interface RequestsListProps {
   requests: RequestItem[];
   loading: boolean;
-  refreshing?: boolean;
-  onRefresh?: () => void;
-  handleRemove: (id: string | number) => void;
+  handleRemove?: (id: string | number) => void;
   title?: string;
 }
 
 const RequestsList: React.FC<RequestsListProps> = ({
   requests,
   loading,
-  refreshing,
-  onRefresh,
   handleRemove,
   title,
 }) => {
   return (
-    <ScrollView
-      className="flex-1 px-6"
-      refreshControl={
-        <RefreshControl refreshing={refreshing!} onRefresh={onRefresh} />
-      }
-      contentContainerStyle={{ paddingBottom: 100 }}
-      showsVerticalScrollIndicator={false}
+    <Animated.View
+      layout={LinearTransition.springify().damping(15).stiffness(90)}
+      entering={FadeInRight.duration(300)}
+      exiting={FadeOutRight.duration(200)}
+      style={{ rowGap: 15 }}
     >
       {title && (
         <Text
@@ -63,7 +50,7 @@ const RequestsList: React.FC<RequestsListProps> = ({
           ))}
         </View>
       ) : (
-        <View className="flex-1">
+        <View className="">
           {requests.length === 0 ? (
             <Animated.View
               entering={FadeInRight.duration(300)}
@@ -137,7 +124,7 @@ const RequestsList: React.FC<RequestsListProps> = ({
                       <TouchableOpacity
                         className="flex items-center justify-center w-9 h-9 rounded-full"
                         style={{ backgroundColor: "#FFB0B0" }}
-                        onPress={() => handleRemove(item.id)}
+                        onPress={() => handleRemove?.(item.id)}
                       >
                         <MaterialIcons name="close" size={15} color="#FF3333" />
                       </TouchableOpacity>
@@ -156,7 +143,7 @@ const RequestsList: React.FC<RequestsListProps> = ({
           )}
         </View>
       )}
-    </ScrollView>
+    </Animated.View>
   );
 };
 

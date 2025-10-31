@@ -21,7 +21,7 @@ export const Headers = ({ text, onPress, ...props }: ButtonProps) => {
         style={{
           fontFamily: "HankenGrotesk_900Black",
           fontSize: 17,
-          marginLeft: "25%",
+          marginLeft: "15%",
         }}
       >
         {text}

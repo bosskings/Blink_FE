@@ -3,7 +3,7 @@ import { requests as initialRequests } from "@/dummyData/requestsData";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
-import { View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RequestsList from "./_components/request/RequestsList";
 
@@ -58,13 +58,20 @@ const Requests = () => {
         <Headers text="Requests" onPress={() => router.back()} />
       </View>
 
-      <RequestsList
-        requests={requests}
-        loading={loading}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        handleRemove={handleRemove}
-      />
+      <ScrollView
+        className="flex-1 px-6"
+        refreshControl={
+          <RefreshControl refreshing={refreshing!} onRefresh={onRefresh} />
+        }
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <RequestsList
+          requests={requests}
+          loading={loading}
+          handleRemove={handleRemove}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 };

@@ -3,7 +3,7 @@ import initialReportedPosts from "@/dummyData/reportedPostsData";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
-import { View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import ReportedPostsList from "./_components/report/ReportedPostsList";
@@ -56,6 +56,7 @@ export default function ReportedPosts() {
   const handleTakeDown = (postId: number | string) => {
     // Handle review action
     console.log("Take Down Post:", postId);
+    setPosts((prev) => prev.filter((item) => item.id !== postId));
   };
 
   return (
@@ -67,15 +68,22 @@ export default function ReportedPosts() {
         <Headers text="Reported Posts" onPress={() => router.back()} />
       </View>
 
-      <ReportedPostsList
-        posts={posts}
-        loading={loading}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        handleReview={handleReview}
-        handleTakeDown={handleTakeDown}
-        initialReportedPosts={initialReportedPosts}
-      />
+      <ScrollView
+        className="flex-1 px-6"
+        refreshControl={
+          <RefreshControl refreshing={refreshing!} onRefresh={onRefresh} />
+        }
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <ReportedPostsList
+          posts={posts}
+          loading={loading}
+          handleReview={handleReview}
+          handleTakeDown={handleTakeDown}
+          initialReportedPosts={initialReportedPosts}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }

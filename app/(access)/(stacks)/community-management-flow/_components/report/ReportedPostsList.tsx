@@ -1,13 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
-import {
-  Image,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   FadeInRight,
   FadeOutRight,
@@ -27,10 +20,8 @@ interface ReportedPost {
 interface ReportedPostsListProps {
   posts: ReportedPost[];
   loading: boolean;
-  refreshing?: boolean;
-  onRefresh?: () => void;
-  handleReview: (id: string | number) => void;
-  handleTakeDown: (id: string | number) => void;
+  handleReview?: (id: string | number) => void;
+  handleTakeDown?: (id: string | number) => void;
   initialReportedPosts: ReportedPost[];
   title?: string;
 }
@@ -38,21 +29,17 @@ interface ReportedPostsListProps {
 const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
   posts,
   loading,
-  refreshing,
-  onRefresh,
   handleReview,
   handleTakeDown,
   initialReportedPosts,
   title,
 }) => {
   return (
-    <ScrollView
-      className="flex-1 px-6"
-      refreshControl={
-        <RefreshControl refreshing={refreshing!} onRefresh={onRefresh} />
-      }
-      contentContainerStyle={{ paddingBottom: 100 }}
-      showsVerticalScrollIndicator={false}
+    <Animated.View
+      layout={LinearTransition.springify()}
+      entering={FadeInRight.duration(250)}
+      exiting={FadeOutRight.duration(200)}
+      style={{ rowGap: 20 }}
     >
       {title && (
         <Text
@@ -70,7 +57,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
           ))}
         </View>
       ) : (
-        <View className="flex-1">
+        <View className="">
           {posts.length === 0 ? (
             <Animated.View
               entering={FadeInRight.duration(400).springify().damping(18)}
@@ -154,7 +141,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
 
                   <View className="flex-row gap-3">
                     <TouchableOpacity
-                      onPress={() => handleReview(post.id)}
+                      onPress={() => handleReview?.(post.id)}
                       className="flex-1 py-3 rounded-lg items-center"
                       style={{ backgroundColor: "#0066CC" }}
                     >
@@ -166,7 +153,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      onPress={() => handleTakeDown(post.id)}
+                      onPress={() => handleTakeDown?.(post.id)}
                       className="flex-1 py-3 rounded-lg items-center"
                       style={{ backgroundColor: "#FF3333" }}
                     >
@@ -184,7 +171,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
           )}
         </View>
       )}
-    </ScrollView>
+    </Animated.View>
   );
 };
 
