@@ -71,7 +71,7 @@ const Register = () => {
           {/* Header */}
           <View className='items-center mb-8'>
             
-            <Headers text="Verification Tier" onPress={()=> router.back()}/>
+            <Headers onPress={()=> router.back()}/>
             
             <View className='items-center'>
               <Text className='text-sm text-gray-600 mb-2' style={{fontFamily: 'HankenGrotesk_400Regular'}}>

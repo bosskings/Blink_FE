@@ -57,7 +57,7 @@ export default function InterestsScreen() {
       <View className="flex-1 px-6">
         {/* Header */}
         <View className="mt-6 mb-6">
-          <Headers text="Verification Tier" onPress={() => router.back()} />
+          <Headers onPress={() => router.back()} />
         </View>
 
         {/* Title */}
