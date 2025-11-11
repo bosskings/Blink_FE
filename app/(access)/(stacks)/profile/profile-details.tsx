@@ -58,7 +58,7 @@ export default function ProfileDetails() {
       >
         {/* Header */}
         <View className="mt-6 mb-6">
-          <Headers text="Verification Tier" onPress={() => router.back()} />
+          <Headers onPress={() => router.back()} />
         </View>
 
         {/* Main Content */}
