@@ -113,14 +113,12 @@ export default function TrendingHashtags() {
         showsVerticalScrollIndicator={false}
       >
         {loading ? (
-          // 🟡 Skeleton Loader
           <View style={{ rowGap: 20 }}>
             {trendingHashtagsData.map((item) => (
               <SkeletonItem key={item.id} />
             ))}
           </View>
         ) : hashtags.length === 0 ? (
-          // 🚫 Empty State
           <Animated.View
             entering={FadeInRight.duration(400).springify().damping(18)}
             exiting={FadeOutRight.duration(250)}

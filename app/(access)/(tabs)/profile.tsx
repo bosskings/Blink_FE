@@ -1,16 +1,30 @@
+import { useLogout } from "@/hooks/mutations/auth";
 import {
   Feather,
   FontAwesome,
   Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQueryClient } from '@tanstack/react-query';
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 const Profile = () => {
+    const { mutate } = useLogout();
+    const queryCLient = useQueryClient();
+
+    const handleLogout = async () => {
+    mutate();
+    await queryCLient.clear();
+    await AsyncStorage.removeItem("blink_token");
+    await AsyncStorage.removeItem("blink_onboarding");
+    router.replace("/login");
+  };
+
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <StatusBar style="dark" />
@@ -160,6 +174,21 @@ const Profile = () => {
                 style={{ fontFamily: "HankenGrotesk_400Regular" }}
               >
                 Contact Support
+              </Text>
+            </View>
+            <MaterialIcons name="arrow-forward-ios" size={17} color="#D9D9D9" />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleLogout}  className="flex-row items-center bg-white px-6 py-3 rounded-2xl border border-gray-50 overflow-hidden shadow-sm">
+            <View className="flex-1 flex-row items-center gap-5">
+              <View className="p-3 rounded-full bg-[#F8F9FA] w-fit">
+                <MaterialIcons name="logout" size={20} color="#D9D9D9" />
+              </View>
+              <Text
+                className="text-base text-black"
+                style={{ fontFamily: "HankenGrotesk_400Regular" }}
+              >
+                Logout
               </Text>
             </View>
             <MaterialIcons name="arrow-forward-ios" size={17} color="#D9D9D9" />
