@@ -9,8 +9,16 @@ import {
 } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Image,
+  Modal,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ExpandableDescription from "../_components/ExpandableDescription";
 import ListingCard from "../_components/listing-card";
@@ -63,6 +71,32 @@ export type EventItem = {
 
 const CommunityDetail = () => {
   const { id } = useLocalSearchParams();
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState<string>("");
+  const [reportDescription, setReportDescription] = useState<string>("");
+
+  const reportReasons = [
+    "Harassment or Bullying",
+    "Spam or Misleading Content",
+    "Hate Speech or Discrimination",
+    "Inappropriate Content",
+    "Violence or Threats",
+    "Other",
+  ];
+
+  const handleReportSubmit = () => {
+    // Handle report submission logic here
+    console.log("Report submitted:", {
+      communityId: id,
+      reason: reportReason,
+      description: reportDescription,
+    });
+    // Close modal and reset form
+    setShowReportModal(false);
+    setReportReason("");
+    setReportDescription("");
+    // You can add a success toast/notification here
+  };
 
   const universityCommunities = [
     {
@@ -637,7 +671,10 @@ const CommunityDetail = () => {
 
         {community?.status !== "Owned" && (
           <View className="flex-col gap-4 mt-10 px-6">
-            <TouchableOpacity className="w-full py-3 flex-row justify-center items-center gap-3 bg-[#F8F9FA] border-2 border-[#D9D9D9] rounded-xl">
+            <TouchableOpacity
+              onPress={() => setShowReportModal(true)}
+              className="w-full py-3 flex-row justify-center items-center gap-3 bg-[#F8F9FA] border-2 border-[#D9D9D9] rounded-xl"
+            >
               <Feather name="flag" size={24} color="#6C757D" />
               <Text
                 style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
@@ -755,6 +792,157 @@ const CommunityDetail = () => {
           <AntDesign name="edit" size={20} color="#fff" />
         </TouchableOpacity>
       )}
+
+      {/* Report Community Modal */}
+      <Modal
+        visible={showReportModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowReportModal(false)}
+      >
+        <View className="flex-1 bg-black/50 justify-end">
+          <View className="bg-white rounded-t-3xl px-6 pt-6 pb-10">
+            {/* Handle Bar */}
+            <View className="items-center mb-6">
+              <View className="w-10 h-1 bg-[#E5E7EB] rounded-full" />
+            </View>
+
+            {/* Header */}
+            <View className="flex-row items-center justify-between mb-6">
+              <View className="flex-1">
+                <Text
+                  className="text-2xl text-black mb-1"
+                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
+                >
+                  Report Community
+                </Text>
+                <Text
+                  className="text-sm text-[#6B7280]"
+                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
+                >
+                  Help us understand what&apos;s wrong
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowReportModal(false)}
+                className="w-8 h-8 items-center justify-center"
+              >
+                <Ionicons name="close" size={24} color="#6B7280" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Report Reason Selection */}
+            <View className="mb-6">
+              <Text
+                className="text-base text-black mb-3"
+                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
+              >
+                What&apos;s the issue?
+              </Text>
+              <View className="gap-2">
+                {reportReasons.map((reason) => (
+                  <TouchableOpacity
+                    key={reason}
+                    onPress={() => setReportReason(reason)}
+                    className={`flex-row items-center p-4 rounded-xl border-2 ${
+                      reportReason === reason
+                        ? "bg-[#E6F2FF] border-[#0066CC]"
+                        : "bg-[#F8F9FA] border-[#E5E7EB]"
+                    }`}
+                  >
+                    <View
+                      className={`w-5 h-5 rounded-full border-2 mr-3 items-center justify-center ${
+                        reportReason === reason
+                          ? "border-[#0066CC]"
+                          : "border-[#D1D5DB]"
+                      }`}
+                    >
+                      {reportReason === reason && (
+                        <View className="w-3 h-3 rounded-full bg-[#0066CC]" />
+                      )}
+                    </View>
+                    <Text
+                      className={`flex-1 text-base ${
+                        reportReason === reason
+                          ? "text-[#0066CC]"
+                          : "text-black"
+                      }`}
+                      style={{
+                        fontFamily:
+                          reportReason === reason
+                            ? "HankenGrotesk_600SemiBold"
+                            : "HankenGrotesk_400Regular",
+                      }}
+                    >
+                      {reason}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Additional Details */}
+            <View className="mb-6">
+              <Text
+                className="text-base text-black mb-3"
+                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
+              >
+                Additional Details (Optional)
+              </Text>
+              <TextInput
+                placeholder="Provide more context about your report..."
+                placeholderTextColor="#9CA3AF"
+                value={reportDescription}
+                onChangeText={setReportDescription}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                className="bg-[#F8F9FA] rounded-xl p-4 border-2 border-[#E5E7EB]"
+                style={{
+                  fontFamily: "HankenGrotesk_400Regular",
+                  color: "#000000",
+                  minHeight: 100,
+                }}
+              />
+            </View>
+
+            {/* Action Buttons */}
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                onPress={() => {
+                  setShowReportModal(false);
+                  setReportReason("");
+                  setReportDescription("");
+                }}
+                className="flex-1 py-4 bg-[#F3F4F6] rounded-xl items-center"
+              >
+                <Text
+                  className="text-[#374151] text-base"
+                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
+                >
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleReportSubmit}
+                disabled={!reportReason}
+                className={`flex-1 py-4 rounded-xl items-center ${
+                  reportReason ? "bg-[#0066CC]" : "bg-[#D1D5DB]"
+                }`}
+              >
+                <Text
+                  className={`text-base ${
+                    reportReason ? "text-white" : "text-[#9CA3AF]"
+                  }`}
+                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
+                >
+                  Submit Report
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
