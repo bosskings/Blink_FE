@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, Stack } from 'expo-router';
-import React, { useEffect } from 'react';
+import { router, Stack } from "expo-router";
+import React, { useEffect } from "react";
 
 const StackPagesLayout = () => {
   useEffect(() => {
@@ -20,26 +20,25 @@ const StackPagesLayout = () => {
           router.replace("/onboarding");
           return;
         }
-  
       } catch (error) {
         console.error(error);
         router.replace("/login");
         return;
       }
     })();
-      return () => {};
-    }, []);
+    return () => {};
+  }, []);
   return (
     <Stack
       screenOptions={{
-      headerShown: false,
-    }}
+        headerShown: false,
+      }}
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="onboarding" />
       <Stack.Screen name="login" />
     </Stack>
-  )
-}
+  );
+};
 
-export default StackPagesLayout
+export default StackPagesLayout;
