@@ -671,7 +671,7 @@ const CommunityDetail = () => {
                   },
                 })
               }
-              className="flex-row items-center justify-between bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow mb-4"
+              className="flex-row items-center justify-between bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow mb-1"
             >
               <View className="flex-row items-center justify-start gap-2">
                 <Text
