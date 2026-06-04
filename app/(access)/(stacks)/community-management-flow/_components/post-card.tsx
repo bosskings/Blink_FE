@@ -1,7 +1,14 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { PostItem } from "../community-details/[id]";
 
 interface PostCardProps {
@@ -64,16 +71,10 @@ const PostCard = ({ post }: PostCardProps) => {
             className="w-14 h-14 rounded-full"
           />
           <View className="ml-3">
-            <Text
-              className="font-semibold text-base"
-              style={{ fontFamily: "HankenGrotesk_900Black" }}
-            >
+            <Text className="font-semibold text-[15px]" style={{}}>
               {post.user}
             </Text>
-            <Text
-              className="text-black text-sm"
-              style={{ fontFamily: "HankenGrotesk_400Regular" }}
-            >
+            <Text className="text-black text-sm" style={{}}>
               {post.time}
             </Text>
           </View>
@@ -87,7 +88,6 @@ const PostCard = ({ post }: PostCardProps) => {
           <Text
             className="text-xs font-bold"
             style={{
-              fontFamily: "HankenGrotesk_700Bold",
               color: "#0066CC",
             }}
           >
@@ -98,10 +98,8 @@ const PostCard = ({ post }: PostCardProps) => {
 
       {/* Content */}
       <Text
-        className="text-[#000000] text-base mb-3 leading-5 px-6"
-        style={{
-          fontFamily: "HankenGrotesk_500Medium",
-        }}
+        className="text-[#000000] text-[15px] mb-3 leading-5 px-6"
+        style={{}}
       >
         {post.content}
       </Text>
@@ -118,12 +116,7 @@ const PostCard = ({ post }: PostCardProps) => {
             key={index}
             className="border-[1.5px] border-[#6C757D] px-4 py-1 mr-2 rounded-full"
           >
-            <Text
-              className="text-[#6C757D] text-xs font-bold"
-              style={{
-                fontFamily: "HankenGrotesk_500Medium",
-              }}
-            >
+            <Text className="text-[#6C757D] text-xs font-bold" style={{}}>
               {tag}
             </Text>
           </View>
@@ -210,10 +203,7 @@ const PostCard = ({ post }: PostCardProps) => {
                   />
                   {post.images.length > 4 && (
                     <View className="absolute inset-0 bg-black/50 items-center justify-center">
-                      <Text
-                        className="text-white text-lg font-bold"
-                        style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                      >
+                      <Text className="text-white text-lg font-bold" style={{}}>
                         +{post.images.length - 4}
                       </Text>
                     </View>

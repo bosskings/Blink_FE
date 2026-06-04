@@ -1,9 +1,7 @@
-import { truncate } from "@/utils/truncate";
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Image,
-  LayoutChangeEvent,
   Text,
   TouchableOpacity,
   View,
@@ -11,8 +9,10 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { truncate } from "@/utils/truncate";
 
 interface AccordionProps {
   title: string;
@@ -30,41 +30,27 @@ const Accordion = ({
   children,
 }: AccordionProps) => {
   const [open, setOpen] = useState(false);
-
-  const height = useSharedValue(0);
-  const contentHeight = useSharedValue(0);
+  const heightValue = useSharedValue(0);
   const rotate = useSharedValue(0);
-
-  // Measure content when it's rendered without height constraints
-  const onMeasureLayout = (event: LayoutChangeEvent) => {
-    const { height: measuredHeight } = event.nativeEvent.layout;
-    if (measuredHeight > 0) {
-      // Add a small buffer to account for rounding and ensure content isn't cut off
-      contentHeight.value = measuredHeight + 2;
-    }
-  };
 
   const toggle = () => {
     const newOpen = !open;
     setOpen(newOpen);
 
     if (newOpen) {
-      // When opening, animate to the measured content height
-      height.value = withTiming(contentHeight.value || 0, {
-        duration: 250,
+      heightValue.value = withSpring(220, {
+        damping: 18,
+        stiffness: 160,
       });
     } else {
-      // When closing, animate to 0
-      height.value = withTiming(0, {
-        duration: 250,
-      });
+      heightValue.value = withTiming(0, { duration: 200 });
     }
     rotate.value = withTiming(newOpen ? 1 : 0, { duration: 250 });
   };
 
   const animatedHeight = useAnimatedStyle(() => ({
-    height: height.value,
-    opacity: height.value > 0 ? 1 : 0,
+    maxHeight: heightValue.value,
+    opacity: heightValue.value > 10 ? 1 : 0,
   }));
 
   const rotateAnim = useAnimatedStyle(() => ({
@@ -72,8 +58,7 @@ const Accordion = ({
   }));
 
   return (
-    <View className="bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow">
-      {/* HEADER */}
+    <View className="bg-white px-4 py-4 rounded-2xl border border-gray-100 shadow">
       <TouchableOpacity
         onPress={toggle}
         className={`flex-row items-center justify-between ${open ? "mb-4" : ""}`}
@@ -81,19 +66,13 @@ const Accordion = ({
       >
         <View className="flex-row gap-3 items-center flex-1">
           {image && (
-            <Image source={{ uri: image }} className="w-16 h-16 rounded-xl" />
+            <Image source={{ uri: image }} className="w-12 h-12 rounded-xl" />
           )}
-
           <View className="flex-1">
             <View className="flex-row gap-2 items-center mb-1">
-              <Text
-                className="text-base"
-                style={{ fontFamily: "HankenGrotesk_900Black" }}
-              >
+              <Text className="text-[15px]">
                 {truncate(title, 20, "...")}
               </Text>
-
-              {/* Badge */}
               {status && (
                 <View
                   className={`px-3 py-1 ${
@@ -104,51 +83,23 @@ const Accordion = ({
                         : "bg-[#6C757D]"
                   } rounded-lg`}
                 >
-                  <Text
-                    className="text-white text-xs"
-                    style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  >
-                    {status}
-                  </Text>
+                  <Text className="text-white text-[12px]">{status}</Text>
                 </View>
               )}
             </View>
             {subtitle && (
-              <Text
-                className="text-[#000000] text-xs"
-                style={{ fontFamily: "HankenGrotesk_500Medium" }}
-              >
-                {subtitle}
-              </Text>
+              <Text className="text-[12px]">{subtitle}</Text>
             )}
           </View>
         </View>
 
-        {/* Arrow */}
         <Animated.View style={rotateAnim} className="ml-3">
-          <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
+          <MaterialIcons name="keyboard-arrow-down" size={22} color="black" />
         </Animated.View>
       </TouchableOpacity>
 
-      {/* CONTENT */}
-      {/* Hidden container to measure content height */}
-      <View
-        onLayout={onMeasureLayout}
-        style={{
-          position: "absolute",
-          opacity: 0,
-          zIndex: -1,
-          left: 24, // px-6 = 24px (6 * 4px)
-          right: 24,
-        }}
-        pointerEvents="none"
-      >
-        <View className="bg-[#F8F9FA] rounded-xl p-4 pt-8">{children}</View>
-      </View>
-
-      {/* Animated visible container */}
       <Animated.View style={[animatedHeight]} className="overflow-hidden">
-        <View className="bg-[#F8F9FA] rounded-xl p-4 pt-8">{children}</View>
+        <View className="bg-[#F8F9FA] rounded-xl p-4">{children}</View>
       </Animated.View>
     </View>
   );

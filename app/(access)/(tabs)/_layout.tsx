@@ -1,38 +1,35 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { View } from 'react-native';
+import { HapticTab } from "@/components/haptic-tab";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { View } from "react-native";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#FFFFFF',
+        tabBarActiveTintColor: "#FFFFFF",
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: () => null,
         tabBarStyle: {
-          position: 'absolute',
+          position: "absolute",
           bottom: 5,
           left: 0,
           right: 0,
           elevation: 0,
           borderRadius: 100,
-          borderColor: 'white',
+          borderColor: "white",
           borderTopWidth: 3,
           borderBottomWidth: 3,
           borderLeftWidth: 3,
           borderRightWidth: 3,
-          borderStyle: 'solid',
+          borderStyle: "solid",
           height: 60,
-          display: 'flex',
+          display: "flex",
           marginHorizontal: 15,
-          backgroundColor: '#0066CC',
+          backgroundColor: "#0066CC",
           shadowColor: "#000",
           shadowOffset: {
             width: 0,
@@ -42,33 +39,42 @@ export default function TabLayout() {
           shadowRadius: 10,
         },
         tabBarIconStyle: {
-          width: '100%',
+          width: "100%",
           height: 50,
           top: -2,
-          marginHorizontal: 0
+          marginHorizontal: 0,
         },
         tabBarItemStyle: {
           marginHorizontal: 0,
         },
         tabBarLabelStyle: {
-          display: 'none',
-        }
-      }}>
+          display: "none",
+        },
+      }}
+    >
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: "Home",
           tabBarIcon: ({ focused }) => (
             <>
-              {focused? 
-                <View className='items-center flex-row bg-white rounded-full p-2 px-4'>
-                    <MaterialIcons size={20} name={'home-filled'} color={'#3D68FF'} />
-                </View>:
-
-                <View>
-                    <MaterialIcons size={20} name={'home-filled'} color={'#61ADFA'} />
+              {focused ? (
+                <View className="items-center flex-row bg-white rounded-full p-2 px-4">
+                  <MaterialIcons
+                    size={18}
+                    name={"home-filled"}
+                    color={"#3D68FF"}
+                  />
                 </View>
-              }
+              ) : (
+                <View>
+                  <MaterialIcons
+                    size={18}
+                    name={"home-filled"}
+                    color={"#61ADFA"}
+                  />
+                </View>
+              )}
             </>
           ),
         }}
@@ -76,18 +82,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="community"
         options={{
-          title: 'Community',
+          title: "Community",
           tabBarIcon: ({ focused }) => (
-              <>
-              {focused? 
-                <View className='items-center flex-row bg-white rounded-full p-2 px-4'>
-                    <MaterialIcons size={20} name={'people'} color={'#3D68FF'} />
-                </View>:
-
-                <View>
-                    <MaterialIcons size={20} name={'people'} color={'#61ADFA'} />
+            <>
+              {focused ? (
+                <View className="items-center flex-row bg-white rounded-full p-2 px-4">
+                  <MaterialIcons size={18} name={"people"} color={"#3D68FF"} />
                 </View>
-              }
+              ) : (
+                <View>
+                  <MaterialIcons size={18} name={"people"} color={"#61ADFA"} />
+                </View>
+              )}
             </>
           ),
         }}
@@ -96,39 +102,38 @@ export default function TabLayout() {
       <Tabs.Screen
         name="messages"
         options={{
-          title: 'Messages',
+          title: "Messages",
           tabBarIcon: ({ focused }) => (
-              <>
-              {focused? 
-                <View className='items-center flex-row bg-white rounded-full p-2 px-4'>
-                    <AntDesign size={20} name={'message'} color={'#3D68FF'} />
-                </View>:
-
-                <View>
-                    <AntDesign size={20} name={'message'} color={'#61ADFA'} />
+            <>
+              {focused ? (
+                <View className="items-center flex-row bg-white rounded-full p-2 px-4">
+                  <AntDesign size={18} name={"message"} color={"#3D68FF"} />
                 </View>
-              }
+              ) : (
+                <View>
+                  <AntDesign size={18} name={"message"} color={"#61ADFA"} />
+                </View>
+              )}
             </>
           ),
         }}
       />
 
-
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: "Profile",
           tabBarIcon: ({ focused }) => (
-              <>
-              {focused? 
-                <View className='items-center flex-row bg-white rounded-full p-2 px-4'>
-                    <MaterialIcons size={20} name={'person'} color={'#3D68FF'} />
-                </View>:
-
-                <View>
-                    <MaterialIcons size={20} name={'person'} color={'#61ADFA'} />
+            <>
+              {focused ? (
+                <View className="items-center flex-row bg-white rounded-full p-2 px-4">
+                  <MaterialIcons size={18} name={"person"} color={"#3D68FF"} />
                 </View>
-              }
+              ) : (
+                <View>
+                  <MaterialIcons size={18} name={"person"} color={"#61ADFA"} />
+                </View>
+              )}
             </>
           ),
         }}

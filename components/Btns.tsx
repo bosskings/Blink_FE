@@ -1,41 +1,80 @@
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 
 interface ButtonProps {
   text: string;
   onPress?: () => void;
   disabled?: boolean;
+  style?: any;
 }
-export const SolidMainButton = ({ text, onPress, ...props }: ButtonProps) => {
+
+export const SolidMainButton = ({
+  text,
+  onPress,
+  style,
+  disabled,
+  ...props
+}: ButtonProps) => {
   return (
     <TouchableOpacity
       {...props}
       onPress={onPress}
-      className="flex items-center gap-4 bg-[#0066CC] p-4 w-full rounded-lg"
+      disabled={disabled}
+      style={[styles.mainButton, disabled && styles.disabledButton, style]}
+      activeOpacity={0.8}
     >
-      <Text
-        className="text-white text-base"
-        style={{ fontFamily: "HankenGrotesk_700Bold" }}
-      >
-        {text}
-      </Text>
+      <Text style={styles.mainButtonText}>{text}</Text>
     </TouchableOpacity>
   );
 };
 
-
-export const SolidGrayButton = ({ text, onPress, ...props }: ButtonProps) => {
+export const SolidGrayButton = ({
+  text,
+  onPress,
+  style,
+  disabled,
+  ...props
+}: ButtonProps) => {
   return (
     <TouchableOpacity
       {...props}
       onPress={onPress}
-      className="flex items-center gap-4 bg-[#F3F4F6] p-4 w-full rounded-lg"
+      disabled={disabled}
+      style={[styles.grayButton, disabled && styles.disabledButton, style]}
+      activeOpacity={0.8}
     >
-      <Text
-        className="text-[#374151] text-base"
-        style={{ fontFamily: "HankenGrotesk_700Bold" }}
-      >
-        {text}
-      </Text>
+      <Text style={styles.grayButtonText}>{text}</Text>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  mainButton: {
+    backgroundColor: "#0066CC",
+    width: "100%",
+    borderRadius: 10,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  mainButtonText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontFamily: "HankenGrotesk_500Medium",
+  },
+  grayButton: {
+    backgroundColor: "#F3F4F6",
+    width: "100%",
+    borderRadius: 10,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  grayButtonText: {
+    color: "#374151",
+    fontSize: 12,
+    fontFamily: "HankenGrotesk_500Medium",
+  },
+  disabledButton: {
+    opacity: 0.6,
+  },
+});

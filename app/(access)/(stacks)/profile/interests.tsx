@@ -1,4 +1,5 @@
-import { Headers } from "@/components/Headers";
+import { SolidMainButton } from "@/components/Btns";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -40,100 +41,95 @@ export default function InterestsScreen() {
     setSelectedInterests((prev) =>
       prev.includes(interest)
         ? prev.filter((i) => i !== interest)
-        : [...prev, interest]
+        : [...prev, interest],
     );
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = () => {
     console.log("Interest:", {
       selectedInterests,
     });
     router.push("/(access)/(stacks)/profile/profile-setup-completed");
   };
 
+  const isCompleteActive = selectedInterests.length > 0;
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={styles.viewport}>
       <StatusBar style="dark" />
-      <View className="flex-1 px-6">
-        {/* Header */}
-        <View className="mt-6 mb-6">
-          <Headers onPress={() => router.back()} />
+      <View style={styles.container}>
+        {/* Step Progress Single-Row Header */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity
+            style={styles.backCircle}
+            onPress={() => router.back()}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={18} color="#000000" />
+          </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>Profile Setup</Text>
+
+          {/* Elongated Step Dots Progress Indicator */}
+          <View style={styles.dotsRow}>
+            <View style={styles.dotInactive} />
+            <View style={styles.dotInactive} />
+            <View style={styles.dotActive} />
+          </View>
         </View>
 
-        {/* Title */}
-        <View className="mb-6">
-          <Text
-            style={{ fontFamily: "HankenGrotesk_700Bold" }}
-            className="text-2xl font-bold text-black"
-          >
-            What are your interests?
-          </Text>
-          <Text
-            style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-            className="text-base text-[#666666] mt-2"
-          >
-            Select one or more areas you&apos;re interested in
-          </Text>
-        </View>
-
-        {/* Interests Grid */}
         <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingBottom: 100 }}
+          showsVerticalScrollIndicator={false}
+          style={styles.scrollStyle}
+          contentContainerStyle={styles.scrollContent}
         >
-          <View style={styles.interestDivStyle} className="gap-3 pb-24">
-            {INTERESTS.map((interest) => (
-              <TouchableOpacity
-                key={interest}
-                onPress={() => toggleInterest(interest)}
-                style={styles.interestItem}
-                className={`px-6 py-3 rounded-md border ${
-                  selectedInterests.includes(interest)
-                    ? "bg-[#F4FAFF] border-[#0066CC]"
-                    : "bg-white border-gray-200"
-                }`}
-                accessibilityLabel={`Select ${interest}`}
-                accessibilityState={{
-                  selected: selectedInterests.includes(interest),
-                }}
-              >
-                <Text
-                  className={`text-base ${
-                    selectedInterests.includes(interest)
-                      ? "text-[#0066CC] font-semibold"
-                      : "text-gray-800"
-                  }`}
-                  style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
+          {/* Main Title Section */}
+          <View style={styles.titleWrap}>
+            <Text style={styles.titleText}>What are your interests?</Text>
+            <Text style={styles.subtitleText}>
+              Select one or more areas you&apos;re interested in
+            </Text>
+          </View>
+
+          {/* Interests Grid */}
+          <View style={styles.interestDivStyle}>
+            {INTERESTS.map((interest) => {
+              const isSelected = selectedInterests.includes(interest);
+              return (
+                <TouchableOpacity
+                  key={interest}
+                  onPress={() => toggleInterest(interest)}
+                  activeOpacity={0.8}
+                  style={[
+                    styles.interestItem,
+                    isSelected
+                      ? styles.interestItemSelected
+                      : styles.interestItemNormal,
+                  ]}
                 >
-                  {interest}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      styles.interestText,
+                      isSelected
+                        ? styles.interestTextSelected
+                        : styles.interestTextNormal,
+                    ]}
+                  >
+                    {interest}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </ScrollView>
 
-        {/* Complete Profile Button */}
-        <View className="absolute bottom-0 bg-white left-0 right-0">
-          <View className="w-[90%] self-center py-4">
-            <TouchableOpacity
-              className={`py-4 rounded-xl ${
-                selectedInterests.length > 0 ? "bg-[#0066CC]" : "bg-gray-300"
-              }`}
-              disabled={selectedInterests.length === 0}
-              accessibilityLabel="Complete profile"
-              accessibilityState={{ disabled: selectedInterests.length === 0 }}
-              onPress={onSubmit}
-            >
-              <Text
-                className={`text-center text-base font-semibold ${
-                  selectedInterests.length > 0 ? "text-white" : "text-gray-400"
-                }`}
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-              >
-                Complete Profile
-              </Text>
-            </TouchableOpacity>
-          </View>
+        {/* Absolute Bottom Action Bar */}
+        <View style={styles.bottomBar}>
+          <SolidMainButton
+            text="Complete Profile"
+            onPress={onSubmit}
+            disabled={!isCompleteActive}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -141,13 +137,117 @@ export default function InterestsScreen() {
 }
 
 const styles = StyleSheet.create({
+  viewport: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 16,
+    marginBottom: 32,
+  },
+  backCircle: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "#000000",
+    borderRadius: 99,
+    width: 44,
+    height: 44,
+  },
+  headerTitle: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 17,
+    color: "#0066CC",
+  },
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  dotInactive: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#E5E7EB",
+  },
+  dotActive: {
+    width: 20,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#0066CC",
+  },
+  scrollStyle: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 110,
+  },
+  titleWrap: {
+    alignItems: "center",
+    marginBottom: 36,
+  },
+  titleText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 26,
+    color: "#000000",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  subtitleText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#4B5563",
+    textAlign: "center",
+  },
   interestDivStyle: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
-    paddingBottom: 96,
+    justifyContent: "space-between",
+    rowGap: 12,
+    width: "100%",
   },
   interestItem: {
     width: "48%",
+    height: 52,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  interestItemNormal: {
+    backgroundColor: "#FFFFFF",
+    borderColor: "#E5E7EB",
+  },
+  interestItemSelected: {
+    backgroundColor: "#F0F7FF",
+    borderColor: "#0066CC",
+  },
+  interestText: {
+    fontSize: 12,
+  },
+  interestTextNormal: {
+    fontFamily: "HankenGrotesk_500Medium",
+    color: "#374151",
+  },
+  interestTextSelected: {
+    fontFamily: "HankenGrotesk_500Medium",
+    color: "#0066CC",
+  },
+  bottomBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#FFFFFF",
+    paddingBottom: 24,
+    paddingTop: 12,
+    paddingHorizontal: 24,
   },
 });

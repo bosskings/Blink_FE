@@ -1,4 +1,5 @@
 import { Headers } from "@/components/Headers";
+import { SolidMainButton } from "@/components/Btns";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -300,17 +301,17 @@ const CreateContent = () => {
             >
               <Feather
                 name="message-circle"
-                size={20}
+                size={18}
                 color={contentType === "post" ? "#0066CC" : "#6C757D"}
               />
               <Text
-                className={`text-base ${
+                className={`text-[15px] ${
                   contentType === "post" ? "text-[#0066CC]" : "text-[#6C757D]"
                 }`}
                 style={{
                   fontFamily:
                     contentType === "post"
-                      ? "HankenGrotesk_700Bold"
+                      ? "HankenGrotesk_500Medium"
                       : "HankenGrotesk_500Medium",
                 }}
               >
@@ -329,17 +330,17 @@ const CreateContent = () => {
             >
               <AntDesign
                 name="calendar"
-                size={20}
+                size={18}
                 color={contentType === "event" ? "#0066CC" : "#6C757D"}
               />
               <Text
-                className={`text-base ${
+                className={`text-[15px] ${
                   contentType === "event" ? "text-[#0066CC]" : "text-[#6C757D]"
                 }`}
                 style={{
                   fontFamily:
                     contentType === "event"
-                      ? "HankenGrotesk_700Bold"
+                      ? "HankenGrotesk_500Medium"
                       : "HankenGrotesk_500Medium",
                 }}
               >
@@ -357,24 +358,15 @@ const CreateContent = () => {
               className="w-12 h-12 rounded-full"
             />
             <View className="flex-1">
-              <Text
-                className="text-base text-black mb-1"
-                style={{ fontFamily: "HankenGrotesk_900Black" }}
-              >
+              <Text className="text-[15px] text-black mb-1" style={{}}>
                 {currentUser.name}
               </Text>
               <View className="flex-row items-center gap-1">
-                <Text
-                  className="text-sm text-black"
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                >
+                <Text className="text-[13px] text-black" style={{}}>
                   Posting to
                 </Text>
                 <TouchableOpacity>
-                  <Text
-                    className="text-sm text-[#0066CC]"
-                    style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                  >
+                  <Text className="text-[13px] text-[#0066CC]" style={{}}>
                     {communityName || "Covenant University Community"}
                   </Text>
                 </TouchableOpacity>
@@ -394,9 +386,8 @@ const CreateContent = () => {
                 onChangeText={setContent}
                 multiline
                 textAlignVertical="top"
-                className="flex-1 text-base"
+                className="flex-1 text-[15px]"
                 style={{
-                  fontFamily: "HankenGrotesk_400Regular",
                   color: "#000000",
                   minHeight: 200,
                 }}
@@ -410,10 +401,7 @@ const CreateContent = () => {
           <View className="px-6 mb-6 gap-4">
             {/* Event Title */}
             <View>
-              <Text
-                className="text-sm text-black mb-2"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[13px] text-black mb-2" style={{}}>
                 Event Title
               </Text>
               <TextInput
@@ -423,7 +411,6 @@ const CreateContent = () => {
                 onChangeText={setEventTitle}
                 className="bg-[#F8F9FA] rounded-xl p-4"
                 style={{
-                  fontFamily: "HankenGrotesk_400Regular",
                   color: "#000000",
                 }}
               />
@@ -432,10 +419,7 @@ const CreateContent = () => {
             {/* Date and Time Row */}
             <View className="flex-row gap-3">
               <View className="flex-1">
-                <Text
-                  className="text-sm text-black mb-2"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[13px] text-black mb-2" style={{}}>
                   Date
                 </Text>
                 <TouchableOpacity
@@ -444,13 +428,12 @@ const CreateContent = () => {
                 >
                   <Text
                     style={{
-                      fontFamily: "HankenGrotesk_400Regular",
                       color: "#000000",
                     }}
                   >
                     {formatDate(eventDate)}
                   </Text>
-                  <Ionicons name="calendar-outline" size={20} color="#6C757D" />
+                  <Ionicons name="calendar-outline" size={18} color="#6C757D" />
                 </TouchableOpacity>
                 {showDatePicker &&
                   (() => {
@@ -471,8 +454,8 @@ const CreateContent = () => {
                     return (
                       <View className="mt-2 bg-[#F8F9FA] rounded-xl p-4">
                         <Text
-                          className="text-sm text-[#6C757D] mb-2"
-                          style={{ fontFamily: "HankenGrotesk_400Regular" }}
+                          className="text-[13px] text-[#6C757D] mb-2"
+                          style={{}}
                         >
                           Date picker requires a native build. Run: npx expo
                           prebuild
@@ -484,7 +467,6 @@ const CreateContent = () => {
                           editable={false}
                           className="bg-white rounded-lg p-3"
                           style={{
-                            fontFamily: "HankenGrotesk_400Regular",
                             color: "#000000",
                           }}
                         />
@@ -499,10 +481,7 @@ const CreateContent = () => {
                         onPress={() => setShowDatePicker(false)}
                         className="flex-1 bg-[#D9D9D9] rounded-xl py-2 items-center"
                       >
-                        <Text
-                          style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                          className="text-[#6C757D]"
-                        >
+                        <Text style={{}} className="text-[#6C757D]">
                           Cancel
                         </Text>
                       </TouchableOpacity>
@@ -510,10 +489,7 @@ const CreateContent = () => {
                         onPress={() => setShowDatePicker(false)}
                         className="flex-1 bg-[#0066CC] rounded-xl py-2 items-center"
                       >
-                        <Text
-                          style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                          className="text-white"
-                        >
+                        <Text style={{}} className="text-white">
                           Done
                         </Text>
                       </TouchableOpacity>
@@ -521,10 +497,7 @@ const CreateContent = () => {
                   )}
               </View>
               <View className="flex-1">
-                <Text
-                  className="text-sm text-black mb-2"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[13px] text-black mb-2" style={{}}>
                   Time
                 </Text>
                 <TouchableOpacity
@@ -533,13 +506,12 @@ const CreateContent = () => {
                 >
                   <Text
                     style={{
-                      fontFamily: "HankenGrotesk_400Regular",
                       color: "#000000",
                     }}
                   >
                     {formatTime(eventTime)}
                   </Text>
-                  <Ionicons name="time-outline" size={20} color="#6C757D" />
+                  <Ionicons name="time-outline" size={18} color="#6C757D" />
                 </TouchableOpacity>
                 {showTimePicker &&
                   (() => {
@@ -560,8 +532,8 @@ const CreateContent = () => {
                     return (
                       <View className="mt-2 bg-[#F8F9FA] rounded-xl p-4">
                         <Text
-                          className="text-sm text-[#6C757D] mb-2"
-                          style={{ fontFamily: "HankenGrotesk_400Regular" }}
+                          className="text-[13px] text-[#6C757D] mb-2"
+                          style={{}}
                         >
                           Time picker requires a native build. Run: npx expo
                           prebuild
@@ -573,7 +545,6 @@ const CreateContent = () => {
                           editable={false}
                           className="bg-white rounded-lg p-3"
                           style={{
-                            fontFamily: "HankenGrotesk_400Regular",
                             color: "#000000",
                           }}
                         />
@@ -588,10 +559,7 @@ const CreateContent = () => {
                         onPress={() => setShowTimePicker(false)}
                         className="flex-1 bg-[#D9D9D9] rounded-xl py-2 items-center"
                       >
-                        <Text
-                          style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                          className="text-[#6C757D]"
-                        >
+                        <Text style={{}} className="text-[#6C757D]">
                           Cancel
                         </Text>
                       </TouchableOpacity>
@@ -599,10 +567,7 @@ const CreateContent = () => {
                         onPress={() => setShowTimePicker(false)}
                         className="flex-1 bg-[#0066CC] rounded-xl py-2 items-center"
                       >
-                        <Text
-                          style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                          className="text-white"
-                        >
+                        <Text style={{}} className="text-white">
                           Done
                         </Text>
                       </TouchableOpacity>
@@ -613,10 +578,7 @@ const CreateContent = () => {
 
             {/* Location */}
             <View>
-              <Text
-                className="text-sm text-black mb-2"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[13px] text-black mb-2" style={{}}>
                 Location
               </Text>
               <TextInput
@@ -626,7 +588,6 @@ const CreateContent = () => {
                 onChangeText={setEventLocation}
                 className="bg-[#F8F9FA] rounded-xl p-4"
                 style={{
-                  fontFamily: "HankenGrotesk_400Regular",
                   color: "#000000",
                 }}
               />
@@ -634,10 +595,7 @@ const CreateContent = () => {
 
             {/* Category */}
             <View>
-              <Text
-                className="text-sm text-black mb-2"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[13px] text-black mb-2" style={{}}>
                 Category
               </Text>
               <ScrollView
@@ -656,7 +614,7 @@ const CreateContent = () => {
                     }`}
                   >
                     <Text
-                      className={`text-sm ${
+                      className={`text-[13px] ${
                         eventCategory === category
                           ? "text-white"
                           : "text-[#6C757D]"
@@ -664,7 +622,7 @@ const CreateContent = () => {
                       style={{
                         fontFamily:
                           eventCategory === category
-                            ? "HankenGrotesk_700Bold"
+                            ? "HankenGrotesk_500Medium"
                             : "HankenGrotesk_500Medium",
                       }}
                     >
@@ -677,10 +635,7 @@ const CreateContent = () => {
 
             {/* Description */}
             <View>
-              <Text
-                className="text-sm text-black mb-2"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[13px] text-black mb-2" style={{}}>
                 Description (Optional)
               </Text>
               <TextInput
@@ -692,7 +647,6 @@ const CreateContent = () => {
                 textAlignVertical="top"
                 className="bg-[#F8F9FA] rounded-xl p-4"
                 style={{
-                  fontFamily: "HankenGrotesk_400Regular",
                   color: "#000000",
                   minHeight: 100,
                 }}
@@ -701,10 +655,7 @@ const CreateContent = () => {
 
             {/* Event Media Action Buttons */}
             <View>
-              <Text
-                className="text-sm text-black mb-2"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[13px] text-black mb-2" style={{}}>
                 Media (Optional)
               </Text>
               <View className="flex-row gap-3">
@@ -713,11 +664,8 @@ const CreateContent = () => {
                   onPress={handlePhotoPress}
                   className="flex-1 flex-row items-center justify-center gap-2 bg-[#D9D9D9] rounded-full py-4 px-4"
                 >
-                  <Ionicons name="image-outline" size={20} color="#6C757D" />
-                  <Text
-                    className="text-sm text-[#6C757D]"
-                    style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                  >
+                  <Ionicons name="image-outline" size={18} color="#6C757D" />
+                  <Text className="text-[13px] text-[#6C757D]" style={{}}>
                     Photo
                   </Text>
                 </TouchableOpacity>
@@ -727,11 +675,8 @@ const CreateContent = () => {
                   onPress={handleVideoPress}
                   className="flex-1 flex-row items-center justify-center gap-2 bg-[#D9D9D9] rounded-full py-4 px-4"
                 >
-                  <Ionicons name="videocam-outline" size={20} color="#6C757D" />
-                  <Text
-                    className="text-sm text-[#6C757D]"
-                    style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                  >
+                  <Ionicons name="videocam-outline" size={18} color="#6C757D" />
+                  <Text className="text-[13px] text-[#6C757D]" style={{}}>
                     Video
                   </Text>
                 </TouchableOpacity>
@@ -741,13 +686,10 @@ const CreateContent = () => {
                 >
                   <Ionicons
                     name="bar-chart-outline"
-                    size={20}
+                    size={18}
                     color="#6C757D"
                   />
-                  <Text
-                    className="text-sm text-[#6C757D]"
-                    style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                  >
+                  <Text className="text-[13px] text-[#6C757D]" style={{}}>
                     Poll
                   </Text>
                 </TouchableOpacity>
@@ -757,10 +699,7 @@ const CreateContent = () => {
             {/* Selected Event Images */}
             {eventImages.length > 0 && (
               <View>
-                <Text
-                  className="text-sm text-black mb-2"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[13px] text-black mb-2" style={{}}>
                   Selected Images ({eventImages.length})
                 </Text>
                 <ScrollView
@@ -790,10 +729,7 @@ const CreateContent = () => {
             {/* Selected Event Videos */}
             {eventVideos.length > 0 && (
               <View>
-                <Text
-                  className="text-sm text-black mb-2"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[13px] text-black mb-2" style={{}}>
                   Selected Videos ({eventVideos.length})
                 </Text>
                 <ScrollView
@@ -825,20 +761,14 @@ const CreateContent = () => {
           <View className="px-6 mb-6">
             <View className="bg-[#E6F2FF] rounded-xl p-4 border border-[#0066CC]">
               <View className="flex-row items-center justify-between mb-3">
-                <Text
-                  className="text-base text-[#0066CC]"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[15px] text-[#0066CC]" style={{}}>
                   Poll
                 </Text>
                 <TouchableOpacity onPress={() => setShowPollModal(true)}>
                   <Feather name="edit-2" size={18} color="#0066CC" />
                 </TouchableOpacity>
               </View>
-              <Text
-                className="text-base text-black mb-3"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[15px] text-black mb-3" style={{}}>
                 {pollQuestion}
               </Text>
               <View className="gap-2">
@@ -849,10 +779,7 @@ const CreateContent = () => {
                       key={index}
                       className="bg-white rounded-lg p-3 border border-[#D9D9D9]"
                     >
-                      <Text
-                        className="text-sm text-black"
-                        style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                      >
+                      <Text className="text-[13px] text-black" style={{}}>
                         {option}
                       </Text>
                     </View>
@@ -871,11 +798,8 @@ const CreateContent = () => {
                 onPress={handlePhotoPress}
                 className="flex-1 flex-row items-center justify-center gap-2 bg-[#D9D9D9] rounded-full py-4 px-4"
               >
-                <Ionicons name="image-outline" size={20} color="#6C757D" />
-                <Text
-                  className="text-sm text-[#6C757D]"
-                  style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                >
+                <Ionicons name="image-outline" size={18} color="#6C757D" />
+                <Text className="text-[13px] text-[#6C757D]" style={{}}>
                   Photo
                 </Text>
               </TouchableOpacity>
@@ -885,11 +809,8 @@ const CreateContent = () => {
                 onPress={handleVideoPress}
                 className="flex-1 flex-row items-center justify-center gap-2 bg-[#D9D9D9] rounded-full py-4 px-4"
               >
-                <Ionicons name="videocam-outline" size={20} color="#6C757D" />
-                <Text
-                  className="text-sm text-[#6C757D]"
-                  style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                >
+                <Ionicons name="videocam-outline" size={18} color="#6C757D" />
+                <Text className="text-[13px] text-[#6C757D]" style={{}}>
                   Video
                 </Text>
               </TouchableOpacity>
@@ -903,17 +824,17 @@ const CreateContent = () => {
               >
                 <Ionicons
                   name="bar-chart-outline"
-                  size={20}
+                  size={18}
                   color={hasPoll ? "#0066CC" : "#6C757D"}
                 />
                 <Text
-                  className={`text-sm ${
+                  className={`text-[13px] ${
                     hasPoll ? "text-[#0066CC]" : "text-[#6C757D]"
                   }`}
                   style={{
                     fontFamily: hasPoll
-                      ? "HankenGrotesk_700Bold"
-                      : "HankenGrotesk_600SemiBold",
+                      ? "HankenGrotesk_500Medium"
+                      : "HankenGrotesk_500Medium",
                   }}
                 >
                   Poll
@@ -927,17 +848,11 @@ const CreateContent = () => {
         {contentType === "post" && (
           <View className="px-6 mb-6">
             <View className="bg-white rounded-xl border-2 border-[#D9D9D9] p-4">
-              <Text
-                className="text-lg text-black"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[15px] text-black" style={{}}>
                 Allow Comments
               </Text>
               <View className="flex-row items-center justify-between">
-                <Text
-                  className="text-base text-[#6C757D] flex-1"
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                >
+                <Text className="text-[15px] text-[#6C757D] flex-1" style={{}}>
                   Let community members comment
                 </Text>
                 <Switch
@@ -953,17 +868,10 @@ const CreateContent = () => {
 
         {/* Create Post Button */}
         <View className="px-6">
-          <TouchableOpacity
+          <SolidMainButton
+            text={contentType === "post" ? "Create Post" : "Create Event"}
             onPress={handleCreatePost}
-            className="bg-[#0066CC] rounded-xl py-4 px-4 items-center"
-          >
-            <Text
-              className="text-white text-base"
-              style={{ fontFamily: "HankenGrotesk_700Bold" }}
-            >
-              {contentType === "post" ? "Create Post" : "Create Event"}
-            </Text>
-          </TouchableOpacity>
+          />
         </View>
       </ScrollView>
 
@@ -977,23 +885,17 @@ const CreateContent = () => {
         <View className="flex-1 bg-black/50 justify-center items-center px-6">
           <View className="bg-white rounded-2xl w-full max-w-md p-6">
             <View className="flex-row items-center justify-between mb-4">
-              <Text
-                className="text-xl text-black"
-                style={{ fontFamily: "HankenGrotesk_900Black" }}
-              >
+              <Text className="text-[17px] text-black" style={{}}>
                 Create Poll
               </Text>
               <TouchableOpacity onPress={() => setShowPollModal(false)}>
-                <Ionicons name="close" size={24} color="#666666" />
+                <Ionicons name="close" size={22} color="#666666" />
               </TouchableOpacity>
             </View>
 
             {/* Poll Question */}
             <View className="mb-4">
-              <Text
-                className="text-sm text-black mb-2"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[13px] text-black mb-2" style={{}}>
                 Poll Question
               </Text>
               <TextInput
@@ -1003,7 +905,6 @@ const CreateContent = () => {
                 onChangeText={setPollQuestion}
                 className="bg-[#F8F9FA] rounded-xl p-4"
                 style={{
-                  fontFamily: "HankenGrotesk_400Regular",
                   color: "#000000",
                 }}
               />
@@ -1011,10 +912,7 @@ const CreateContent = () => {
 
             {/* Poll Options */}
             <View className="mb-4">
-              <Text
-                className="text-sm text-black mb-2"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[13px] text-black mb-2" style={{}}>
                 Options ({pollOptions.length}/6)
               </Text>
               <ScrollView className="max-h-64">
@@ -1030,7 +928,6 @@ const CreateContent = () => {
                         }
                         className="flex-1 bg-[#F8F9FA] rounded-xl p-3"
                         style={{
-                          fontFamily: "HankenGrotesk_400Regular",
                           color: "#000000",
                         }}
                       />
@@ -1041,7 +938,7 @@ const CreateContent = () => {
                         >
                           <Ionicons
                             name="close-circle"
-                            size={24}
+                            size={22}
                             color="#D01111"
                           />
                         </TouchableOpacity>
@@ -1058,11 +955,8 @@ const CreateContent = () => {
                 onPress={handleAddPollOption}
                 className="flex-row items-center justify-center gap-2 py-3 border-2 border-[#0066CC] rounded-xl mb-4"
               >
-                <Ionicons name="add" size={20} color="#0066CC" />
-                <Text
-                  className="text-[#0066CC] text-base"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Ionicons name="add" size={18} color="#0066CC" />
+                <Text className="text-[#0066CC] text-[15px]" style={{}}>
                   Add Option
                 </Text>
               </TouchableOpacity>
@@ -1079,10 +973,7 @@ const CreateContent = () => {
                 }}
                 className="flex-1 py-3 border-2 border-[#D9D9D9] rounded-xl items-center"
               >
-                <Text
-                  className="text-[#6C757D] text-base"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[#6C757D] text-[15px]" style={{}}>
                   Cancel
                 </Text>
               </TouchableOpacity>
@@ -1090,10 +981,7 @@ const CreateContent = () => {
                 onPress={handleSavePoll}
                 className="flex-1 py-3 bg-[#0066CC] rounded-xl items-center"
               >
-                <Text
-                  className="text-white text-base"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-white text-[15px]" style={{}}>
                   Save Poll
                 </Text>
               </TouchableOpacity>

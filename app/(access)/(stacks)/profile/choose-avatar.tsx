@@ -1,13 +1,14 @@
-import { Headers } from "@/components/Headers";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { Asset } from "expo-asset";
+import { SolidMainButton } from "@/components/Btns";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
-  Animated,
   Image,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -15,195 +16,310 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileSetup() {
-  const [avatars, setAvatars] = useState([
-    { id: 1, uri: require("../../../../assets/avatars/avatar1.png") },
-    { id: 2, uri: require("../../../../assets/avatars/avatar2.png") },
-    { id: 3, uri: require("../../../../assets/avatars/avatar3.png") },
-    { id: 4, uri: require("../../../../assets/avatars/avatar2.png") },
-    { id: 5, uri: require("../../../../assets/avatars/avatar1.png") },
-    { id: 6, uri: require("../../../../assets/avatars/avatar3.png") },
+  const [avatars] = useState([
+    {
+      id: 1,
+      uri: require("../../../../assets/avatars/avatar1.png"),
+      bg: "#E0DBFF",
+    }, // purple-ish
+    {
+      id: 2,
+      uri: require("../../../../assets/avatars/avatar2.png"),
+      bg: "#D4F0FC",
+    }, // light blue
+    {
+      id: 3,
+      uri: require("../../../../assets/avatars/avatar3.png"),
+      bg: "#FFE5C3",
+    }, // orange/peach
+    {
+      id: 4,
+      uri: require("../../../../assets/avatars/avatar1.png"),
+      bg: "#E0DBFF",
+    }, // purple-ish
+    {
+      id: 5,
+      uri: require("../../../../assets/avatars/avatar4.png"),
+      bg: "#FFE5C3",
+    }, // orange/peach
+    {
+      id: 6,
+      uri: require("../../../../assets/avatars/avatar1.png"),
+      bg: "#E0DBFF",
+    }, // purple-ish
   ]);
 
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
   const [customImage, setCustomImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const shimmerAnim = useRef(new Animated.Value(0)).current;
 
-  // 🌀 shimmer effect animation
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(shimmerAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shimmerAnim, {
-          toValue: 0,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, []);
-
-  // 🕒 simulate short load delay
-  useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  // ✅ handle proceed and send file
   const handleProceed = async () => {
-    if (!customImage && selectedAvatar === null) {
-      alert("Please select or upload an image first!");
-      return;
+    if (selectedAvatar === null && !customImage) return;
+
+    if (customImage) {
+      await AsyncStorage.setItem("user_avatar", customImage);
+    } else if (selectedAvatar !== null) {
+      await AsyncStorage.setItem(
+        "user_avatar",
+        `avatar${avatars[selectedAvatar].id}`,
+      );
     }
 
-    const selected = customImage
-      ? { uri: customImage }
-      : avatars[selectedAvatar!];
-
-    let imageUri = selected.uri;
-
-    // if it's a local asset (require() returns number)
-    if (typeof imageUri !== "string") {
-      const asset = Asset.fromModule(imageUri);
-      await asset.downloadAsync();
-      imageUri = asset.localUri;
-    }
-
-    // ✅ prepare FormData
-    const formData = new FormData();
-    formData.append("avatar", {
-      uri: imageUri,
-      type: "image/png",
-      name: "avatar.png",
-    } as any);
-
-    console.log("✅ Uploaded:", formData);
-
-    // proceed to next page
     router.push("/(access)/(stacks)/profile/profile-details");
   };
 
+  const selectAvatar = (index: number) => {
+    setSelectedAvatar(index);
+    setCustomImage(null);
+  };
+
+  const handleCustomPhotoPress = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setCustomImage(result.assets[0].uri);
+      setSelectedAvatar(null);
+    }
+  };
+
+  const isProceedActive = selectedAvatar !== null || customImage !== null;
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={styles.viewport}>
       <StatusBar style="dark" />
-      <ScrollView
-        className="flex-1 px-6"
-        contentContainerStyle={{ paddingBottom: 100 }}
-      >
-        {/* Header */}
-        <View className="mt-6 mb-6 flex-row items-center justify-between">
-          <Headers onPress={() => router.back()} />
-          <TouchableOpacity onPress={() => setLoading(true)}>
-            <AntDesign name="reload" size={22} color="#0066FF" />
+      <View style={styles.container}>
+        {/* Step Progress Single-Row Header */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity
+            style={styles.backCircle}
+            onPress={() => router.back()}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={18} color="#000000" />
           </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>Profile Setup</Text>
+
+          {/* Elongated Step Dots Progress Indicator */}
+          <View style={styles.dotsRow}>
+            <View style={styles.dotInactive} />
+            <View style={styles.dotInactive} />
+            <View style={styles.dotActive} />
+          </View>
         </View>
 
-        {/* Title */}
-        <Text
-          className="text-2xl font-bold text-center mb-8"
-          style={{ fontFamily: "HankenGrotesk_700Bold" }}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.scrollStyle}
+          contentContainerStyle={styles.scrollContent}
         >
-          Choose your avatar
-        </Text>
+          {/* Main Title */}
+          <Text style={styles.titleText}>Choose your avatar</Text>
 
-        {/* Avatar Grid */}
-        <View className="flex-row flex-wrap justify-center gap-4 mb-8">
-          {loading
-            ? Array.from({ length: avatars.length }).map((_, i) => (
-                <Animated.View
-                  key={i}
-                  style={{
-                    opacity: shimmerAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0.4, 1],
-                    }),
-                  }}
-                  className="w-[105px] h-[105px] rounded-full bg-gray-200"
-                />
-              ))
-            : avatars.map((avatar, index) => (
+          {/* Avatars Grid */}
+          <View style={styles.gridContainer}>
+            {avatars.map((avatar, index) => {
+              const isSelected = selectedAvatar === index;
+              return (
                 <TouchableOpacity
                   key={avatar.id}
-                  onPress={() => {
-                    setSelectedAvatar(index);
-                    setCustomImage(null);
-                  }}
+                  onPress={() => selectAvatar(index)}
                   activeOpacity={0.8}
+                  style={[
+                    styles.avatarOuterCircle,
+                    { backgroundColor: avatar.bg },
+                    isSelected && styles.avatarSelected,
+                  ]}
                 >
-                  <View
-                    className={`w-[105px] h-[105px] rounded-full items-center justify-center ${
-                      selectedAvatar === index
-                        ? "border-2 border-[#0066FF]"
-                        : "border-2 border-transparent"
-                    }`}
-                  >
-                    <Image
-                      source={avatar.uri}
-                      className="w-[95px] h-[95px] rounded-full"
-                      onLoadEnd={() => setLoading(false)}
-                    />
-                  </View>
+                  <Image source={avatar.uri} style={styles.avatarImage} />
                 </TouchableOpacity>
-              ))}
-        </View>
+              );
+            })}
+          </View>
 
-        {/* Divider */}
-        <View className="flex-row items-center mb-8">
-          <View className="flex-1 h-[1px] bg-gray-200" />
-          <Text
-            className="mx-4 text-gray-600"
-            style={{ fontFamily: "HankenGrotesk_500Medium" }}
-          >
-            Or add your own photo
-          </Text>
-          <View className="flex-1 h-[1px] bg-gray-200" />
-        </View>
+          {/* Styled Or Add Own Photo Divider */}
+          <View style={styles.dividerRow}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>Or add your own photo</Text>
+            <View style={styles.dividerLine} />
+          </View>
 
-        {/* Upload Photo */}
-        <TouchableOpacity
-          className="w-[150px] h-[150px] bg-[#F8F9FA] rounded-full border-2 border-dashed border-gray-300 items-center justify-center mx-auto mb-8"
-          onPress={() => {}}
-        >
-          {customImage ? (
-            <Image
-              source={{ uri: customImage }}
-              className="w-full h-full rounded-full"
-            />
-          ) : (
-            <AntDesign name="plus" size={30} color="#d1d5db" />
-          )}
-        </TouchableOpacity>
-      </ScrollView>
-
-      {/* Bottom Button */}
-      <View className="absolute bottom-0 bg-white left-0 right-0">
-        <View className="w-[90%] self-center py-4">
+          {/* Upload Custom Photo Dashed Box */}
           <TouchableOpacity
-            className={`w-full py-4 rounded-lg items-center ${
-              selectedAvatar !== null || customImage
-                ? "bg-[#0066FF]"
-                : "bg-gray-300"
-            }`}
-            onPress={handleProceed}
-            disabled={!customImage && selectedAvatar === null}
+            onPress={handleCustomPhotoPress}
+            activeOpacity={0.8}
+            style={[
+              styles.dashedCircle,
+              customImage !== null && styles.dashedCircleActive,
+            ]}
           >
-            <Text
-              className={`font-semibold text-base ${
-                selectedAvatar !== null || customImage
-                  ? "text-white"
-                  : "text-gray-400"
-              }`}
-              style={{ fontFamily: "HankenGrotesk_500Medium" }}
-            >
-              Proceed
-            </Text>
+            {customImage ? (
+              <Image
+                source={{ uri: customImage }}
+                style={styles.customUploadedImage}
+              />
+            ) : (
+              <Ionicons name="add" size={36} color="#9CA3AF" />
+            )}
           </TouchableOpacity>
+        </ScrollView>
+
+        {/* Absolute Bottom Action Bar */}
+        <View style={styles.bottomBar}>
+          <SolidMainButton
+            text="Proceed"
+            onPress={handleProceed}
+            disabled={!isProceedActive}
+          />
         </View>
       </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  viewport: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 16,
+    marginBottom: 32,
+  },
+  backCircle: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "#000000",
+    borderRadius: 99,
+    width: 44,
+    height: 44,
+  },
+  headerTitle: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 17,
+    color: "#0066CC",
+  },
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  dotInactive: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#E5E7EB",
+  },
+  dotActive: {
+    width: 20,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#0066CC",
+  },
+  scrollStyle: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 110,
+    alignItems: "center",
+  },
+  titleText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 26,
+    color: "#000000",
+    marginBottom: 36,
+    textAlign: "center",
+  },
+  gridContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 12,
+    marginBottom: 44,
+    rowGap: 24,
+  },
+  avatarOuterCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 3,
+    borderColor: "transparent",
+  },
+  avatarSelected: {
+    borderColor: "#0066CC",
+  },
+  avatarImage: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+  },
+  dividerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 32,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#E5E7EB",
+  },
+  dividerText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#111827",
+    marginHorizontal: 16,
+  },
+  dashedCircle: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 1.5,
+    borderColor: "#D1D5DB",
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F9FAFB",
+  },
+  dashedCircleActive: {
+    borderStyle: "solid",
+    borderColor: "#0066CC",
+    borderWidth: 2.5,
+  },
+  customUploadedImage: {
+    width: 136,
+    height: 136,
+    borderRadius: 68,
+  },
+  bottomBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#FFFFFF",
+    paddingBottom: 24,
+    paddingTop: 12,
+    paddingHorizontal: 24,
+  },
+});

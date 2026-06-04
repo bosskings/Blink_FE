@@ -400,7 +400,7 @@ const CommunityDetail = () => {
   ];
 
   const community = universityCommunities.find(
-    (community) => community.id === Number(id)
+    (community) => community.id === Number(id),
   );
 
   return (
@@ -428,10 +428,7 @@ const CommunityDetail = () => {
 
         <View className="px-6 mt-5 mb-7">
           <View className="flex-row flex-wrap items-center justify-start gap-4 mb-3">
-            <Text
-              className="text-lg text-[#0066CC]"
-              style={{ fontFamily: "HankenGrotesk_700Bold" }}
-            >
+            <Text className="text-[15px] text-[#0066CC]" style={{}}>
               {community?.name}
             </Text>
 
@@ -470,13 +467,13 @@ const CommunityDetail = () => {
             <ExpandableDescription
               text={community.desc}
               maxWords={32}
-              textClassName="text-sm text-black"
+              textClassName="text-[13px] text-black"
               textStyle={{
                 fontFamily: "HankenGrotesk_400Regular",
               }}
-              viewMoreClassName="text-sm font-bold text-[#0066CC] mt-1"
+              viewMoreClassName="text-[13px] font-bold text-[#0066CC] mt-1"
               viewMoreStyle={{
-                fontFamily: "HankenGrotesk_700Bold",
+                fontFamily: "HankenGrotesk_500Medium",
               }}
             />
           )}
@@ -488,10 +485,7 @@ const CommunityDetail = () => {
         />
 
         <View className="mt-6 px-6 mb-6">
-          <Text
-            className="text-xl text-black mb-4"
-            style={{ fontFamily: "HankenGrotesk_700Bold" }}
-          >
+          <Text className="text-[17px] text-black mb-4" style={{}}>
             Posts
           </Text>
 
@@ -510,10 +504,7 @@ const CommunityDetail = () => {
 
         <View className="bg-[#F1F8FF] px-6 py-8">
           <View className="flex-row items-center justify-between mb-4">
-            <Text
-              className="text-xl text-black"
-              style={{ fontFamily: "HankenGrotesk_700Bold" }}
-            >
+            <Text className="text-[17px] text-black" style={{}}>
               Upcoming Events
             </Text>
 
@@ -529,10 +520,7 @@ const CommunityDetail = () => {
                 })
               }
             >
-              <Text
-                className="text-base text-[#0066CC]"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[15px] text-[#0066CC]" style={{}}>
                 All Events
               </Text>
             </TouchableOpacity>
@@ -563,24 +551,15 @@ const CommunityDetail = () => {
                 />
                 <View className="p-6 flex-col justify-start items-start">
                   <View className="flex-row items-center justify-start mb-1">
-                    <Text
-                      style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                      className="text-[#0066CC] text-base"
-                    >
+                    <Text style={{}} className="text-[#0066CC] text-[15px]">
                       {event.date}
                     </Text>
                     <Entypo name="dot-single" size={15} color="#0066CC" />
-                    <Text
-                      style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                      className="text-[#0066CC] text-base"
-                    >
+                    <Text style={{}} className="text-[#0066CC] text-[15px]">
                       {event.time}
                     </Text>
                   </View>
-                  <Text
-                    style={{ fontFamily: "HankenGrotesk_900Black" }}
-                    className="text-[#000000] text-xl mb-1"
-                  >
+                  <Text style={{}} className="text-[#000000] text-[17px] mb-1">
                     {event.title}
                   </Text>
                   <View className="flex-row items-center">
@@ -590,17 +569,14 @@ const CommunityDetail = () => {
                       color="#6B7280"
                     />
                     <Text
-                      style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                      className="text-base text-[#000000] ml-1 mr-3"
+                      style={{}}
+                      className="text-[15px] text-[#000000] ml-1 mr-3"
                     >
                       {event.location}
                     </Text>
                   </View>
                   <View className="bg-[#0066CC] rounded-full px-4 py-2 mt-3 w-fit">
-                    <Text
-                      style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                      className="text-white text-sm"
-                    >
+                    <Text style={{}} className="text-white text-[13px]">
                       {event.category}
                     </Text>
                   </View>
@@ -612,56 +588,38 @@ const CommunityDetail = () => {
 
         {community?.status !== "Owned" && (
           <View className="mt-6 px-6">
-            <Text
-              className="text-xl text-black mb-4"
-              style={{ fontFamily: "HankenGrotesk_700Bold" }}
-            >
+            <Text className="text-[17px] text-black mb-4" style={{}}>
               Community Rules
             </Text>
 
             <View className="flex-col items-start gap-3">
               <View className="flex-row items-center justify-start gap-2">
-                <Feather name="check-circle" size={20} color="#0066CC" />
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  className="text-base text-black"
-                >
+                <Feather name="check-circle" size={18} color="#0066CC" />
+                <Text style={{}} className="text-[15px] text-black">
                   Be respectful and constructive in all discussions.
                 </Text>
               </View>
               <View className="flex-row items-center justify-start gap-2">
-                <Feather name="check-circle" size={20} color="#0066CC" />
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  className="text-base text-black"
-                >
+                <Feather name="check-circle" size={18} color="#0066CC" />
+                <Text style={{}} className="text-[15px] text-black">
                   No hate speech, bullying or personal attacks.
                 </Text>
               </View>
               <View className="flex-row items-center justify-start gap-2">
-                <Feather name="check-circle" size={20} color="#0066CC" />
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  className="text-base text-black"
-                >
+                <Feather name="check-circle" size={18} color="#0066CC" />
+                <Text style={{}} className="text-[15px] text-black">
                   Keep discussions relevant to environmental topics.
                 </Text>
               </View>
               <View className="flex-row items-center justify-start gap-2">
-                <Feather name="check-circle" size={20} color="#0066CC" />
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  className="text-base text-black"
-                >
+                <Feather name="check-circle" size={18} color="#0066CC" />
+                <Text style={{}} className="text-[15px] text-black">
                   Report any violations to community moderators.
                 </Text>
               </View>
               <View className="flex-row items-center justify-start gap-2">
-                <Feather name="check-circle" size={20} color="#0066CC" />
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  className="text-base text-black"
-                >
+                <Feather name="check-circle" size={18} color="#0066CC" />
+                <Text style={{}} className="text-[15px] text-black">
                   Promote factual and evidence-based information.
                 </Text>
               </View>
@@ -675,20 +633,14 @@ const CommunityDetail = () => {
               onPress={() => setShowReportModal(true)}
               className="w-full py-3 flex-row justify-center items-center gap-3 bg-[#F8F9FA] border-2 border-[#D9D9D9] rounded-xl"
             >
-              <Feather name="flag" size={24} color="#6C757D" />
-              <Text
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                className="text-lg text-[#000000]"
-              >
+              <Feather name="flag" size={22} color="#6C757D" />
+              <Text style={{}} className="text-[15px] text-[#000000]">
                 Report Community
               </Text>
             </TouchableOpacity>
             <TouchableOpacity className="w-full py-3 flex-row justify-center items-center gap-3 bg-[#D01111] border-2 border-[#D01111] rounded-xl">
-              <MaterialCommunityIcons name="logout" size={24} color="#F96262" />
-              <Text
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                className="text-lg text-[#ffff]"
-              >
+              <MaterialCommunityIcons name="logout" size={22} color="#F96262" />
+              <Text style={{}} className="text-[15px] text-[#ffff]">
                 Leave Community
               </Text>
             </TouchableOpacity>
@@ -711,22 +663,16 @@ const CommunityDetail = () => {
               className="flex-row items-center justify-between bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow mb-1"
             >
               <View className="flex-row items-center justify-start gap-2">
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                  className="text-lg text-[#000000]"
-                >
+                <Text style={{}} className="text-[15px] text-[#000000]">
                   Requests
                 </Text>
                 <View className="items-center justify-center px-3 py-1 bg-[#0066CC] rounded-full">
-                  <Text
-                    style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                    className="text-xs text-[#fff]"
-                  >
+                  <Text style={{}} className="text-xs text-[#fff]">
                     10
                   </Text>
                 </View>
               </View>
-              <Feather name="arrow-right" size={20} color="#D9D9D9" />
+              <Feather name="arrow-right" size={18} color="#D9D9D9" />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -743,30 +689,21 @@ const CommunityDetail = () => {
               className="flex-row items-center justify-between bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow mb-4"
             >
               <View className="flex-row items-center justify-start gap-2">
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                  className="text-lg text-[#000000]"
-                >
+                <Text style={{}} className="text-[15px] text-[#000000]">
                   Reported Posts
                 </Text>
                 <View className="items-center justify-center px-3 py-1 bg-[#0066CC] rounded-full">
-                  <Text
-                    style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                    className="text-xs text-[#fff]"
-                  >
+                  <Text style={{}} className="text-xs text-[#fff]">
                     10
                   </Text>
                 </View>
               </View>
-              <Feather name="arrow-right" size={20} color="#D9D9D9" />
+              <Feather name="arrow-right" size={18} color="#D9D9D9" />
             </TouchableOpacity>
 
             <TouchableOpacity className="w-full py-3 flex-row justify-center items-center gap-3 bg-[#D01111] border-2 border-[#D01111] rounded-xl">
-              <MaterialCommunityIcons name="logout" size={24} color="#F96262" />
-              <Text
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                className="text-lg text-[#ffff]"
-              >
+              <MaterialCommunityIcons name="logout" size={22} color="#F96262" />
+              <Text style={{}} className="text-[15px] text-[#ffff]">
                 Delete Community
               </Text>
             </TouchableOpacity>
@@ -789,7 +726,7 @@ const CommunityDetail = () => {
           }
           className="absolute bottom-32 right-6 border-2 border-white bg-[#0066CC] w-14 h-14 rounded-full items-center justify-center shadow-lg"
         >
-          <AntDesign name="edit" size={20} color="#fff" />
+          <AntDesign name="edit" size={18} color="#fff" />
         </TouchableOpacity>
       )}
 
@@ -810,16 +747,10 @@ const CommunityDetail = () => {
             {/* Header */}
             <View className="flex-row items-center justify-between mb-6">
               <View className="flex-1">
-                <Text
-                  className="text-2xl text-black mb-1"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[17px] text-black mb-1" style={{}}>
                   Report Community
                 </Text>
-                <Text
-                  className="text-sm text-[#6B7280]"
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                >
+                <Text className="text-[13px] text-[#6B7280]" style={{}}>
                   Help us understand what&apos;s wrong
                 </Text>
               </View>
@@ -827,16 +758,13 @@ const CommunityDetail = () => {
                 onPress={() => setShowReportModal(false)}
                 className="w-8 h-8 items-center justify-center"
               >
-                <Ionicons name="close" size={24} color="#6B7280" />
+                <Ionicons name="close" size={22} color="#6B7280" />
               </TouchableOpacity>
             </View>
 
             {/* Report Reason Selection */}
             <View className="mb-6">
-              <Text
-                className="text-base text-black mb-3"
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-              >
+              <Text className="text-[15px] text-black mb-3" style={{}}>
                 What&apos;s the issue?
               </Text>
               <View className="gap-2">
@@ -862,7 +790,7 @@ const CommunityDetail = () => {
                       )}
                     </View>
                     <Text
-                      className={`flex-1 text-base ${
+                      className={`flex-1 text-[15px] ${
                         reportReason === reason
                           ? "text-[#0066CC]"
                           : "text-black"
@@ -870,7 +798,7 @@ const CommunityDetail = () => {
                       style={{
                         fontFamily:
                           reportReason === reason
-                            ? "HankenGrotesk_600SemiBold"
+                            ? "HankenGrotesk_500Medium"
                             : "HankenGrotesk_400Regular",
                       }}
                     >
@@ -883,10 +811,7 @@ const CommunityDetail = () => {
 
             {/* Additional Details */}
             <View className="mb-6">
-              <Text
-                className="text-base text-black mb-3"
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-              >
+              <Text className="text-[15px] text-black mb-3" style={{}}>
                 Additional Details (Optional)
               </Text>
               <TextInput
@@ -899,7 +824,6 @@ const CommunityDetail = () => {
                 textAlignVertical="top"
                 className="bg-[#F8F9FA] rounded-xl p-4 border-2 border-[#E5E7EB]"
                 style={{
-                  fontFamily: "HankenGrotesk_400Regular",
                   color: "#000000",
                   minHeight: 100,
                 }}
@@ -916,10 +840,7 @@ const CommunityDetail = () => {
                 }}
                 className="flex-1 py-4 bg-[#F3F4F6] rounded-xl items-center"
               >
-                <Text
-                  className="text-[#374151] text-base"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[#374151] text-[15px]" style={{}}>
                   Cancel
                 </Text>
               </TouchableOpacity>
@@ -931,10 +852,10 @@ const CommunityDetail = () => {
                 }`}
               >
                 <Text
-                  className={`text-base ${
+                  className={`text-[15px] ${
                     reportReason ? "text-white" : "text-[#9CA3AF]"
                   }`}
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
+                  style={{}}
                 >
                   Submit Report
                 </Text>

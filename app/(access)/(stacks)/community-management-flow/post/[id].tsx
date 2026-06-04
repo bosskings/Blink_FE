@@ -376,16 +376,10 @@ const PostDetail = () => {
               className="w-14 h-14 rounded-full"
             />
             <View className="ml-3">
-              <Text
-                className="font-semibold text-base"
-                style={{ fontFamily: "HankenGrotesk_900Black" }}
-              >
+              <Text className="font-semibold text-[15px]" style={{}}>
                 {post.user}
               </Text>
-              <Text
-                className="text-black text-sm"
-                style={{ fontFamily: "HankenGrotesk_400Regular" }}
-              >
+              <Text className="text-black text-sm" style={{}}>
                 {post.time}
               </Text>
             </View>
@@ -393,10 +387,8 @@ const PostDetail = () => {
 
           {/* Content */}
           <Text
-            className="text-[#000000] text-base mb-3 leading-5 px-6"
-            style={{
-              fontFamily: "HankenGrotesk_500Medium",
-            }}
+            className="text-[#000000] text-[15px] mb-3 leading-5 px-6"
+            style={{}}
           >
             {post.content}
           </Text>
@@ -408,12 +400,7 @@ const PostDetail = () => {
                 key={index}
                 className="border-[1.5px] border-[#6C757D] px-4 py-1 rounded-full"
               >
-                <Text
-                  className="text-[#6C757D] text-xs font-bold"
-                  style={{
-                    fontFamily: "HankenGrotesk_500Medium",
-                  }}
-                >
+                <Text className="text-[#6C757D] text-xs font-bold" style={{}}>
                   {tag}
                 </Text>
               </View>
@@ -463,26 +450,17 @@ const PostDetail = () => {
           {/* Comments Header */}
           <View className="flex-row items-center justify-between mb-4 px-6">
             <View className="flex-row items-center gap-2">
-              <Text
-                className="font-semibold text-base"
-                style={{ fontFamily: "HankenGrotesk_900Black" }}
-              >
+              <Text className="font-semibold text-[15px]" style={{}}>
                 Comments
               </Text>
               <View className="bg-black px-3 py-1 rounded-full">
-                <Text
-                  className="text-white text-xs font-bold"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-white text-xs font-bold" style={{}}>
                   {post.comments}
                 </Text>
               </View>
             </View>
             <TouchableOpacity onPress={() => setShowAllComments(true)}>
-              <Text
-                className="text-[#0066CC] text-sm font-bold"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[#0066CC] text-sm font-bold" style={{}}>
                 View All
               </Text>
             </TouchableOpacity>
@@ -497,22 +475,13 @@ const PostDetail = () => {
                   className="w-10 h-10 rounded-full"
                 />
                 <View className="flex-1">
-                  <Text
-                    className="font-semibold text-sm mb-1"
-                    style={{ fontFamily: "HankenGrotesk_900Black" }}
-                  >
+                  <Text className="font-semibold text-sm mb-1" style={{}}>
                     {comment.user}
                   </Text>
-                  <Text
-                    className="text-black text-sm mb-1"
-                    style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  >
+                  <Text className="text-black text-sm mb-1" style={{}}>
                     {comment.text}
                   </Text>
-                  <Text
-                    className="text-gray-500 text-xs"
-                    style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  >
+                  <Text className="text-gray-500 text-xs" style={{}}>
                     {comment.time}
                   </Text>
                 </View>
@@ -535,7 +504,7 @@ const PostDetail = () => {
                 value={commentText}
                 onChangeText={setCommentText}
                 className="flex-1 text-sm"
-                style={{ fontFamily: "HankenGrotesk_500Medium" }}
+                style={{}}
               />
               <TouchableOpacity
                 onPress={handleSendComment}
@@ -601,23 +570,17 @@ const PostDetail = () => {
             {/* Header */}
             <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-100">
               <View className="flex-row items-center gap-2">
-                <Text
-                  className="font-semibold text-lg"
-                  style={{ fontFamily: "HankenGrotesk_900Black" }}
-                >
+                <Text className="font-semibold text-lg" style={{}}>
                   All Comments
                 </Text>
                 <View className="bg-black px-3 py-1 rounded-full">
-                  <Text
-                    className="text-white text-xs font-bold"
-                    style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                  >
+                  <Text className="text-white text-xs font-bold" style={{}}>
                     {post.comments}
                   </Text>
                 </View>
               </View>
               <TouchableOpacity onPress={() => setShowAllComments(false)}>
-                <Feather name="x" size={24} color="#666666" />
+                <Feather name="x" size={22} color="#666666" />
               </TouchableOpacity>
             </View>
 
@@ -636,23 +599,14 @@ const PostDetail = () => {
                     />
                     <View className="flex-1">
                       <View className="flex-row items-center gap-2 mb-1">
-                        <Text
-                          className="font-semibold text-sm"
-                          style={{ fontFamily: "HankenGrotesk_900Black" }}
-                        >
+                        <Text className="font-semibold text-sm" style={{}}>
                           {comment.user}
                         </Text>
-                        <Text
-                          className="text-gray-500 text-xs"
-                          style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                        >
+                        <Text className="text-gray-500 text-xs" style={{}}>
                           {comment.time}
                         </Text>
                       </View>
-                      <Text
-                        className="text-black text-sm leading-5"
-                        style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                      >
+                      <Text className="text-black text-sm leading-5" style={{}}>
                         {comment.text}
                       </Text>
                     </View>
@@ -676,7 +630,7 @@ const PostDetail = () => {
                   value={commentText}
                   onChangeText={setCommentText}
                   className="flex-1 text-sm"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
+                  style={{}}
                 />
                 <TouchableOpacity
                   onPress={handleSendComment}

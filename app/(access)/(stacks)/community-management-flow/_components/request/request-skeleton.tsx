@@ -17,11 +17,11 @@ const RequestSkeletonItem = () => {
           duration: 800,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     );
     loop.start();
     return () => loop.stop();
-  }, []);
+  }, [opacity]);
 
   return (
     <View className="flex-row items-center justify-between mb-5">

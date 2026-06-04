@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global typography baseline */
+@layer base {
+  :root {
+    font-family: "HankenGrotesk_400Regular", sans-serif;
+  }
+}

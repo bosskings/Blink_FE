@@ -397,21 +397,15 @@ const EventDetail = () => {
           <View className="px-6 mb-4">
             <View className="flex-row items-center justify-between mb-2">
               <View className="bg-[#0066CC] rounded-full px-4 py-2">
-                <Text
-                  className="text-white text-xs font-bold"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-white text-xs font-bold" style={{}}>
                   {event.category}
                 </Text>
               </View>
               <TouchableOpacity onPress={handleShare}>
-                <Ionicons name="share-outline" size={24} color="#0066CC" />
+                <Ionicons name="share-outline" size={22} color="#0066CC" />
               </TouchableOpacity>
             </View>
-            <Text
-              className="text-2xl text-black mb-3"
-              style={{ fontFamily: "HankenGrotesk_900Black" }}
-            >
+            <Text className="text-2xl text-black mb-3" style={{}}>
               {event.title}
             </Text>
           </View>
@@ -420,25 +414,16 @@ const EventDetail = () => {
           <View className="px-6 mb-4">
             <View className="flex-row items-center gap-3 mb-3">
               <View className="bg-[#E6F2FF] rounded-xl p-3">
-                <Ionicons name="calendar-outline" size={24} color="#0066CC" />
+                <Ionicons name="calendar-outline" size={22} color="#0066CC" />
               </View>
               <View className="flex-1">
-                <Text
-                  className="text-sm text-[#6C757D] mb-1"
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                >
+                <Text className="text-sm text-[#6C757D] mb-1" style={{}}>
                   Date & Time
                 </Text>
-                <Text
-                  className="text-base text-black"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[15px] text-black" style={{}}>
                   {event.date}
                 </Text>
-                <Text
-                  className="text-sm text-[#6C757D]"
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                >
+                <Text className="text-sm text-[#6C757D]" style={{}}>
                   {event.time}
                 </Text>
               </View>
@@ -447,19 +432,13 @@ const EventDetail = () => {
             {/* Location */}
             <View className="flex-row items-center gap-3">
               <View className="bg-[#E6F2FF] rounded-xl p-3">
-                <Ionicons name="location-outline" size={24} color="#0066CC" />
+                <Ionicons name="location-outline" size={22} color="#0066CC" />
               </View>
               <View className="flex-1">
-                <Text
-                  className="text-sm text-[#6C757D] mb-1"
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                >
+                <Text className="text-sm text-[#6C757D] mb-1" style={{}}>
                   Location
                 </Text>
-                <Text
-                  className="text-base text-black"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[15px] text-black" style={{}}>
                   {event.location}
                 </Text>
               </View>
@@ -469,16 +448,10 @@ const EventDetail = () => {
           {/* Description */}
           {event.description && (
             <View className="px-6 mb-4">
-              <Text
-                className="text-sm text-[#6C757D] mb-2"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-sm text-[#6C757D] mb-2" style={{}}>
                 About This Event
               </Text>
-              <Text
-                className="text-base text-black leading-6"
-                style={{ fontFamily: "HankenGrotesk_400Regular" }}
-              >
+              <Text className="text-[15px] text-black leading-6" style={{}}>
                 {event.description}
               </Text>
             </View>
@@ -513,14 +486,14 @@ const EventDetail = () => {
             >
               <FontAwesome
                 name={likedEvent ? "heart" : "heart-o"}
-                size={20}
+                size={18}
                 color={likedEvent ? "#FF3333" : "#666666"}
               />
               <Text
-                className={`text-base ${
+                className={`text-[15px] ${
                   likedEvent ? "text-[#FF3333]" : "text-gray-600"
                 }`}
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
+                style={{}}
               >
                 {eventLikes}
               </Text>
@@ -534,25 +507,22 @@ const EventDetail = () => {
             >
               <Ionicons
                 name={going ? "checkmark-circle" : "checkmark-circle-outline"}
-                size={20}
+                size={18}
                 color={going ? "#FFFFFF" : "#0066CC"}
               />
               <Text
-                className={`text-base ${
+                className={`text-[15px] ${
                   going ? "text-white" : "text-[#0066CC]"
                 }`}
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
+                style={{}}
               >
                 {going ? "Going" : "Interested"} ({goingCount})
               </Text>
             </TouchableOpacity>
 
             <View className="flex-row items-center gap-2">
-              <Feather name="message-circle" size={20} color="#666666" />
-              <Text
-                className="text-gray-600 text-base"
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-              >
+              <Feather name="message-circle" size={18} color="#666666" />
+              <Text className="text-gray-600 text-[15px]" style={{}}>
                 {comments.length}
               </Text>
             </View>
@@ -564,26 +534,17 @@ const EventDetail = () => {
           {/* Comments Header */}
           <View className="flex-row items-center justify-between mb-4 px-6">
             <View className="flex-row items-center gap-2">
-              <Text
-                className="font-semibold text-base"
-                style={{ fontFamily: "HankenGrotesk_900Black" }}
-              >
+              <Text className="font-semibold text-[15px]" style={{}}>
                 Comments
               </Text>
               <View className="bg-black px-3 py-1 rounded-full">
-                <Text
-                  className="text-white text-xs font-bold"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-white text-xs font-bold" style={{}}>
                   {allComments.length}
                 </Text>
               </View>
             </View>
             <TouchableOpacity onPress={() => setShowAllComments(true)}>
-              <Text
-                className="text-[#0066CC] text-sm font-bold"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[#0066CC] text-sm font-bold" style={{}}>
                 View All
               </Text>
             </TouchableOpacity>
@@ -598,22 +559,13 @@ const EventDetail = () => {
                   className="w-10 h-10 rounded-full"
                 />
                 <View className="flex-1">
-                  <Text
-                    className="font-semibold text-sm mb-1"
-                    style={{ fontFamily: "HankenGrotesk_900Black" }}
-                  >
+                  <Text className="font-semibold text-sm mb-1" style={{}}>
                     {comment.user}
                   </Text>
-                  <Text
-                    className="text-black text-sm mb-1"
-                    style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  >
+                  <Text className="text-black text-sm mb-1" style={{}}>
                     {comment.text}
                   </Text>
-                  <Text
-                    className="text-gray-500 text-xs"
-                    style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  >
+                  <Text className="text-gray-500 text-xs" style={{}}>
                     {comment.time}
                   </Text>
                 </View>
@@ -636,7 +588,7 @@ const EventDetail = () => {
                 value={commentText}
                 onChangeText={setCommentText}
                 className="flex-1 text-sm"
-                style={{ fontFamily: "HankenGrotesk_500Medium" }}
+                style={{}}
               />
               <TouchableOpacity
                 onPress={handleSendComment}
@@ -702,23 +654,17 @@ const EventDetail = () => {
             {/* Header */}
             <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-100">
               <View className="flex-row items-center gap-2">
-                <Text
-                  className="font-semibold text-lg"
-                  style={{ fontFamily: "HankenGrotesk_900Black" }}
-                >
+                <Text className="font-semibold text-lg" style={{}}>
                   All Comments
                 </Text>
                 <View className="bg-black px-3 py-1 rounded-full">
-                  <Text
-                    className="text-white text-xs font-bold"
-                    style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                  >
+                  <Text className="text-white text-xs font-bold" style={{}}>
                     {allComments.length}
                   </Text>
                 </View>
               </View>
               <TouchableOpacity onPress={() => setShowAllComments(false)}>
-                <Feather name="x" size={24} color="#666666" />
+                <Feather name="x" size={22} color="#666666" />
               </TouchableOpacity>
             </View>
 
@@ -737,23 +683,14 @@ const EventDetail = () => {
                     />
                     <View className="flex-1">
                       <View className="flex-row items-center gap-2 mb-1">
-                        <Text
-                          className="font-semibold text-sm"
-                          style={{ fontFamily: "HankenGrotesk_900Black" }}
-                        >
+                        <Text className="font-semibold text-sm" style={{}}>
                           {comment.user}
                         </Text>
-                        <Text
-                          className="text-gray-500 text-xs"
-                          style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                        >
+                        <Text className="text-gray-500 text-xs" style={{}}>
                           {comment.time}
                         </Text>
                       </View>
-                      <Text
-                        className="text-black text-sm leading-5"
-                        style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                      >
+                      <Text className="text-black text-sm leading-5" style={{}}>
                         {comment.text}
                       </Text>
                     </View>
@@ -777,7 +714,7 @@ const EventDetail = () => {
                   value={commentText}
                   onChangeText={setCommentText}
                   className="flex-1 text-sm"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
+                  style={{}}
                 />
                 <TouchableOpacity
                   onPress={handleSendComment}

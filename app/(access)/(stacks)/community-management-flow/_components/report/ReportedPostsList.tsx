@@ -42,10 +42,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
       style={{ rowGap: 20 }}
     >
       {title && (
-        <Text
-          className="text-lg font-semibold mb-4"
-          style={{ fontFamily: "HankenGrotesk_700Bold" }}
-        >
+        <Text className="text-lg font-semibold mb-4" style={{}}>
           {title}
         </Text>
       )}
@@ -65,16 +62,10 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
               className="items-center justify-center mt-32"
             >
               <MaterialIcons name="inbox" size={60} color="#d1d1d1" />
-              <Text
-                className="text-lg text-gray-700 text-center"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-lg text-gray-700 text-center" style={{}}>
                 No Reported Posts
               </Text>
-              <Text
-                className="text-gray-500 mt-1 text-center px-10"
-                style={{ fontFamily: "HankenGrotesk_400Regular" }}
-              >
+              <Text className="text-gray-500 mt-1 text-center px-10" style={{}}>
                 You currently have no reported posts to review.
               </Text>
             </Animated.View>
@@ -100,16 +91,10 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                         className="w-14 h-14 rounded-full mr-3"
                       />
                       <View>
-                        <Text
-                          className="font-semibold text-base"
-                          style={{ fontFamily: "HankenGrotesk_900Black" }}
-                        >
+                        <Text className="font-semibold text-[15px]" style={{}}>
                           {post.userName}
                         </Text>
-                        <Text
-                          className="text-black text-sm"
-                          style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                        >
+                        <Text className="text-black text-sm" style={{}}>
                           {post.timeAgo}
                         </Text>
                       </View>
@@ -123,7 +108,6 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                       <Text
                         className="text-sm"
                         style={{
-                          fontFamily: "HankenGrotesk_700Bold",
                           color: "#FF3333",
                         }}
                       >
@@ -132,10 +116,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                     </View>
                   </View>
 
-                  <Text
-                    className="text-gray-800 mb-4"
-                    style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  >
+                  <Text className="text-gray-800 mb-4" style={{}}>
                     {post.content}
                   </Text>
 
@@ -145,10 +126,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                       className="flex-1 py-3 rounded-lg items-center"
                       style={{ backgroundColor: "#0066CC" }}
                     >
-                      <Text
-                        className="text-white font-semibold"
-                        style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                      >
+                      <Text className="text-white font-semibold" style={{}}>
                         Review
                       </Text>
                     </TouchableOpacity>
@@ -157,10 +135,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                       className="flex-1 py-3 rounded-lg items-center"
                       style={{ backgroundColor: "#FF3333" }}
                     >
-                      <Text
-                        className="text-white font-semibold"
-                        style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                      >
+                      <Text className="text-white font-semibold" style={{}}>
                         Take Down
                       </Text>
                     </TouchableOpacity>

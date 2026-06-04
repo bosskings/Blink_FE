@@ -1,383 +1,460 @@
-import { SolidMainButton } from "@/components/Btns"
-import { Headers } from "@/components/Headers"
-import { Ionicons } from "@expo/vector-icons"
-import { ErrorMessage } from "@hookform/error-message"
-import { router } from "expo-router"
-import { StatusBar } from 'expo-status-bar'
-import React, { useState } from 'react'
-import { Controller, useForm } from "react-hook-form"
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SolidMainButton } from "@/components/Btns";
+import { CountryPicker, Country, COUNTRIES } from "@/components/CountryPicker";
+import { GoogleIcon } from "@/components/GoogleIcon";
+import { Ionicons } from "@expo/vector-icons";
+import { ErrorMessage } from "@hookform/error-message";
+import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 const Register = () => {
-  const [activeTab, setActiveTab] = useState<'phone' | 'email'>('phone')
-  const [showPassword, setShowPassword] = useState(false)
+  const [activeTab, setActiveTab] = useState<"phone" | "email">("phone");
+  const [joinAsBusiness, setJoinAsBusiness] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
+  const [isFocused, setIsFocused] = useState(false);
 
-  // Phone form
   const {
-    control: phoneControl,
-    handleSubmit: handlePhoneSubmit,
-    formState: { errors: phoneErrors },
+    control,
+    handleSubmit,
+    formState: { errors },
   } = useForm({
     defaultValues: {
-      phone_number: "",
-      password: "",
-    },
-  })
-
-  // Email form
-  const {
-    control: emailControl,
-    handleSubmit: handleEmailSubmit,
-    formState: { errors: emailErrors },
-  } = useForm({
-    defaultValues: {
+      phoneNumber: "",
       email: "",
-      password: "",
     },
-  })
+  });
 
-  const passwordValidation = {
-    required: "Password is required",
-    minLength: {
-      value: 8,
-      message: "Password must be at least 8 characters long"
-    },
-    validate: {
-      hasLowerCase: (value: string) => /[a-z]/.test(value) || "Password must contain at least 1 lowercase character",
-      hasUpperCase: (value: string) => /[A-Z]/.test(value) || "Password must contain at least 1 uppercase character",
-      hasNumber: (value: string) => /[0-9]/.test(value) || "Password must contain at least 1 number",
-      hasSpecialChar: (value: string) => /[!@#$%^&*(),.?":{}|<>]/.test(value) || "Password must contain at least 1 special character"
-    }
-  }
+  const onPhoneSubmit = async (data: any) => {
+    const normalizedPhone = data.phoneNumber.replace(/^0/, "");
 
-  const onPhoneSubmit = (data: any) => {
-    console.log('Phone registration:', data)
-    router.push('/(noaccess)/success/community-success')
-  }
+    router.push({
+      pathname: "/(noaccess)/create-password",
+      params: {
+        method: "phone",
+        identifier: `${selectedCountry.code}${normalizedPhone}`,
+        business: joinAsBusiness ? "true" : "false",
+      },
+    });
+  };
 
-  const onEmailSubmit = (data: any) => {
-    console.log('Email registration:', data)
-    router.push('/(noaccess)/success/community-success')
-  }
+  const onEmailSubmit = async (data: any) => {
+    router.push({
+      pathname: "/(noaccess)/create-password",
+      params: {
+        method: "email",
+        identifier: data.email.trim().toLowerCase(),
+        business: joinAsBusiness ? "true" : "false",
+      },
+    });
+  };
 
   return (
-    <SafeAreaView className='flex-1 bg-white'>
-      <StatusBar style='dark'/>
-      
-      <ScrollView className='flex-1'>
-        <View className='px-6 mt-6'>
-          {/* Header */}
-          <View className='items-center mb-8'>
-            
-            <Headers onPress={()=> router.back()}/>
-            
-            <View className='items-center'>
-              <Text className='text-sm text-gray-600 mb-2' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
-                Returning user? <Text className='text-blue-600 font-semibold'>Login</Text>
-              </Text>
-              <Text className='text-2xl font-bold text-center mb-2' style={{fontFamily: 'HankenGrotesk_700Bold'}}>
-                Sign up with {activeTab === 'phone' ? 'Phone' : 'Email'}
-              </Text>
-              <Text className='text-gray-600 text-center' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
-                Please provide a valid {activeTab === 'phone' ? 'phone number' : 'email address'} to proceed
-              </Text>
-            </View>
-          </View>
+    <SafeAreaView className="flex-1 bg-white">
+      <StatusBar style="dark" />
 
-          {/* Tab Selector */}
-          <View className='flex-row mb-6 bg-gray-100 rounded-lg p-1'>
-            <TouchableOpacity
-              className={`flex-1 py-3 rounded-lg ${activeTab === 'phone' ? 'bg-white' : ''}`}
-              onPress={() => setActiveTab('phone')}
-              style={activeTab === 'phone' && styles.activeTab}
-            >
-              <Text 
-                className={`text-center font-semibold ${activeTab === 'phone' ? 'text-gray-900' : 'text-gray-500'}`}
-                style={{fontFamily: 'HankenGrotesk_600SemiBold'}}
-              >
-                Phone
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              className={`flex-1 py-3 rounded-lg ${activeTab === 'email' ? 'bg-white' : ''}`}
-              onPress={() => setActiveTab('email')}
-              style={activeTab === 'email' && styles.activeTab}
-            >
-              <Text 
-                className={`text-center font-semibold ${activeTab === 'email' ? 'text-gray-900' : 'text-gray-500'}`}
-                style={{fontFamily: 'HankenGrotesk_600SemiBold'}}
-              >
-                Email
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Phone Number Form */}
-          {activeTab === 'phone' && (
-            <View>
-              <View className='mb-5'>
-                <Text style={styles.titleStyle}>Phone Number</Text>
-                <Controller
-                  name="phone_number"
-                  control={phoneControl}
-                  rules={{
-                    required: "Phone Number is required",
-                    pattern: {
-                      value: /^[0-9]{10,11}$/,
-                      message: "Please enter a valid phone number"
-                    }
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <View className='relative'>
-                      <View className='absolute z-10 left-0 top-0 justify-center items-center h-full px-4 bg-gray-100 rounded-l-md border-r border-gray-200'>
-                        <Text className='text-[#3A3541] font-medium'>+234</Text>
-                      </View>
-                      <TextInput 
-                        placeholder='8022194139'
-                        placeholderTextColor={"#AFAFAF"}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        value={value}
-                        keyboardType="phone-pad"
-                        style={[styles.inputStyle, { paddingLeft: 70 }]}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        maxLength={11}
-                      />
-                    </View>
-                  )}
-                />
-                <ErrorMessage
-                  errors={phoneErrors}
-                  name="phone_number"
-                  render={({ message }) => (
-                    <Text className="pl-2 pt-3 text-sm text-red-600">
-                      {message}
-                    </Text>
-                  )}
-                />
-              </View>
-
-              <View className='mb-5'>
-                <Text style={styles.titleStyle}>Password</Text>
-                <Controller
-                  name="password"
-                  control={phoneControl}
-                  rules={passwordValidation}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <View className='relative'>
-                      <TextInput 
-                        placeholder='*********'
-                        placeholderTextColor={"#AFAFAF"}
-                        style={styles.inputStyle}
-                        secureTextEntry={!showPassword}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        value={value}
-                      />
-                      <View className='absolute right-0 top-0 justify-center items-center h-full w-20'>
-                        <Pressable
-                          onPress={() => setShowPassword(!showPassword)}
-                        >
-                          <Ionicons
-                            name={showPassword ? "eye-off-outline" : "eye-outline"}
-                            size={20}
-                            color={"#3A3541AD"}
-                          />
-                        </Pressable>
-                      </View>
-                    </View>
-                  )}
-                />
-                <ErrorMessage
-                  errors={phoneErrors}
-                  name="password"
-                  render={({ message }) => (
-                    <Text className="pl-2 pt-3 text-sm text-red-600">
-                      {message}
-                    </Text>
-                  )}
-                />
-              </View>
-
-              {/* Join as Business Checkbox */}
-              <View className='flex-row items-center justify-end mb-6'>
-                <Text className='text-sm text-gray-600 mr-2' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
-                  Join as Business
-                </Text>
-                <View className='w-5 h-5 border-2 border-gray-300 rounded' />
-              </View>
-
-              <View className="mb-4">
-                <SolidMainButton text="Continue" onPress={handlePhoneSubmit(onPhoneSubmit)}/>
-              </View>
-            </View>
-          )}
-
-          {/* Email Form */}
-          {activeTab === 'email' && (
-            <View>
-              <View className='mb-5'>
-                <Text style={styles.titleStyle}>Email Address</Text>
-                <Controller
-                  name="email"
-                  control={emailControl}
-                  rules={{
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Please enter a valid email address"
-                    }
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput 
-                      placeholder='johndoe@gmail.com'
-                      placeholderTextColor={"#AFAFAF"}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      value={value}
-                      keyboardType="email-address"
-                      style={styles.inputStyle}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                    />
-                  )}
-                />
-                <ErrorMessage
-                  errors={emailErrors}
-                  name="email"
-                  render={({ message }) => (
-                    <Text className="pl-2 pt-3 text-sm text-red-600">
-                      {message}
-                    </Text>
-                  )}
-                />
-              </View>
-
-              <View className='mb-5'>
-                <Text style={styles.titleStyle}>Password</Text>
-                <Controller
-                  name="password"
-                  control={emailControl}
-                  rules={passwordValidation}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <View className='relative'>
-                      <TextInput 
-                        placeholder='*********'
-                        placeholderTextColor={"#AFAFAF"}
-                        style={styles.inputStyle}
-                        secureTextEntry={!showPassword}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        value={value}
-                      />
-                      <View className='absolute right-0 top-0 justify-center items-center h-full w-20'>
-                        <Pressable
-                          onPress={() => setShowPassword(!showPassword)}
-                        >
-                          <Ionicons
-                            name={showPassword ? "eye-off-outline" : "eye-outline"}
-                            size={20}
-                            color={"#3A3541AD"}
-                          />
-                        </Pressable>
-                      </View>
-                    </View>
-                  )}
-                />
-                <ErrorMessage
-                  errors={emailErrors}
-                  name="password"
-                  render={({ message }) => (
-                    <Text className="pl-2 pt-3 text-sm text-red-600">
-                      {message}
-                    </Text>
-                  )}
-                />
-              </View>
-
-              {/* Join as Business Checkbox */}
-              <View className='flex-row items-center justify-end mb-6'>
-                <Text className='text-sm text-gray-600 mr-2' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
-                  Join as Business
-                </Text>
-                <View className='w-5 h-5 border-2 border-gray-300 rounded' />
-              </View>
-
-              <View className="mb-4">
-                <SolidMainButton text="Continue" onPress={handleEmailSubmit(onEmailSubmit)}/>
-              </View>
-            </View>
-          )}
-
-          {/* Divider */}
-          <View className='flex-row items-center my-6'>
-            <View className='flex-1 h-px bg-gray-300' />
-            <Text className='mx-4 text-gray-500' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
-              or sign in with
-            </Text>
-            <View className='flex-1 h-px bg-gray-300' />
-          </View>
-
-          {/* Social Buttons */}
-          <TouchableOpacity className='flex-row items-center justify-center py-4 border border-gray-300 rounded-lg mb-3'>
-            <Ionicons
-              name="mail-outline"
-              size={20}
-              color="#3A3541"
-            />
-            <Text className='ml-2 text-gray-900 font-semibold' style={{fontFamily: 'HankenGrotesk_600SemiBold'}}>
-              Continue with Email
-            </Text>
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={styles.contentContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header Navigation */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={18} color="#000000" />
           </TouchableOpacity>
 
-          <TouchableOpacity className='flex-row items-center justify-center py-4 border border-gray-300 rounded-lg mb-6'>
-            <Ionicons
-              name="logo-google"
-              size={20}
-              color="#3A3541"
-            />
-            
-            <Text className='ml-2 text-gray-900 font-semibold' style={{fontFamily: 'HankenGrotesk_600SemiBold'}}>
-              Continue with Google
+          <Text style={styles.returningUserText}>
+            Returning user?{" "}
+            <Text
+              style={styles.loginText}
+              onPress={() =>
+                router.push({
+                  pathname: "/(noaccess)/login",
+                  params: { variant: "signup" },
+                })
+              }
+            >
+              Login
             </Text>
-          </TouchableOpacity>
-
-          {/* Terms */}
-          <Text className='text-center text-xs text-gray-500 mb-8' style={{fontFamily: 'HankenGrotesk_400Regular'}}>
-            By continuing, you agree to our{' '}
-            <Text className='text-blue-600'>Terms & Conditions</Text>
-            {'\n'}and <Text className='text-blue-600'>Privacy Policy</Text>
           </Text>
         </View>
+
+        {/* Dynamic Titles */}
+        <View style={styles.titleWrap}>
+          <Text style={styles.titleText}>
+            {activeTab === "phone" ? "Sign with Phone" : "Sign up with Email"}
+          </Text>
+          <Text style={styles.subtitleText}>
+            Please provide a valid{" "}
+            {activeTab === "phone" ? "phone number" : "email address"} to
+            proceed
+          </Text>
+        </View>
+
+        {/* Input Forms */}
+        {activeTab === "phone" ? (
+          <View>
+            <Controller
+              name="phoneNumber"
+              control={control}
+              rules={{
+                required: "Phone Number is required",
+                pattern: {
+                  value: /^[0-9]{7,15}$/,
+                  message: "Please enter a valid phone number",
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <View
+                  style={[
+                    styles.inputContainer,
+                    isFocused && styles.inputFocused,
+                  ]}
+                >
+                  {/* Real Dynamic Country Picker Dropdown */}
+                  <CountryPicker
+                    selectedCountry={selectedCountry}
+                    onSelectCountry={setSelectedCountry}
+                  />
+
+                  {/* Vertical separator divider */}
+                  <View style={styles.verticalDivider} />
+
+                  <TextInput
+                    placeholder=""
+                    placeholderTextColor="#AFAFAF"
+                    onChangeText={onChange}
+                    onBlur={() => {
+                      onBlur();
+                      setIsFocused(false);
+                    }}
+                    onFocus={() => setIsFocused(true)}
+                    value={value || ""}
+                    keyboardType="phone-pad"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
+              )}
+            />
+
+            <ErrorMessage
+              errors={errors}
+              name="phoneNumber"
+              render={({ message }) => (
+                <Text style={styles.errorText}>{message}</Text>
+              )}
+            />
+
+            {/* Custom Premium Checkbox */}
+            <View style={styles.checkboxContainer}>
+              <Text style={styles.joinBusinessText}>Join as Business</Text>
+              <TouchableOpacity
+                onPress={() => setJoinAsBusiness((prev) => !prev)}
+                style={[
+                  styles.checkboxBox,
+                  joinAsBusiness && styles.checkboxChecked,
+                ]}
+                activeOpacity={0.8}
+              >
+                {joinAsBusiness && (
+                  <Ionicons name="checkmark" size={13} color="#FFFFFF" />
+                )}
+              </TouchableOpacity>
+            </View>
+
+            <SolidMainButton
+              text="Continue"
+              onPress={handleSubmit(onPhoneSubmit)}
+            />
+          </View>
+        ) : (
+          <View>
+            <Controller
+              name="email"
+              control={control}
+              rules={{
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Please enter a valid email address",
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <View
+                  style={[
+                    styles.inputContainer,
+                    isFocused && styles.inputFocused,
+                  ]}
+                >
+                  <TextInput
+                    placeholder=""
+                    placeholderTextColor="#AFAFAF"
+                    onChangeText={onChange}
+                    onBlur={() => {
+                      onBlur();
+                      setIsFocused(false);
+                    }}
+                    onFocus={() => setIsFocused(true)}
+                    value={value || ""}
+                    keyboardType="email-address"
+                    style={[styles.textInput, { paddingLeft: 4 }]}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
+              )}
+            />
+
+            <ErrorMessage
+              errors={errors}
+              name="email"
+              render={({ message }) => (
+                <Text style={styles.errorText}>{message}</Text>
+              )}
+            />
+
+            {/* Custom Premium Checkbox */}
+            <View style={styles.checkboxContainer}>
+              <Text style={styles.joinBusinessText}>Join as Business</Text>
+              <TouchableOpacity
+                onPress={() => setJoinAsBusiness((prev) => !prev)}
+                style={[
+                  styles.checkboxBox,
+                  joinAsBusiness && styles.checkboxChecked,
+                ]}
+                activeOpacity={0.8}
+              >
+                {joinAsBusiness && (
+                  <Ionicons name="checkmark" size={13} color="#FFFFFF" />
+                )}
+              </TouchableOpacity>
+            </View>
+
+            <SolidMainButton
+              text="Continue"
+              onPress={handleSubmit(onEmailSubmit)}
+            />
+          </View>
+        )}
+
+        {/* Text Divider */}
+        <View style={styles.dividerWrap}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.orText}>or sign in with</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        {/* Alternate Sign In Buttons */}
+        <TouchableOpacity
+          style={styles.alternateButton}
+          onPress={() => {
+            setActiveTab((prev) => (prev === "phone" ? "email" : "phone"));
+            setIsFocused(false);
+          }}
+          activeOpacity={0.7}
+        >
+          <Ionicons
+            name={activeTab === "phone" ? "mail" : "call"}
+            size={18}
+            color="#0066CC"
+            style={styles.altIcon}
+          />
+          <Text style={styles.alternateButtonText}>
+            Continue with {activeTab === "phone" ? "Email" : "Phone"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.alternateButton} activeOpacity={0.7}>
+          <GoogleIcon size={18} style={styles.altIcon} />
+          <Text style={styles.alternateButtonText}>Continue with Google</Text>
+        </TouchableOpacity>
+
+        {/* Terms and links footer */}
+        <Text style={styles.termsText}>
+          By continuing, you agree to our{" "}
+          <Text style={styles.linkText}>Terms & Conditions</Text>
+          {"\n"}
+          and <Text style={styles.linkText}>Privacy Policy</Text>
+        </Text>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
 
 const styles = StyleSheet.create({
-  inputStyle: {
-    borderRadius: 7,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    fontFamily: "HankenGrotesk_400Regular",
-    backgroundColor: '#F6F6F6',
-    color: '#3A3541',
+  contentContainer: {
+    paddingTop: 16,
+    paddingHorizontal: 24,
+    paddingBottom: 42,
   },
-
-  titleStyle: {
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 52,
+  },
+  backButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "#000000",
+    borderRadius: 99,
+    width: 44,
+    height: 44,
+  },
+  returningUserText: {
     fontFamily: "HankenGrotesk_500Medium",
-    fontSize: 15,
-    color: "#3A3541",
-    paddingBottom: 8,
-    paddingTop: 6
+    fontSize: 12,
+    color: "#1F2937",
   },
-
-  activeTab: {
-  }
-})
+  loginText: {
+    color: "#0066CC",
+    fontFamily: "HankenGrotesk_500Medium",
+  },
+  titleWrap: {
+    alignItems: "center",
+    marginBottom: 36,
+  },
+  titleText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 17,
+    color: "#000000",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  subtitleText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#4B5563",
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 14,
+    backgroundColor: "#F8F9FB",
+    borderWidth: 2,
+    borderColor: "transparent",
+    height: 58,
+    paddingHorizontal: 12,
+    marginBottom: 4,
+  },
+  inputFocused: {
+    borderColor: "#0066CC",
+    backgroundColor: "#FFFFFF",
+  },
+  verticalDivider: {
+    width: 1.5,
+    height: 24,
+    backgroundColor: "#D1D5DB",
+    marginHorizontal: 8,
+  },
+  textInput: {
+    flex: 1,
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#111827",
+    height: "100%",
+  },
+  errorText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#EF4444",
+    marginTop: 4,
+    marginLeft: 4,
+    marginBottom: 12,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    marginTop: 14,
+    marginBottom: 28,
+  },
+  joinBusinessText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#111827",
+  },
+  checkboxBox: {
+    width: 20,
+    height: 20,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: "#000000",
+    backgroundColor: "transparent",
+    marginLeft: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  checkboxChecked: {
+    backgroundColor: "#000000",
+  },
+  dividerWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 32,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#E5E7EB",
+  },
+  orText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#111827",
+    marginHorizontal: 16,
+  },
+  alternateButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F8F9FB",
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    borderRadius: 14,
+    height: 56,
+    marginBottom: 12,
+  },
+  altIcon: {
+    marginRight: 10,
+  },
+  alternateButtonText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#111827",
+  },
+  termsText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#6B7280",
+    textAlign: "center",
+    lineHeight: 18,
+    marginTop: 36,
+  },
+  linkText: {
+    color: "#0066CC",
+    fontFamily: "HankenGrotesk_500Medium",
+  },
+});

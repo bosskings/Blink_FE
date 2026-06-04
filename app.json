@@ -20,7 +20,11 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.bright210.Blink_FE"
+      "package": "com.bright210.Blink_FE",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -55,7 +59,8 @@
           "supportsBackgroundPlayback": true,
           "supportsPictureInPicture": true
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -64,8 +69,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "31851028-58f4-4685-aca9-ded4d499812d"
+        "projectId": "ceec3231-cde7-45df-b48a-3730c0e10819"
       }
-    }
+    },
+    "owner": "ayewealth"
   }
 }

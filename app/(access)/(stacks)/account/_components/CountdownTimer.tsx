@@ -26,7 +26,7 @@ export default function CountdownTimer({
   }, [endsAt, durationSeconds]);
 
   const [remainingMs, setRemainingMs] = useState<number>(() =>
-    targetMs ? Math.max(0, targetMs - Date.now()) : 0
+    targetMs ? Math.max(0, targetMs - Date.now()) : 0,
   );
 
   useEffect(() => {
@@ -66,12 +66,12 @@ export default function CountdownTimer({
   return (
     <View className="items-center">
       <View className="flex-row items-center justify-center gap-3 mb-2">
-        <Ionicons name="stopwatch-outline" size={24} color="black" />
+        <Ionicons name="stopwatch-outline" size={22} color="black" />
 
         <View className="bg-white border border-gray-200 rounded-md px-3 py-2 shadow">
           <Text
             className="text-lg font-semibold"
-            style={{ fontFamily: "HankenGrotesk_700Bold" }}
+            style={{}}
             accessibilityLabel="hours"
           >
             {pad(displayHours)}
@@ -83,7 +83,7 @@ export default function CountdownTimer({
         <View className="bg-white border border-gray-200 rounded-md px-3 py-2 shadow">
           <Text
             className="text-lg font-semibold"
-            style={{ fontFamily: "HankenGrotesk_700Bold" }}
+            style={{}}
             accessibilityLabel="minutes"
           >
             {pad(minutes)}
@@ -95,7 +95,7 @@ export default function CountdownTimer({
         <View className="bg-white border border-gray-200 rounded-md px-3 py-2 shadow">
           <Text
             className="text-lg font-semibold"
-            style={{ fontFamily: "HankenGrotesk_700Bold" }}
+            style={{}}
             accessibilityLabel="seconds"
           >
             {pad(seconds)}
@@ -103,10 +103,7 @@ export default function CountdownTimer({
         </View>
       </View>
 
-      <Text
-        className="text-xs text-gray-600"
-        style={{ fontFamily: "HankenGrotesk_500Medium" }}
-      >
+      <Text className="text-xs text-gray-600" style={{}}>
         Time left: {friendly}
       </Text>
     </View>

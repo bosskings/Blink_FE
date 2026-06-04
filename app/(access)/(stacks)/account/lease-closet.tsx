@@ -83,7 +83,7 @@ const SkeletonItem: React.FC<{ keyId: string | number }> = ({ keyId }) => {
           duration: 700,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     );
     loop.start();
     return () => loop.stop();
@@ -137,7 +137,7 @@ const LeaseCloset: React.FC = () => {
           setProducts((prev) => [...prev, p]);
           if (i === initialProducts.length - 1) setLoading(false);
         },
-        220 * i + 400
+        220 * i + 400,
       );
       timeouts.push(t);
     });
@@ -191,16 +191,10 @@ const LeaseCloset: React.FC = () => {
         >
           <View className="items-center justify-center mt-28">
             <MaterialIcons name="inventory" size={72} color="#d1d1d1" />
-            <Text
-              className="text-lg text-gray-700 mt-4"
-              style={{ fontFamily: "HankenGrotesk_700Bold" }}
-            >
+            <Text className="text-[15px] text-gray-700 mt-4" style={{}}>
               No listings yet
             </Text>
-            <Text
-              className="text-gray-500 mt-2 text-center px-10"
-              style={{ fontFamily: "HankenGrotesk_400Regular" }}
-            >
+            <Text className="text-gray-500 mt-2 text-center px-10" style={{}}>
               You haven&apos;t listed any items to lease. Create your first
               listing and showcase it on your storefront.
             </Text>
@@ -245,17 +239,11 @@ const LeaseCloset: React.FC = () => {
         >
           <View className="flex-row items-center gap-4">
             <MaterialIcons name="storefront" size={26} color="#61ADFA" />
-            <Text
-              className="text-xl"
-              style={{ fontFamily: "HankenGrotesk_700Bold", color: "#0066CC" }}
-            >
+            <Text className="text-[17px]" style={{ color: "#0066CC" }}>
               Your Storefront
             </Text>
           </View>
-          <Text
-            className="text-base"
-            style={{ fontFamily: "HankenGrotesk_400Regular", color: "#000000" }}
-          >
+          <Text className="text-[15px]" style={{ color: "#000000" }}>
             Showcase your items with a personalized storefront. Set up once,
             sell to many!
           </Text>
@@ -282,17 +270,11 @@ const LeaseCloset: React.FC = () => {
           style={{ rowGap: 20 }}
         >
           <View className="flex-row items-center gap-2">
-            <Text
-              className="text-xl font-semibold"
-              style={{ fontFamily: "HankenGrotesk_700Bold" }}
-            >
+            <Text className="text-[17px] font-semibold" style={{}}>
               My Listings
             </Text>
             <View className="bg-[#0066CC] px-4 py-1 rounded-3xl">
-              <Text
-                className="text-sm"
-                style={{ fontFamily: "HankenGrotesk_700Bold", color: "#fff" }}
-              >
+              <Text className="text-[13px]" style={{ color: "#fff" }}>
                 {products.length}
               </Text>
             </View>
@@ -336,7 +318,6 @@ const LeaseCloset: React.FC = () => {
                       <Text
                         className="text-xs"
                         style={{
-                          fontFamily: "HankenGrotesk_500Medium",
                           textTransform: "capitalize",
                           color: "#fff",
                         }}
@@ -348,30 +329,26 @@ const LeaseCloset: React.FC = () => {
                     <View style={{ rowGap: 8 }}>
                       <View>
                         <Text
-                          className="text-xl"
+                          className="text-[17px]"
                           numberOfLines={1}
                           ellipsizeMode="tail"
-                          style={{
-                            fontFamily: "HankenGrotesk_700Bold",
-                          }}
+                          style={{}}
                         >
                           {item.title}
                         </Text>
 
                         <View className="flex-row items-center gap-2 mt-1">
                           <Text
-                            className="text-sm"
+                            className="text-[13px]"
                             style={{
-                              fontFamily: "HankenGrotesk_400Regular",
                               color: "#6C757D",
                             }}
                           >
                             Price:
                           </Text>
                           <Text
-                            className="text-base"
+                            className="text-[15px]"
                             style={{
-                              fontFamily: "HankenGrotesk_600SemiBold",
                               color: "#0066CC",
                             }}
                           >
@@ -386,9 +363,8 @@ const LeaseCloset: React.FC = () => {
                           onPress={() => handleRedirectItem(item)}
                         >
                           <Text
-                            className="text-sm"
+                            className="text-[13px]"
                             style={{
-                              fontFamily: "HankenGrotesk_400Regular",
                               color: "#0066CC",
                             }}
                           >
@@ -401,9 +377,8 @@ const LeaseCloset: React.FC = () => {
                           onPress={() => handleRedirectItem(item)}
                         >
                           <Text
-                            className="text-sm"
+                            className="text-[13px]"
                             style={{
-                              fontFamily: "HankenGrotesk_400Regular",
                               color: "#fff",
                             }}
                           >

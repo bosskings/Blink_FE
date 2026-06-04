@@ -1,9 +1,17 @@
-import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useRef } from 'react';
-import { Animated, Dimensions, Modal, Text, TouchableOpacity, View } from 'react-native';
-import { SolidMainButton } from '../Btns';
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useRef } from "react";
+import {
+  Animated,
+  Dimensions,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SolidMainButton } from "../Btns";
 
-const { height } = Dimensions.get('window');
+const { height } = Dimensions.get("window");
 
 interface SuccessModalProps {
   visible: boolean;
@@ -12,11 +20,11 @@ interface SuccessModalProps {
   onProceed: () => void;
 }
 
-const SuccessModal: React.FC<SuccessModalProps> = ({ 
-  visible, 
-  onClose, 
+const SuccessModal: React.FC<SuccessModalProps> = ({
+  visible,
+  onClose,
   communityName,
-  onProceed 
+  onProceed,
 }) => {
   const slideAnim = useRef(new Animated.Value(height)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -49,7 +57,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
         }),
       ]).start();
     }
-  }, [visible]);
+  }, [visible, slideAnim, fadeAnim]);
 
   return (
     <Modal
@@ -58,97 +66,45 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
       animationType="none"
       onRequestClose={onClose}
     >
-      <View style={{ flex: 1 }}>
-        <Animated.View 
-          style={{
-            flex: 1,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            opacity: fadeAnim,
-          }}
-        >
-          <TouchableOpacity 
-            style={{ flex: 1 }} 
-            activeOpacity={1} 
+      <View style={styles.modalViewport}>
+        {/* Animated backdrop with overlay blur */}
+        <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            activeOpacity={1}
             onPress={onClose}
           />
         </Animated.View>
 
+        {/* Success Modal Sheet */}
         <Animated.View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: 'white',
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            paddingHorizontal: 24,
-            paddingTop: 12,
-            paddingBottom: 40,
-            transform: [{ translateY: slideAnim }],
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: -4 },
-            shadowOpacity: 0.1,
-            shadowRadius: 12,
-            elevation: 20,
-          }}
+          style={[
+            styles.successSheet,
+            { transform: [{ translateY: slideAnim }] },
+          ]}
         >
-          {/* Handle Bar */}
-          <View style={{ alignItems: 'center', marginBottom: 24 }}>
-            <View
-              style={{
-                width: 40,
-                height: 4,
-                backgroundColor: '#E5E7EB',
-                borderRadius: 2,
-              }}
-            />
+          {/* Large Thumbs Up Success Icon */}
+          <View style={styles.iconContainer}>
+            <Ionicons name="thumbs-up" size={82} color="#0066CC" />
           </View>
 
-          {/* Success Icon */}
-          <View style={{ alignItems: 'center', marginBottom: 24 }}>
-            <View
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: 40,
-                backgroundColor: '#DBEAFE',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: 16,
-              }}
-            >
-              <Ionicons name="thumbs-up" size={40} color="#2563EB" />
-            </View>
-
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: '700',
-                color: '#111827',
-                marginBottom: 8,
-                textAlign: 'center',
-                fontFamily: 'HankenGrotesk_700Bold'
-              }}
-            >
+          {/* Core copy with HankenGrotesk typography */}
+          <View style={styles.textWrap}>
+            <Text style={styles.successTitle}>
               {"You've joined your first community"}
             </Text>
 
-            <Text
-              style={{
-                fontSize: 14,
-                color: '#6B7280',
-                textAlign: 'center',
-                lineHeight: 20,
-                fontFamily: 'HankenGrotesk_400Regular'
-              }}
-            >
-              Secure your account and stand out in your{'\n'}new community with verification
+            <Text style={styles.successSubtitle}>
+              Secure your account and stand out in your{"\n"}new community with
+              verification
             </Text>
           </View>
 
-          {/* Proceed Button */}
-          <SolidMainButton text='Proceed to Account Verification' onPress={onProceed}/>
+          {/* Upgraded action button */}
+          <SolidMainButton
+            text="Proceed to Account Verification"
+            onPress={onProceed}
+          />
         </Animated.View>
       </View>
     </Modal>
@@ -156,3 +112,52 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
 };
 
 export default SuccessModal;
+
+const styles = StyleSheet.create({
+  modalViewport: {
+    flex: 1,
+  },
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+  },
+  successSheet: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 24,
+    paddingTop: 48,
+    paddingBottom: 42,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 20,
+  },
+  iconContainer: {
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  textWrap: {
+    alignItems: "center",
+    marginBottom: 36,
+  },
+  successTitle: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 20,
+    color: "#000000",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  successSubtitle: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#4B5563",
+    textAlign: "center",
+    lineHeight: 22,
+  },
+});

@@ -35,10 +35,7 @@ const RequestsList: React.FC<RequestsListProps> = ({
       style={{ rowGap: 15 }}
     >
       {title && (
-        <Text
-          className="text-lg font-semibold mb-4"
-          style={{ fontFamily: "HankenGrotesk_700Bold" }}
-        >
+        <Text className="text-lg font-semibold mb-4" style={{}}>
           {title}
         </Text>
       )}
@@ -61,8 +58,7 @@ const RequestsList: React.FC<RequestsListProps> = ({
               <Text
                 className="text-gray-400 mt-3"
                 style={{
-                  fontFamily: "HankenGrotesk_500Medium",
-                  fontSize: 16,
+                  fontSize: 12,
                 }}
               >
                 No requests yet
@@ -95,18 +91,12 @@ const RequestsList: React.FC<RequestsListProps> = ({
                         <Text
                           className="font-semibold text-md"
                           style={{
-                            fontFamily: "HankenGrotesk_900Black",
-                            fontSize: 15,
+                            fontSize: 12,
                           }}
                         >
                           {item.name}
                         </Text>
-                        <Text
-                          className="text-xs text-gray-500"
-                          style={{
-                            fontFamily: "HankenGrotesk_400Regular",
-                          }}
-                        >
+                        <Text className="text-xs text-gray-500" style={{}}>
                           wants to join Covenant University
                         </Text>
                       </View>

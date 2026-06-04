@@ -1,4 +1,6 @@
 import { Headers } from "@/components/Headers";
+import { SearchInput } from "@/components/SearchInput";
+import { SolidMainButton, SolidGrayButton } from "@/components/Btns";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -280,30 +282,21 @@ const AllEvents = () => {
       />
       <View className="p-6">
         <View className="flex-row items-center justify-start mb-2">
-          <Text
-            style={{ fontFamily: "HankenGrotesk_500Medium" }}
-            className="text-[#0066CC] text-sm"
-          >
+          <Text style={{}} className="text-[#0066CC] text-[13px]">
             {item.date}
           </Text>
           <Entypo name="dot-single" size={12} color="#0066CC" />
-          <Text
-            style={{ fontFamily: "HankenGrotesk_500Medium" }}
-            className="text-[#0066CC] text-sm"
-          >
+          <Text style={{}} className="text-[#0066CC] text-[13px]">
             {item.time}
           </Text>
         </View>
-        <Text
-          style={{ fontFamily: "HankenGrotesk_900Black" }}
-          className="text-[#000000] text-xl mb-2"
-        >
+        <Text style={{}} className="text-[#000000] text-[17px] mb-2">
           {item.title}
         </Text>
         {item.description && (
           <Text
-            style={{ fontFamily: "HankenGrotesk_400Regular" }}
-            className="text-[#6C757D] text-sm mb-3"
+            style={{}}
+            className="text-[#6C757D] text-[13px] mb-3"
             numberOfLines={2}
           >
             {item.description}
@@ -311,18 +304,12 @@ const AllEvents = () => {
         )}
         <View className="flex-row items-center mb-3">
           <Ionicons name="location-outline" size={16} color="#6B7280" />
-          <Text
-            style={{ fontFamily: "HankenGrotesk_500Medium" }}
-            className="text-base text-[#000000] ml-1"
-          >
+          <Text style={{}} className="text-[15px] text-[#000000] ml-1">
             {item.location}
           </Text>
         </View>
         <View className="bg-[#0066CC] rounded-full px-4 py-2 w-fit">
-          <Text
-            style={{ fontFamily: "HankenGrotesk_500Medium" }}
-            className="text-white text-xs"
-          >
+          <Text style={{}} className="text-white text-xs">
             {item.category}
           </Text>
         </View>
@@ -351,18 +338,18 @@ const AllEvents = () => {
       <View className="px-6 mb-4">
         <View className="flex-row gap-3">
           <View className="flex-1 flex-row items-center bg-[#F8F9FA] rounded-xl border border-[#D9D9D9] px-4 py-3">
-            <Ionicons name="search" size={20} color="#6C757D" />
+            <Ionicons name="search" size={18} color="#6C757D" />
             <TextInput
               placeholder="Search events..."
               placeholderTextColor="#D9D9D9"
               value={searchQuery}
               onChangeText={setSearchQuery}
-              className="flex-1 ml-2 text-sm"
-              style={{ fontFamily: "HankenGrotesk_400Regular" }}
+              className="flex-1 ml-2 text-[13px]"
+              style={{}}
             />
             {searchQuery !== "" && (
               <TouchableOpacity onPress={() => setSearchQuery("")}>
-                <Ionicons name="close-circle" size={20} color="#6C757D" />
+                <Ionicons name="close-circle" size={18} color="#6C757D" />
               </TouchableOpacity>
             )}
           </View>
@@ -374,7 +361,7 @@ const AllEvents = () => {
           >
             <Ionicons
               name="filter"
-              size={20}
+              size={18}
               color={hasActiveFilters ? "#0066CC" : "#6C757D"}
             />
             {hasActiveFilters && (
@@ -394,10 +381,7 @@ const AllEvents = () => {
           >
             {selectedCategory && selectedCategory !== "All" && (
               <View className="flex-row items-center bg-[#E6F2FF] rounded-full px-3 py-1.5 gap-2">
-                <Text
-                  className="text-[#0066CC] text-xs"
-                  style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                >
+                <Text className="text-[#0066CC] text-xs" style={{}}>
                   {selectedCategory}
                 </Text>
                 <TouchableOpacity
@@ -410,10 +394,7 @@ const AllEvents = () => {
             )}
             {selectedDateFilter !== "upcoming" && (
               <View className="flex-row items-center bg-[#E6F2FF] rounded-full px-3 py-1.5 gap-2">
-                <Text
-                  className="text-[#0066CC] text-xs"
-                  style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                >
+                <Text className="text-[#0066CC] text-xs" style={{}}>
                   {selectedDateFilter === "all" ? "All Dates" : "Past Events"}
                 </Text>
                 <TouchableOpacity
@@ -428,10 +409,7 @@ const AllEvents = () => {
               onPress={handleResetFilters}
               className="flex-row items-center bg-[#F8F9FA] rounded-full px-3 py-1.5"
             >
-              <Text
-                className="text-[#6C757D] text-xs"
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-              >
+              <Text className="text-[#6C757D] text-xs" style={{}}>
                 Clear All
               </Text>
             </TouchableOpacity>
@@ -450,14 +428,14 @@ const AllEvents = () => {
           <View className="items-center justify-center py-20 px-6">
             <Ionicons name="calendar-outline" size={64} color="#D9D9D9" />
             <Text
-              className="text-xl text-[#6C757D] mt-4 text-center"
-              style={{ fontFamily: "HankenGrotesk_700Bold" }}
+              className="text-[17px] text-[#6C757D] mt-4 text-center"
+              style={{}}
             >
               No events found
             </Text>
             <Text
-              className="text-sm text-[#6C757D] mt-2 text-center"
-              style={{ fontFamily: "HankenGrotesk_400Regular" }}
+              className="text-[13px] text-[#6C757D] mt-2 text-center"
+              style={{}}
             >
               Try adjusting your filters or search query
             </Text>
@@ -512,14 +490,11 @@ const AllEvents = () => {
 
             {/* Filter Header */}
             <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-100">
-              <Text
-                className="text-xl text-black"
-                style={{ fontFamily: "HankenGrotesk_900Black" }}
-              >
+              <Text className="text-[17px] text-black" style={{}}>
                 Filter Events
               </Text>
               <TouchableOpacity onPress={handleCloseFilters}>
-                <Ionicons name="close" size={24} color="#666666" />
+                <Ionicons name="close" size={22} color="#666666" />
               </TouchableOpacity>
             </View>
 
@@ -530,10 +505,7 @@ const AllEvents = () => {
             >
               {/* Date Filter */}
               <View className="px-6 py-4 border-b border-gray-100">
-                <Text
-                  className="text-base text-black mb-3"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[15px] text-black mb-3" style={{}}>
                   Date
                 </Text>
                 <View className="flex-row gap-3">
@@ -548,7 +520,7 @@ const AllEvents = () => {
                       }`}
                     >
                       <Text
-                        className={`text-sm text-center ${
+                        className={`text-[13px] text-center ${
                           selectedDateFilter === filter
                             ? "text-[#0066CC]"
                             : "text-[#6C757D]"
@@ -556,7 +528,7 @@ const AllEvents = () => {
                         style={{
                           fontFamily:
                             selectedDateFilter === filter
-                              ? "HankenGrotesk_700Bold"
+                              ? "HankenGrotesk_500Medium"
                               : "HankenGrotesk_500Medium",
                         }}
                       >
@@ -573,10 +545,7 @@ const AllEvents = () => {
 
               {/* Category Filter */}
               <View className="px-6 py-4">
-                <Text
-                  className="text-base text-black mb-3"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
+                <Text className="text-[15px] text-black mb-3" style={{}}>
                   Category
                 </Text>
                 <View className="flex-row flex-wrap gap-2">
@@ -585,7 +554,7 @@ const AllEvents = () => {
                       key={category}
                       onPress={() =>
                         setSelectedCategory(
-                          category === "All" ? null : category
+                          category === "All" ? null : category,
                         )
                       }
                       className={`px-4 py-2 rounded-full border-2 ${
@@ -596,7 +565,7 @@ const AllEvents = () => {
                       }`}
                     >
                       <Text
-                        className={`text-sm ${
+                        className={`text-[13px] ${
                           selectedCategory === category ||
                           (category === "All" && selectedCategory === null)
                             ? "text-white"
@@ -606,7 +575,7 @@ const AllEvents = () => {
                           fontFamily:
                             selectedCategory === category ||
                             (category === "All" && selectedCategory === null)
-                              ? "HankenGrotesk_700Bold"
+                              ? "HankenGrotesk_500Medium"
                               : "HankenGrotesk_500Medium",
                         }}
                       >
@@ -620,28 +589,12 @@ const AllEvents = () => {
 
             {/* Filter Actions */}
             <View className="flex-row gap-3 px-6 py-4 border-t border-gray-100 bg-white">
-              <TouchableOpacity
-                onPress={handleResetFilters}
-                className="flex-1 py-3 border-2 border-[#D9D9D9] rounded-xl items-center"
-              >
-                <Text
-                  className="text-[#6C757D] text-base"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
-                  Reset
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleApplyFilters}
-                className="flex-1 py-3 bg-[#0066CC] rounded-xl items-center"
-              >
-                <Text
-                  className="text-white text-base"
-                  style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                >
-                  Apply Filters
-                </Text>
-              </TouchableOpacity>
+              <View className="flex-1">
+                <SolidGrayButton text="Reset" onPress={handleResetFilters} />
+              </View>
+              <View className="flex-1">
+                <SolidMainButton text="Apply Filters" onPress={handleApplyFilters} />
+              </View>
             </View>
           </Animated.View>
         </View>

@@ -1,33 +1,62 @@
+import { useAuth } from "@/providers/AuthProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, Stack } from "expo-router";
+import { router, Stack, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 
 const StackPagesLayout = () => {
-  useEffect(() => {
-    (async () => {
-      try {
-        const onboarded = await AsyncStorage.getItem("blink_onboarding");
-        const token = await AsyncStorage.getItem("blink_token");
-        if (token) {
-          router.replace("/home");
-          return;
-        }
+  const { token, isLoading } = useAuth();
+  const pathname = usePathname();
 
-        if (onboarded) {
-          router.replace("/home");
-          return;
-        } else {
-          router.replace("/onboarding");
-          return;
-        }
-      } catch (error) {
-        console.error(error);
-        router.replace("/login");
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
+    const checkNavigationRoute = async () => {
+      // Guard: Only perform redirections if the user is actually on an unauthenticated (noaccess) screen.
+      const isNoAccessPath =
+        pathname === "/" ||
+        pathname === "/index" ||
+        pathname.includes("/onboarding") ||
+        pathname.includes("/register") ||
+        pathname.includes("/create-password") ||
+        pathname.includes("/login") ||
+        pathname.includes("/success");
+
+      if (!isNoAccessPath) {
         return;
       }
-    })();
-    return () => {};
-  }, []);
+
+      if (token) {
+        // If they just signed up, route them to the community discovery stack instead of home
+        const justRegistered = await AsyncStorage.getItem("just_registered");
+        if (justRegistered === "true") {
+          await AsyncStorage.removeItem("just_registered");
+          router.replace(
+            "/(access)/(stacks)/community-verification-flow/findCommunity",
+          );
+        } else {
+          router.replace("/home");
+        }
+        return;
+      }
+
+      if (pathname === "/") {
+        const onboarded = await AsyncStorage.getItem("has_onboarded");
+        if (onboarded === "true") {
+          router.replace({
+            pathname: "/login",
+            params: { variant: "returning" },
+          });
+        } else {
+          router.replace("/onboarding");
+        }
+      }
+    };
+
+    checkNavigationRoute();
+  }, [isLoading, pathname, token]);
+
   return (
     <Stack
       screenOptions={{
@@ -36,7 +65,10 @@ const StackPagesLayout = () => {
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="onboarding" />
+      <Stack.Screen name="register" />
+      <Stack.Screen name="create-password" />
       <Stack.Screen name="login" />
+      <Stack.Screen name="success/community-success" />
     </Stack>
   );
 };

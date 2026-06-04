@@ -115,22 +115,18 @@ const CommunityMembership = () => {
             style={{ rowGap: 15 }}
           >
             <View className="flex-row items-center justify-between w-full">
-              <Text
-                className="text-lg"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Text className="text-[15px]" style={{}}>
                 Moderation Overview
               </Text>
 
               <Link
                 className="flex-row items-center gap-3"
-                href={""}
+                href="/(access)/(stacks)/community-management-flow/reported-posts"
                 style={{ color: "#0066CC" }}
               >
                 <Text
                   style={{
-                    fontFamily: "HankenGrotesk_600SemiBold",
-                    fontSize: 13,
+                    fontSize: 12,
                     marginRight: 10,
                   }}
                   className="mr-2"
@@ -150,18 +146,12 @@ const CommunityMembership = () => {
             >
               <View className="bg-[#F8F9FA] p-4 flex-1 flex-col items-center rounded-lg gap-2">
                 <View className="flex-row items-center gap-1">
-                  <EvilIcons name="clock" size={24} color="#0066CC" />
-                  <Text
-                    style={{ fontFamily: "HankenGrotesk_900Black" }}
-                    className="text-xl"
-                  >
+                  <EvilIcons name="clock" size={22} color="#0066CC" />
+                  <Text style={{}} className="text-[17px]">
                     52
                   </Text>
                 </View>
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  className="text-sm"
-                >
+                <Text style={{}} className="text-[13px]">
                   Pending Reviews
                 </Text>
               </View>
@@ -170,20 +160,14 @@ const CommunityMembership = () => {
                 <View className="flex-row items-center gap-1">
                   <Ionicons
                     name="alert-circle-outline"
-                    size={24}
+                    size={22}
                     color="#FF3333"
                   />
-                  <Text
-                    style={{ fontFamily: "HankenGrotesk_900Black" }}
-                    className="text-xl"
-                  >
+                  <Text style={{}} className="text-[17px]">
                     8
                   </Text>
                 </View>
-                <Text
-                  style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  className="text-sm"
-                >
+                <Text style={{}} className="text-[13px]">
                   Reported Users
                 </Text>
               </View>

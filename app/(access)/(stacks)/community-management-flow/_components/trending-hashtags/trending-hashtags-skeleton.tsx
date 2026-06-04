@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated as RNAnimated, View } from "react-native";
+import { Animated as RNAnimated } from "react-native";
 
 const TrendingHashtagsSkeletonItem = () => {
   const opacity = useRef(new RNAnimated.Value(0.3)).current;
@@ -17,11 +17,11 @@ const TrendingHashtagsSkeletonItem = () => {
           duration: 800,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     );
     loop.start();
     return () => loop.stop();
-  }, []);
+  }, [opacity]);
 
   return (
     <RNAnimated.View
@@ -36,4 +36,3 @@ const TrendingHashtagsSkeletonItem = () => {
 };
 
 export default TrendingHashtagsSkeletonItem;
-

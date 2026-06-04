@@ -38,10 +38,7 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
       style={{ rowGap: 20 }}
     >
       {title && (
-        <Text
-          className="text-lg font-semibold mb-4"
-          style={{ fontFamily: "HankenGrotesk_700Bold" }}
-        >
+        <Text className="text-lg font-semibold mb-4" style={{}}>
           {title}
         </Text>
       )}
@@ -61,16 +58,10 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
           className="flex-1 items-center justify-center mt-32"
         >
           <MaterialIcons name="inbox" size={60} color="#d1d1d1" />
-          <Text
-            className="text-lg text-gray-700 text-center"
-            style={{ fontFamily: "HankenGrotesk_700Bold" }}
-          >
+          <Text className="text-lg text-gray-700 text-center" style={{}}>
             No Trending Hashtags
           </Text>
-          <Text
-            className="text-gray-500 mt-1 text-center px-10"
-            style={{ fontFamily: "HankenGrotesk_400Regular" }}
-          >
+          <Text className="text-gray-500 mt-1 text-center px-10" style={{}}>
             There are currently no trending hashtags to display.
           </Text>
         </Animated.View>
@@ -99,26 +90,19 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
                     <Text
                       className="text-lg font-black"
                       style={{
-                        fontFamily: "HankenGrotesk_700Bold",
                         color: "#0066CC",
                       }}
                     >
                       {item.tag}
                     </Text>
                     <Entypo name="dot-single" size={10} color="#0066CC" />
-                    <Text
-                      className="text-black text-sm font-black"
-                      style={{ fontFamily: "HankenGrotesk_900Black" }}
-                    >
+                    <Text className="text-black text-sm font-black" style={{}}>
                       {typeof item.posts === "number"
                         ? `${item.posts} posts`
                         : item.posts}
                     </Text>
                   </View>
-                  <Text
-                    className="text-black text-sm"
-                    style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  >
+                  <Text className="text-black text-sm" style={{}}>
                     {item.location}
                   </Text>
                 </View>

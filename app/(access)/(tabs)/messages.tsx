@@ -1,12 +1,12 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import React from "react";
+import { Text, View } from "react-native";
 
 const Messages = () => {
   return (
     <View>
       <Text>messages</Text>
     </View>
-  )
-}
+  );
+};
 
-export default Messages
+export default Messages;
