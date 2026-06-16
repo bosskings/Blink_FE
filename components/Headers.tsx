@@ -19,7 +19,6 @@ export const Headers = ({ text, onPress, ...props }: ButtonProps) => {
       </TouchableOpacity>
       <Text
         style={{
-          fontFamily: "HankenGrotesk_900Black",
           fontSize: 17,
           marginLeft: "15%",
         }}

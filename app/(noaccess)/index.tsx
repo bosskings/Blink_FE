@@ -3,24 +3,19 @@ import React from "react";
 import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 
 const InitialScreen = () => {
-  
   return (
     <View style={styles.container}>
-      <StatusBar style='light'/>
-      
+      <StatusBar style="light" />
+
       <View>
         <View className="mb-6">
           <Image
             style={styles.image}
             resizeMode="contain"
-            source={require('../../assets/images/icon.png')}
+            source={require("../../assets/images/icon.png")}
           />
         </View>
-        <ActivityIndicator
-          size={'large'}
-          animating={true}
-          color={'white'}
-        />
+        <ActivityIndicator size={"large"} animating={true} color={"white"} />
       </View>
     </View>
   );

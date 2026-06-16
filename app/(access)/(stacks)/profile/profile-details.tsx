@@ -1,9 +1,9 @@
-import { Headers } from "@/components/Headers";
-import { ErrorMessage } from "@hookform/error-message";
+import { SolidMainButton } from "@/components/Btns";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import {
   ScrollView,
   StyleSheet,
@@ -13,206 +13,289 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomAlert } from "@/components/CustomAlert";
 
 export default function ProfileDetails() {
-  const [blinkTag, setBlinkTag] = useState("");
-  const [isAvailable, setIsAvailable] = useState(false);
+  const [blinkTag, setBlinkTag] = useState("Lasman Ade");
+  const [bio, setBio] = useState("");
+  const [alertVisible, setAlertVisible] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      bio: "",
-    },
-  });
+  const formattedBlinkTag = blinkTag.trim().toLowerCase().replace(/\s+/g, "~");
 
-  const bio = watch("bio") || "";
-  console.log(bio);
+  // Availability logic: taken if formatted tag is "time~keeper", otherwise available
+  const isAvailable =
+    formattedBlinkTag.length > 0 && formattedBlinkTag !== "time~keeper";
+  const isFormValid = formattedBlinkTag.length > 0 && isAvailable;
 
-  const checkAvailability = (username: string) => {
-    // Mock availability check
-    setIsAvailable(username.length > 3 && !username.includes(" "));
+  const onSubmit = async () => {
+    if (!isFormValid) return;
+    await AsyncStorage.setItem("blink_tag", blinkTag);
+    setAlertVisible(true);
   };
-
-  const onSubmit = (data: any) => {
-    console.log("Profile details submitted:", {
-      blinkTag,
-      bio: data.bio,
-    });
-    router.push("/(access)/(stacks)/profile/interests");
-  };
-
-  const isFormValid = blinkTag.trim().length > 0 && isAvailable;
-
-  const remaining = 250 - bio.trim().length;
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={styles.viewport}>
       <StatusBar style="dark" />
-      <ScrollView
-        className="flex-1 px-6"
-        contentContainerStyle={{ paddingBottom: 100 }}
-      >
-        {/* Header */}
-        <View className="mt-6 mb-6">
-          <Headers onPress={() => router.back()} />
+      <View style={styles.container}>
+        {/* Step Progress Single-Row Header */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity
+            style={styles.backCircle}
+            onPress={() => router.back()}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={18} color="#000000" />
+          </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>Profile Setup</Text>
+
+          {/* Elongated Step Dots Progress Indicator */}
+          <View style={styles.dotsRow}>
+            <View style={styles.dotInactive} />
+            <View style={styles.dotInactive} />
+            <View style={styles.dotActive} />
+          </View>
         </View>
 
-        {/* Main Content */}
-        <View>
-          <Text
-            style={{ fontFamily: "HankenGrotesk_700Bold" }}
-            className="text-2xl font-bold text-center mb-8"
-          >
-            Tell us about yourself
-          </Text>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.scrollStyle}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* Main Title */}
+          <Text style={styles.titleText}>Tell us about yourself</Text>
 
-          {/* Blink Tag Input */}
-          <View className="mb-8">
-            <View className="flex-row items-center mb-1">
-              <Text
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                className="text-base font-semibold"
-              >
-                Your Blink Tag
-              </Text>
-              <Text
-                style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                className="text-red-500 ml-1"
-              >
-                *
-              </Text>
+          {/* Blink Tag Section */}
+          <View style={styles.fieldSection}>
+            <View style={styles.labelRow}>
+              <Text style={styles.labelText}>Your Blink Tag</Text>
+              <Text style={styles.asteriskText}> *</Text>
             </View>
-            <Text
-              style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-              className="text-gray-600 text-sm mb-3"
-            >
+            <Text style={styles.descText}>
               Feel free to use any name of your choice
             </Text>
+
             <TextInput
-              className="w-full bg-gray-50 rounded-lg px-4 py-3 text-base"
-              style={styles.inputStyle}
+              style={styles.textInput}
               value={blinkTag}
-              onChangeText={(text) => {
-                setBlinkTag(text);
-                checkAvailability(text);
-              }}
+              onChangeText={setBlinkTag}
               placeholder="Lasman Ade"
               placeholderTextColor="#AFAFAF"
+              autoCapitalize="none"
+              autoCorrect={false}
             />
-            {blinkTag.length > 0 && (
+
+            {formattedBlinkTag.length > 0 && (
               <View
-                className={`flex-row items-center mt-2 ${
-                  isAvailable ? "bg-green-100" : "bg-red-100"
-                } rounded-full px-3 py-1 self-start`}
+                style={[
+                  styles.statusBubble,
+                  isAvailable
+                    ? styles.statusBubbleAvailable
+                    : styles.statusBubbleTaken,
+                ]}
               >
                 <Text
-                  style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-                  className={`text-sm ${
-                    isAvailable ? "text-green-700" : "text-red-700"
-                  }`}
+                  style={[
+                    styles.statusText,
+                    isAvailable
+                      ? styles.statusTextAvailable
+                      : styles.statusTextTaken,
+                  ]}
                 >
-                  @{blinkTag.toLowerCase().replace(/\s/g, "-")}{" "}
-                  {isAvailable ? "is available" : "is not available"}
+                  @{formattedBlinkTag}{" "}
+                  {isAvailable ? "is available" : "is taken"}
                 </Text>
               </View>
             )}
           </View>
 
-          {/* Bio Input */}
-          <View className="mb-8">
-            <Text
-              style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-              className="text-base font-semibold mb-1"
-            >
-              Your Bio
-            </Text>
-            <Text
-              style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-              className="text-gray-600 text-sm mb-3"
-            >
-              Write a short intro about yourself. Not less than 250 characters
+          {/* Bio Section */}
+          <View style={styles.fieldSection}>
+            <Text style={styles.labelText}>Your Bio</Text>
+            <Text style={styles.descText}>
+              Write a short intro about yourself. Not less than 250
             </Text>
 
-            <Controller
-              name="bio"
-              control={control}
-              rules={{
-                required: "Bio is required",
-                minLength: {
-                  value: 10,
-                  message: "Bio must be at least 250 characters",
-                },
-              }}
-              render={({ field: { onChange, value } }) => (
-                <TextInput
-                  className="w-full bg-gray-50 rounded-lg px-4 py-3 text-base min-h-[150px]"
-                  style={styles.inputStyle}
-                  value={value}
-                  onChangeText={onChange}
-                  placeholder="Write something about yourself..."
-                  placeholderTextColor="#AFAFAF"
-                  multiline
-                  textAlignVertical="top"
-                />
-              )}
+            <TextInput
+              style={styles.bioInput}
+              value={bio}
+              onChangeText={setBio}
+              placeholder="Write a short intro about yourself..."
+              placeholderTextColor="#AFAFAF"
+              multiline
+              textAlignVertical="top"
+              autoCorrect={false}
             />
-            <ErrorMessage
-              errors={errors}
-              name="bio"
-              render={({ message }) => (
-                <Text className="pt-3 text-sm text-red-600">{message}</Text>
-              )}
-            />
-
-            {/* Character Counter */}
-            <Text className="text-gray-500 mt-2 text-sm">
-              {bio.trim().length < 250 && `${remaining} more characters to go`}
-            </Text>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
 
-      {/* Bottom Button */}
-      <View className="absolute bottom-0 bg-white left-0 right-0">
-        <View className="w-[90%] self-center py-4">
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
-            className={`py-4 rounded-xl items-center ${
-              isFormValid ? "bg-[#0066CC]" : "bg-gray-300"
-            }`}
+        {/* Absolute Bottom Action Bar */}
+        <View style={styles.bottomBar}>
+          <SolidMainButton
+            text="Save"
+            onPress={onSubmit}
             disabled={!isFormValid}
-            accessibilityLabel="Save profile details"
-          >
-            <Text
-              className={`font-semibold text-base ${
-                isFormValid ? "text-white" : "text-gray-400"
-              }`}
-              style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
-            >
-              {isFormValid
-                ? "Save"
-                : bio.trim().length < 250
-                  ? "Keep writing..."
-                  : "Fill in your Blink Tag"}
-            </Text>
-          </TouchableOpacity>
+          />
         </View>
       </View>
+
+      <CustomAlert
+        visible={alertVisible}
+        title="Profile Saved"
+        message="Your profile details have been saved successfully."
+        onClose={() => {
+          setAlertVisible(false);
+          router.push("/(access)/(stacks)/profile/interests");
+        }}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  inputStyle: {
-    borderRadius: 7,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    fontFamily: "HankenGrotesk_400Regular",
-    backgroundColor: "#F6F6F6",
-    color: "#3A3541",
+  viewport: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 16,
+    marginBottom: 32,
+  },
+  backCircle: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "#000000",
+    borderRadius: 99,
+    width: 44,
+    height: 44,
+  },
+  headerTitle: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 17,
+    color: "#0066CC",
+  },
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  dotInactive: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#E5E7EB",
+  },
+  dotActive: {
+    width: 20,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#0066CC",
+  },
+  scrollStyle: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 110,
+  },
+  titleText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 26,
+    color: "#000000",
+    marginBottom: 36,
+    textAlign: "center",
+  },
+  fieldSection: {
+    width: "100%",
+    marginBottom: 28,
+  },
+  labelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  labelText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#000000",
+  },
+  asteriskText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#EF4444",
+  },
+  descText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#4B5563",
+    marginBottom: 12,
+  },
+  textInput: {
+    width: "100%",
+    backgroundColor: "#F9FAFB",
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    borderRadius: 14,
+    height: 58,
+    paddingHorizontal: 14,
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#000000",
+  },
+  statusBubble: {
+    alignSelf: "flex-start",
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginTop: 10,
+  },
+  statusBubbleAvailable: {
+    backgroundColor: "#E8F8F0",
+    borderColor: "#00A84E",
+  },
+  statusBubbleTaken: {
+    backgroundColor: "#FFEBEB",
+    borderColor: "#FF3B30",
+  },
+  statusText: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+  },
+  statusTextAvailable: {
+    color: "#00A84E",
+  },
+  statusTextTaken: {
+    color: "#FF3B30",
+  },
+  bioInput: {
+    width: "100%",
+    backgroundColor: "#F9FAFB",
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    borderRadius: 14,
+    height: 180,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#000000",
+  },
+  bottomBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#FFFFFF",
+    paddingBottom: 24,
+    paddingTop: 12,
+    paddingHorizontal: 24,
   },
 });

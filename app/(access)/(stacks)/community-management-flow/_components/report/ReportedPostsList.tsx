@@ -1,9 +1,9 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
-  FadeInRight,
-  FadeOutRight,
+  FadeInDown,
+  FadeOutDown,
   LinearTransition,
 } from "react-native-reanimated";
 import ReportSkeletonItem from "./report-skeleton";
@@ -37,15 +37,12 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
   return (
     <Animated.View
       layout={LinearTransition.springify()}
-      entering={FadeInRight.duration(250)}
-      exiting={FadeOutRight.duration(200)}
+      entering={FadeInDown.duration(250)}
+      exiting={FadeOutDown.duration(200)}
       style={{ rowGap: 20 }}
     >
       {title && (
-        <Text
-          className="text-lg font-semibold mb-4"
-          style={{ fontFamily: "HankenGrotesk_700Bold" }}
-        >
+        <Text className="text-lg font-semibold mb-4" style={{}}>
           {title}
         </Text>
       )}
@@ -60,71 +57,62 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
         <View className="">
           {posts.length === 0 ? (
             <Animated.View
-              entering={FadeInRight.duration(400).springify().damping(18)}
-              exiting={FadeOutRight.duration(250)}
+              entering={FadeInDown.duration(400).springify().damping(18)}
+              exiting={FadeOutDown.duration(250)}
               className="items-center justify-center mt-32"
             >
-              <MaterialIcons name="inbox" size={60} color="#d1d1d1" />
-              <Text
-                className="text-lg text-gray-700 text-center"
-                style={{ fontFamily: "HankenGrotesk_700Bold" }}
-              >
+              <Feather name="inbox" size={60} color="#d1d1d1" />
+              <Text className="text-[17px] text-gray-700 text-center font-bold" style={{}}>
                 No Reported Posts
               </Text>
-              <Text
-                className="text-gray-500 mt-1 text-center px-10"
-                style={{ fontFamily: "HankenGrotesk_400Regular" }}
-              >
+              <Text className="text-gray-500 mt-1 text-center px-10 text-[13px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                 You currently have no reported posts to review.
               </Text>
             </Animated.View>
           ) : (
             <Animated.View
               layout={LinearTransition.springify().damping(15).stiffness(90)}
-              entering={FadeInRight.duration(250)}
-              exiting={FadeOutRight.duration(200)}
+              entering={FadeInDown.duration(250)}
+              exiting={FadeOutDown.duration(200)}
               style={{ rowGap: 20 }}
             >
-              {posts.map((post) => (
+              {posts.map((post, index) => (
                 <Animated.View
                   key={post.id}
                   layout={LinearTransition.springify()}
-                  entering={FadeInRight.duration(250)}
-                  exiting={FadeOutRight.duration(250)}
+                  entering={FadeInDown.duration(400).springify()}
+                  exiting={FadeOutDown.duration(250)}
                   className="bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow"
                 >
-                  <View className="flex-row items-center justify-between mb-3">
-                    <View className="flex-row items-center">
+                  <View className="flex-row items-start justify-between mb-3 gap-2">
+                    <View className="flex-row items-center flex-1 pr-2">
                       <Image
                         source={post.avatar}
                         className="w-14 h-14 rounded-full mr-3"
                       />
-                      <View>
-                        <Text
-                          className="font-semibold text-base"
-                          style={{ fontFamily: "HankenGrotesk_900Black" }}
-                        >
+                      <View className="flex-1">
+                        <Text className="font-bold text-[17px]" numberOfLines={1}>
                           {post.userName}
                         </Text>
-                        <Text
-                          className="text-black text-sm"
-                          style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                        >
+                        <Text className="text-black text-[13px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                           {post.timeAgo}
                         </Text>
                       </View>
                     </View>
                     <View
-                      className="flex-row items-center px-4 py-2 rounded-full"
+                      className="flex-row items-center px-4 py-2 rounded-full flex-shrink"
                       style={{
                         backgroundColor: "#F8F9FA",
+                        maxWidth: "50%"
                       }}
                     >
                       <Text
-                        className="text-sm"
+                        className="text-[13px]"
+                        numberOfLines={2}
                         style={{
-                          fontFamily: "HankenGrotesk_700Bold",
                           color: "#FF3333",
+                          fontFamily: "HankenGrotesk_500Medium",
+                          flexShrink: 1
                         }}
                       >
                         Reason: {post.reason}
@@ -132,10 +120,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                     </View>
                   </View>
 
-                  <Text
-                    className="text-gray-800 mb-4"
-                    style={{ fontFamily: "HankenGrotesk_400Regular" }}
-                  >
+                  <Text className="text-gray-800 mb-4 text-[13px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                     {post.content}
                   </Text>
 
@@ -145,10 +130,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                       className="flex-1 py-3 rounded-lg items-center"
                       style={{ backgroundColor: "#0066CC" }}
                     >
-                      <Text
-                        className="text-white font-semibold"
-                        style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                      >
+                      <Text className="text-white text-[13px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                         Review
                       </Text>
                     </TouchableOpacity>
@@ -157,10 +139,7 @@ const ReportedPostsList: React.FC<ReportedPostsListProps> = ({
                       className="flex-1 py-3 rounded-lg items-center"
                       style={{ backgroundColor: "#FF3333" }}
                     >
-                      <Text
-                        className="text-white font-semibold"
-                        style={{ fontFamily: "HankenGrotesk_700Bold" }}
-                      >
+                      <Text className="text-white text-[13px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                         Take Down
                       </Text>
                     </TouchableOpacity>

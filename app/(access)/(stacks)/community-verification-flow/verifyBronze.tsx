@@ -1,81 +1,401 @@
-import { Headers } from '@/components/Headers';
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SolidMainButton } from "@/components/Btns";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, useFocusEffect } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useCallback } from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const VerifyBronze = () => {
-  const [phoneNumber, setPhoneNumber] = useState('+234802194139');
-  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("+2348022194139");
+  const [emailAddress, setEmailAddress] = useState("gcruz@gmail.com");
+  const [isEditable, setIsEditable] = useState(false);
+
+  // Dynamic Verification States
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
+
+  // Reload verified states whenever the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      const loadStatus = async () => {
+        const phoneVal = await AsyncStorage.getItem("phone_verified");
+        const emailVal = await AsyncStorage.getItem("email_verified");
+        setPhoneVerified(phoneVal === "true");
+        setEmailVerified(emailVal === "true");
+
+        // Fetch custom email from AsyncStorage if saved during emailVerification
+        const savedEmail = await AsyncStorage.getItem("user_email");
+        if (savedEmail) {
+          setEmailAddress(savedEmail);
+        }
+      };
+      loadStatus();
+    }, []),
+  );
+
+  const handleProceed = () => {
+    router.replace("/(access)/(stacks)/profile/choose-avatar");
+  };
+
+  const handleResetVerification = async () => {
+    // Helper to allow testing multiple times
+    await AsyncStorage.removeItem("phone_verified");
+    await AsyncStorage.removeItem("email_verified");
+    setPhoneVerified(false);
+    setEmailVerified(false);
+  };
+
+  const bothVerified = phoneVerified && emailVerified;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-200 pt-6 ">
+    <SafeAreaView
+      style={[styles.viewport, bothVerified && styles.viewportPeachy]}
+    >
+      <StatusBar style="dark" />
 
-        <View className='px-6'>
-            <Headers onPress={()=>router.back()}/>
+      {/* Gray/Peachy Header and Medal Graphic Area */}
+      <View style={styles.topSection}>
+        {/* Custom Header Row */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity
+            style={styles.backCircle}
+            onPress={() => router.back()}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={18} color="#000000" />
+          </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>Bronze</Text>
+
+          {/* Debug reset button to easily re-test layout transitions */}
+          <TouchableOpacity
+            style={styles.resetButton}
+            onPress={handleResetVerification}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="refresh" size={16} color="#6B7280" />
+          </TouchableOpacity>
         </View>
 
-            <View className="flex-1 items-center justify-center px-6">
-                <View className="mb-8">
-                    <Image
-                        source={require('../../../../assets/images/bronzegray.png')}
-                        className="w-60 h-60"
-                        resizeMode="contain"
-                    />
-                    <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-base text-center text-gray-500 font-bold mb-2">Bronze</Text>
-                </View>
+        {/* Large Centered Medal */}
+        <View style={styles.medalWrap}>
+          <Image
+            source={
+              bothVerified
+                ? require("../../../../assets/images/bronze.png")
+                : require("../../../../assets/images/bronzegray.png")
+            }
+            style={styles.medalImage}
+            resizeMode="contain"
+          />
         </View>
+      </View>
 
-
-      {/* Bottom Section */}
-      <View className="bg-white rounded-t-3xl py-8 px-6 pb-20">
-        <Text style={{fontFamily: 'HankenGrotesk_700Bold'}} className="text-xl text-center font-bold mb-2">Basic Verification</Text>
-        <Text style={{fontFamily: 'HankenGrotesk_400Regular'}} className="text-gray-600 text-sm text-center mb-6">Verify your contact details</Text>
-
-        {/* Phone Input */}
-        <View className="flex-row items-center border border-gray-300 rounded-full px-5 py-2.5 mb-4">
-
-            <View className='border-2 border-gray-300 p-1 rounded-full mr-2 flex-row items-center'>
-                <Ionicons name="checkmark" size={14} color="#646363ff" />
-            </View>
-
-            <TextInput
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                className="flex-1 text-base"
-                keyboardType="phone-pad"
-                style={{fontFamily: 'HankenGrotesk_500Medium'}}
+      {/* White Rising Bottom Verification Sheet */}
+      <View style={styles.bottomSheet}>
+        {bothVerified ? (
+          <View style={styles.successSheetContent}>
+            {/* Large Blue Thumbs-Up Icon */}
+            <Ionicons
+              name="thumbs-up"
+              size={84}
+              color="#0066CC"
+              style={styles.successIcon}
             />
 
-          <TouchableOpacity className="ml-2 p-2 bg-gray-100 rounded-full">
-            <Ionicons name="pencil" size={16} color="#9CA3AF" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={()=>router.push('/(access)/(stacks)/community-verification-flow/phoneOTP')} className="bg-blue-600 px-6 py-2 rounded-full ml-2">
-            <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-white text-sm font-semibold">Verify</Text>
-          </TouchableOpacity>
-        </View>
+            <Text style={styles.successTitle}>You’re verified</Text>
 
-        {/* Email Input */}
-        <View className="flex-row items-center border border-gray-300 rounded-full px-5 py-3 mb-6">
-            <View className='border-2 border-gray-300 p-1 rounded-full mr-2 flex-row items-center'>
-                <Ionicons name="checkmark" size={14} color="#727272ff" />
+            <Text style={styles.successSubtitle}>
+              Add a profile photo and update your details to comoplete your
+              account
+            </Text>
+
+            <View style={styles.successButtonWrap}>
+              <SolidMainButton
+                text="Proceed to Profile Update"
+                onPress={handleProceed}
+              />
             </View>
-            <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="flex-1 text-gray-400">No email found</Text>
-            <TouchableOpacity onPress={()=>router.push('/(access)/(stacks)/community-verification-flow/emailVerification')} className="bg-blue-600 px-4 py-2 rounded-full">
-                <Text style={{fontFamily: 'HankenGrotesk_500Medium'}} className="text-white font-semibold text-sm">Add an email</Text>
-            </TouchableOpacity>
-        </View>
+          </View>
+        ) : (
+          <>
+            <Text style={styles.sheetTitle}>Basic Verification</Text>
+            <Text style={styles.sheetSubtitle}>
+              Verify your contact details
+            </Text>
 
-        {/* Progress Indicator */}
-        <View className="flex-row justify-center space-x-2 mt-4">
-          <View className="w-12 h-1 bg-black rounded-full" />
-          <View className="w-12 h-1 bg-gray-300 rounded-full" />
-          <View className="w-12 h-1 bg-gray-300 rounded-full" />
-        </View>
+            {/* Phone Number Pill Container */}
+            <View style={[styles.pill, phoneVerified && styles.pillVerified]}>
+              <Ionicons
+                name={
+                  phoneVerified
+                    ? "checkmark-circle"
+                    : "checkmark-circle-outline"
+                }
+                size={22}
+                color={phoneVerified ? "#00A84E" : "#9CA3AF"}
+                style={styles.pillCheckIcon}
+              />
+
+              <TextInput
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                editable={isEditable && !phoneVerified}
+                style={[
+                  styles.pillInput,
+                  isEditable && styles.pillInputEditable,
+                  phoneVerified && styles.pillInputVerified,
+                ]}
+                keyboardType="phone-pad"
+              />
+
+              {!phoneVerified && (
+                <>
+                  <TouchableOpacity
+                    onPress={() => setIsEditable((prev) => !prev)}
+                    style={styles.pencilButton}
+                    activeOpacity={0.7}
+                  >
+                    <Ionicons
+                      name={isEditable ? "checkmark-sharp" : "pencil"}
+                      size={16}
+                      color="#4B5563"
+                    />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push(
+                        "/(access)/(stacks)/community-verification-flow/phoneOTP",
+                      )
+                    }
+                    style={styles.pillButton}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.pillButtonText}>Verify</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+
+            {/* Email Address Pill Container */}
+            <View style={[styles.pill, emailVerified && styles.pillVerified]}>
+              <Ionicons
+                name={
+                  emailVerified
+                    ? "checkmark-circle"
+                    : "checkmark-circle-outline"
+                }
+                size={22}
+                color={emailVerified ? "#00A84E" : "#9CA3AF"}
+                style={styles.pillCheckIcon}
+              />
+
+              {emailVerified ? (
+                <Text style={[styles.pillInput, styles.pillInputVerified]}>
+                  {emailAddress}
+                </Text>
+              ) : (
+                <>
+                  <Text style={styles.pillEmailPlaceholder}>
+                    No email found
+                  </Text>
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push(
+                        "/(access)/(stacks)/community-verification-flow/emailVerification",
+                      )
+                    }
+                    style={[styles.pillButton, { width: 120 }]}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.pillButtonText}>Add an email</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </>
+        )}
       </View>
     </SafeAreaView>
   );
 };
 
 export default VerifyBronze;
+
+const styles = StyleSheet.create({
+  viewport: {
+    flex: 1,
+    backgroundColor: "#E5E7EB",
+  },
+  viewportPeachy: {
+    backgroundColor: "#FDF0EA", // Peachy gold warm color matching fully verified state
+  },
+  topSection: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    flex: 1,
+    justifyContent: "space-between",
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  backCircle: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "#000000",
+    borderRadius: 99,
+    width: 44,
+    height: 44,
+    backgroundColor: "#FFFFFF",
+  },
+  headerTitle: {
+    fontFamily: "HankenGrotesk_600SemiBold",
+    fontSize: 17,
+    color: "#000000",
+    textAlign: "center",
+    flex: 1,
+  },
+  resetButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  medalWrap: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+  },
+  medalImage: {
+    width: 200,
+    height: 200,
+  },
+  bottomSheet: {
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 24,
+    paddingTop: 42,
+    paddingBottom: 48,
+    minHeight: 380,
+  },
+  sheetTitle: {
+    fontFamily: "HankenGrotesk_600SemiBold",
+    fontSize: 22,
+    color: "#000000",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  sheetSubtitle: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#4B5563",
+    textAlign: "center",
+    marginBottom: 36,
+  },
+  pill: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#000000",
+    borderRadius: 99,
+    height: 64,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  pillVerified: {
+    borderColor: "#000000", // Still retains clear black outline
+  },
+  pillCheckIcon: {
+    marginRight: 10,
+  },
+  pillInput: {
+    flex: 1,
+    fontFamily: "HankenGrotesk_600SemiBold",
+    fontSize: 12,
+    color: "#000000",
+    paddingVertical: 0,
+    textAlignVertical: "center",
+  },
+  pillInputEditable: {
+    color: "#0066CC",
+  },
+  pillInputVerified: {
+    color: "#000000", // matches mockup perfectly
+  },
+  pencilButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 14,
+    backgroundColor: "#E5E7EB",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  pillButton: {
+    backgroundColor: "#0066CC",
+    borderRadius: 99,
+    height: 38,
+    width: 80,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pillButtonText: {
+    fontFamily: "HankenGrotesk_600SemiBold",
+    color: "#FFFFFF",
+    fontSize: 12,
+  },
+  pillEmailPlaceholder: {
+    flex: 1,
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#6B7280",
+  },
+  successSheetContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+  },
+  successIcon: {
+    marginBottom: 24,
+  },
+  successTitle: {
+    fontFamily: "HankenGrotesk_600SemiBold",
+    fontSize: 26,
+    color: "#000000",
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  successSubtitle: {
+    fontFamily: "HankenGrotesk_500Medium",
+    fontSize: 12,
+    color: "#4B5563",
+    textAlign: "center",
+    lineHeight: 22,
+    paddingHorizontal: 12,
+    marginBottom: 36,
+  },
+  successButtonWrap: {
+    width: "100%",
+  },
+});

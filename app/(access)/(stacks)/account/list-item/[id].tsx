@@ -21,6 +21,8 @@ const { width } = Dimensions.get("window");
 const ListItem = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [expired, setExpired] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [returnedStatus, setReturnedStatus] = useState<"yes" | "no" | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
   const { itemData } = useLocalSearchParams();
@@ -73,8 +75,11 @@ const ListItem = () => {
               <Ionicons name="arrow-back" size={25} color="#3A3541" />
             </TouchableOpacity>
 
-            <TouchableOpacity className="w-12 h-12 rounded-full bg-white/80 items-center justify-center">
-              <Ionicons name="heart-outline" size={25} color="#374151" />
+            <TouchableOpacity
+              className="w-12 h-12 rounded-full bg-white/80 items-center justify-center"
+              onPress={() => setIsLiked(!isLiked)}
+            >
+              <Ionicons name={isLiked ? "heart" : "heart-outline"} size={25} color={isLiked ? "#FF3333" : "#374151"} />
             </TouchableOpacity>
           </View>
 
@@ -131,34 +136,22 @@ const ListItem = () => {
                       : "#D9D9D9",
                 }}
               >
-                <Text
-                  className="text-white text-xs font-semibold"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-white text-xs font-semibold" style={{}}>
                   {eachItemData.tag}
                 </Text>
               </View>
-              <Text
-                className="text-xl font-bold text-[#0066CC]"
-                style={{ fontFamily: "HankenGrotesk_500Medium" }}
-              >
+              <Text className="text-xl font-bold text-[#0066CC]" style={{}}>
                 {eachItemData.price}
               </Text>
             </View>
 
             {/* Title */}
-            <Text
-              className="text-xl font-bold mb-2"
-              style={{ fontFamily: "HankenGrotesk_500Medium" }}
-            >
+            <Text className="text-xl font-bold mb-2" style={{}}>
               {eachItemData.title}
             </Text>
 
             {/* Description */}
-            <Text
-              className="text-gray-600 text-sm mb-4 leading-5"
-              style={{ fontFamily: "HankenGrotesk_500Medium" }}
-            >
+            <Text className="text-gray-600 text-sm mb-4 leading-5" style={{}}>
               {eachItemData.description}
             </Text>
 
@@ -166,19 +159,13 @@ const ListItem = () => {
             <View className="flex-row items-center gap-4 mb-6">
               <View className="flex-row items-center gap-1">
                 <Text className="text-gray-500 text-sm">🕐</Text>
-                <Text
-                  className="text-gray-500 text-sm"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-gray-500 text-sm" style={{}}>
                   Posted {eachItemData.timePosted}
                 </Text>
               </View>
               <View className="flex-row items-center gap-1">
                 <Text className="text-gray-500 text-sm">📍</Text>
-                <Text
-                  className="text-gray-500 text-sm"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-gray-500 text-sm" style={{}}>
                   {eachItemData.distance}
                 </Text>
               </View>
@@ -191,10 +178,7 @@ const ListItem = () => {
               className="mb-4"
               entering={FadeInDown.duration(600).delay(400).springify()}
             >
-              <Text
-                className="text-base font-bold "
-                style={{ fontFamily: "HankenGrotesk_500Medium" }}
-              >
+              <Text className="text-[15px] font-bold " style={{}}>
                 Details & Category
               </Text>
             </Animated.View>
@@ -204,30 +188,18 @@ const ListItem = () => {
               className="flex-row mb-2"
             >
               <View className="flex-1 bg-gray-100 p-4 rounded-lg mr-2">
-                <Text
-                  className="text-gray-500 text-xs mb-1"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-gray-500 text-xs mb-1" style={{}}>
                   BRAND
                 </Text>
-                <Text
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-[15px] font-semibold" style={{}}>
                   Trek
                 </Text>
               </View>
               <View className="flex-1 bg-gray-100 p-4 rounded-lg mr-2">
-                <Text
-                  className="text-gray-500 text-xs mb-1"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-gray-500 text-xs mb-1" style={{}}>
                   FRAME SIZE
                 </Text>
-                <Text
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-[15px] font-semibold" style={{}}>
                   54 CM
                 </Text>
               </View>
@@ -238,30 +210,18 @@ const ListItem = () => {
               className="flex-row mb-2"
             >
               <View className="flex-1 bg-gray-100 p-4 rounded-lg mr-2">
-                <Text
-                  className="text-gray-500 text-xs mb-1"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-gray-500 text-xs mb-1" style={{}}>
                   Category
                 </Text>
-                <Text
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-[15px] font-semibold" style={{}}>
                   Sports
                 </Text>
               </View>
               <View className="flex-1 bg-gray-100 p-4 rounded-lg mr-2">
-                <Text
-                  className="text-gray-500 text-xs mb-1"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-gray-500 text-xs mb-1" style={{}}>
                   Condition
                 </Text>
-                <Text
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-[15px] font-semibold" style={{}}>
                   New
                 </Text>
               </View>
@@ -272,30 +232,18 @@ const ListItem = () => {
               className="flex-row"
             >
               <View className="flex-1 bg-gray-100 p-4 rounded-lg mr-2">
-                <Text
-                  className="text-gray-500 text-xs mb-1"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-gray-500 text-xs mb-1" style={{}}>
                   YEAR
                 </Text>
-                <Text
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-[15px] font-semibold" style={{}}>
                   2018
                 </Text>
               </View>
               <View className="flex-1 bg-gray-100 p-4 rounded-lg mr-2">
-                <Text
-                  className="text-gray-500 text-xs mb-1"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-gray-500 text-xs mb-1" style={{}}>
                   Color
                 </Text>
-                <Text
-                  className="text-base font-semibold"
-                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
-                >
+                <Text className="text-[15px] font-semibold" style={{}}>
                   Red
                 </Text>
               </View>
@@ -331,35 +279,36 @@ const ListItem = () => {
             className="bg-white border-t border-gray-100 px-6 py-4"
           >
             <View className="flex-row items-center justify-between">
-              <Text
-                className="text-base"
-                style={{ fontFamily: "HankenGrotesk_500Medium" }}
-              >
+              <Text className="text-[15px]" style={{}}>
                 Item Returned?
               </Text>
 
               <View className="flex-row items-center gap-4">
                 <TouchableOpacity
-                  className="px-6 py-3 bg-white border-2 border-[#60A5FA] rounded-lg"
-                  onPress={() => console.log("Returned: yes")}
+                  className={`px-6 py-3 bg-white border-2 rounded-lg ${
+                    returnedStatus === "yes" ? "border-[#0066CC]" : "border-gray-200"
+                  }`}
+                  onPress={() => setReturnedStatus("yes")}
                 >
                   <Text
                     style={{
-                      fontFamily: "HankenGrotesk_700Bold",
-                      color: "#1E90FF",
+                      color: returnedStatus === "yes" ? "#0066CC" : "#374151",
+                      fontFamily: "HankenGrotesk_500Medium"
                     }}
                   >
                     Yes
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  className="px-6 py-3 bg-white border-2 border-gray-200 rounded-lg"
-                  onPress={() => console.log("Returned: no")}
+                  className={`px-6 py-3 bg-white border-2 rounded-lg ${
+                    returnedStatus === "no" ? "border-[#FF3333]" : "border-gray-200"
+                  }`}
+                  onPress={() => setReturnedStatus("no")}
                 >
                   <Text
                     style={{
-                      fontFamily: "HankenGrotesk_700Bold",
-                      color: "#374151",
+                      color: returnedStatus === "no" ? "#FF3333" : "#374151",
+                      fontFamily: "HankenGrotesk_500Medium"
                     }}
                   >
                     No

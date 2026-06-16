@@ -1,20 +1,28 @@
-import { Stack } from 'expo-router';
-import React from 'react';
+import { useAuth } from "@/providers/AuthProvider";
+import { router, Stack } from "expo-router";
+import React, { useEffect } from "react";
 
 import "react-native-reanimated";
 
-
 const StackPagesLayout = () => {
+  const { token, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !token) {
+      router.replace("/(noaccess)/sign-in-method");
+    }
+  }, [isLoading, token]);
+
   return (
     <Stack
-    screenOptions={{
+      screenOptions={{
         headerShown: false,
-    }}
+      }}
     >
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="(stacks)" />
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="(stacks)" />
     </Stack>
-  )
-}
+  );
+};
 
-export default StackPagesLayout
+export default StackPagesLayout;

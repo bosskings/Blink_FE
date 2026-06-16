@@ -17,11 +17,11 @@ const ReportSkeletonItem = () => {
           duration: 800,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     );
     loop.start();
     return () => loop.stop();
-  }, []);
+  }, [opacity]);
 
   return (
     <View className="bg-white p-4 rounded-xl shadow">

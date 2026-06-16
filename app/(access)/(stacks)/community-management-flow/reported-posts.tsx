@@ -7,56 +7,53 @@ import { RefreshControl, ScrollView, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import ReportedPostsList from "./_components/report/ReportedPostsList";
+import { CustomAlert } from "@/components/CustomAlert";
 
 export default function ReportedPosts() {
   const router = useRouter();
   const [posts, setPosts] = useState<typeof initialReportedPosts>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ title: "", message: "", postId: null as number | string | null, action: null as "review" | "takedown" | null });
 
   useEffect(() => {
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-    setLoading(true);
-    setPosts([]);
-
-    initialReportedPosts.forEach((post, index) => {
-      const t = setTimeout(() => {
-        setPosts((prev) => [...prev, post]);
-        if (index === initialReportedPosts.length - 1) setLoading(false);
-      }, index * 150);
-      timeouts.push(t);
-    });
-
-    return () => timeouts.forEach(clearTimeout);
+    setPosts(initialReportedPosts);
+    setLoading(false);
   }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setPosts([]);
-    setLoading(true);
-
     setTimeout(() => {
-      initialReportedPosts.forEach((post, index) => {
-        setTimeout(() => {
-          setPosts((prev) => [...prev, post]);
-          if (index === initialReportedPosts.length - 1) {
-            setRefreshing(false);
-            setLoading(false);
-          }
-        }, index * 120);
-      });
+      setPosts(initialReportedPosts);
+      setRefreshing(false);
     }, 700);
   }, []);
 
   const handleReview = (postId: number | string) => {
-    // Handle review action
-    console.log("Review post:", postId);
+    setAlertConfig({
+      title: "Review Post",
+      message: "Are you sure you want to review this post?",
+      postId,
+      action: "review"
+    });
+    setAlertVisible(true);
   };
 
   const handleTakeDown = (postId: number | string) => {
-    // Handle review action
-    console.log("Take Down Post:", postId);
-    setPosts((prev) => prev.filter((item) => item.id !== postId));
+    setAlertConfig({
+      title: "Take Down Post",
+      message: "Are you sure you want to take down this post? This action cannot be undone.",
+      postId,
+      action: "takedown"
+    });
+    setAlertVisible(true);
+  };
+
+  const confirmAction = () => {
+    if (alertConfig.action === "takedown" && alertConfig.postId) {
+      setPosts((prev) => prev.filter((item) => item.id !== alertConfig.postId));
+    }
   };
 
   return (
@@ -84,6 +81,15 @@ export default function ReportedPosts() {
           initialReportedPosts={initialReportedPosts}
         />
       </ScrollView>
+
+      <CustomAlert
+        visible={alertVisible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => setAlertVisible(false)}
+        onConfirm={confirmAction}
+        confirmText={alertConfig.action === "takedown" ? "Take Down" : "Review"}
+      />
     </SafeAreaView>
   );
 }
