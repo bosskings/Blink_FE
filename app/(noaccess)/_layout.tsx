@@ -44,10 +44,7 @@ const StackPagesLayout = () => {
       if (pathname === "/") {
         const onboarded = await AsyncStorage.getItem("has_onboarded");
         if (onboarded === "true") {
-          router.replace({
-            pathname: "/login",
-            params: { variant: "returning" },
-          });
+          router.replace("/sign-in-method");
         } else {
           router.replace("/onboarding");
         }
@@ -65,6 +62,7 @@ const StackPagesLayout = () => {
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="onboarding" />
+      <Stack.Screen name="sign-in-method" />
       <Stack.Screen name="register" />
       <Stack.Screen name="create-password" />
       <Stack.Screen name="login" />

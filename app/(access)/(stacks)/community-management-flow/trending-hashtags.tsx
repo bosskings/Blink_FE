@@ -6,50 +6,32 @@ import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrendingHashtagsList from "./_components/trending-hashtags/TrendingHashtagsList";
+import { CustomAlert } from "@/components/CustomAlert";
 
 export default function TrendingHashtags() {
   const router = useRouter();
   const [hashtags, setHashtags] = useState<typeof trendingHashtagsData>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ title: "", message: "" });
 
   // Simulate data load with staggered animation
   useEffect(() => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    setLoading(true);
-    setHashtags([]);
-
-    trendingHashtagsData.forEach((item, index) => {
-      const t = setTimeout(() => {
-        setHashtags((prev) => [...prev, item]);
-        if (index === trendingHashtagsData.length - 1) setLoading(false);
-      }, index * 150);
-      timers.push(t);
-    });
-
-    return () => timers.forEach(clearTimeout);
+    setHashtags(trendingHashtagsData);
+    setLoading(false);
   }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setHashtags([]);
-    setLoading(true);
-
     setTimeout(() => {
-      trendingHashtagsData.forEach((item, index) => {
-        setTimeout(() => {
-          setHashtags((prev) => [...prev, item]);
-          if (index === trendingHashtagsData.length - 1) {
-            setRefreshing(false);
-            setLoading(false);
-          }
-        }, index * 120);
-      });
+      setHashtags(trendingHashtagsData);
+      setRefreshing(false);
     }, 700);
   }, []);
 
   const handleViewHashtag = (tag: string) => {
-    console.log(`View hashtag: ${tag}`);
+    router.push(`/(access)/(stacks)/community-management-flow/hashtag/${tag.replace('#', '')}` as any);
   };
 
   return (
@@ -76,6 +58,13 @@ export default function TrendingHashtags() {
           onViewHashtag={handleViewHashtag}
         />
       </ScrollView>
+
+      <CustomAlert
+        visible={alertVisible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => setAlertVisible(false)}
+      />
     </SafeAreaView>
   );
 }

@@ -15,17 +15,18 @@ export const SearchInput = ({
   containerStyle,
 }: SearchInputProps) => {
   return (
-    <View style={[{ flex: 1 }, containerStyle]}>
+    <View style={containerStyle}>
       <View
         style={{
-          flex: 1,
           height: 44,
           backgroundColor: "#F9FAFB",
           borderRadius: 10,
           paddingHorizontal: 14,
-          justifyContent: "center",
+          flexDirection: "row",
+          alignItems: "center",
         }}
       >
+        <Ionicons name="search" size={20} color="#9CA3AF" style={{ marginRight: 8 }} />
         <TextInput
           placeholder={placeholder}
           placeholderTextColor="#9CA3AF"
@@ -33,6 +34,7 @@ export const SearchInput = ({
             fontFamily: "HankenGrotesk_500Medium",
             fontSize: 13,
             color: "#111827",
+            flex: 1,
           }}
           value={value}
           onChangeText={onChangeText}

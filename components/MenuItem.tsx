@@ -7,6 +7,8 @@ interface MenuItemProps {
   label: string;
   onPress: () => void;
   danger?: boolean;
+  textColor?: string;
+  hideArrow?: boolean;
 }
 
 export const MenuItem = ({
@@ -14,6 +16,8 @@ export const MenuItem = ({
   label,
   onPress,
   danger = false,
+  textColor,
+  hideArrow = false,
 }: MenuItemProps) => {
   return (
     <TouchableOpacity
@@ -32,20 +36,22 @@ export const MenuItem = ({
           {icon}
         </View>
         <Text
-          className="text-[15px]"
+          className="text-[13px]"
           style={{
-            color: danger ? "#B91C1C" : "#000000",
-            fontFamily: "HankenGrotesk_400Regular",
+            color: textColor ? textColor : danger ? "#B91C1C" : "#000000",
+            fontFamily: "HankenGrotesk_500Medium",
           }}
         >
           {label}
         </Text>
       </View>
-      <MaterialIcons
-        name="arrow-forward-ios"
-        size={17}
-        color={danger ? "#F87171" : "#D9D9D9"}
-      />
+      {!hideArrow && (
+        <MaterialIcons
+          name="arrow-forward-ios"
+          size={17}
+          color={danger ? "#F87171" : "#D9D9D9"}
+        />
+      )}
     </TouchableOpacity>
   );
 };

@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
+import { router } from "expo-router";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export const DiscussionCard = ({
@@ -11,13 +12,18 @@ export const DiscussionCard = ({
   likedDiscussions: string[];
   toggleLikeDiscussion: (id: string) => void;
 }) => (
-  <View
+  <TouchableOpacity
     key={item.id}
     className="bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow mb-4"
+    activeOpacity={0.9}
+    onPress={() => router.push(`/(access)/(stacks)/community-management-flow/post/${item.id}` as any)}
   >
     {/* User Info */}
     <View className="flex-row items-center justify-between mb-3">
-      <View className="flex-row items-center">
+      <TouchableOpacity 
+        className="flex-row items-center"
+        onPress={() => router.push(`/(access)/(stacks)/user/${item.userId || item.id}` as any)}
+      >
         <Image
           source={{ uri: item.avatar }}
           className="w-14 h-14 rounded-full"
@@ -26,7 +32,7 @@ export const DiscussionCard = ({
           <Text className="font-semibold text-[15px]">{item.user}</Text>
           <Text className="text-gray-500 text-[13px]">{item.time}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
       <View
         className="flex-row items-center px-4 py-2 rounded-full"
         style={{
@@ -57,12 +63,13 @@ export const DiscussionCard = ({
       className="flex-row gap-2 mb-3"
     >
       {item.tags.map((tag: string, index: number) => (
-        <View
+        <TouchableOpacity
           key={index}
           className="border-[1.5px] border-[#6C757D] px-4 py-1 mr-2 rounded-full"
+          onPress={() => router.push(`/(access)/(stacks)/community-management-flow/hashtag/${tag.replace('#', '')}` as any)}
         >
           <Text className="text-[#6C757D] text-xs font-bold">{tag}</Text>
-        </View>
+        </TouchableOpacity>
       ))}
     </ScrollView>
 
@@ -92,10 +99,13 @@ export const DiscussionCard = ({
           {item.likes + (likedDiscussions.includes(item.id) ? 1 : 0)}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity className="flex-row items-center gap-1">
+      <TouchableOpacity 
+        className="flex-row items-center gap-1"
+        onPress={() => router.push(`/(access)/(stacks)/community-management-flow/post/${item.id}`)}
+      >
         <Ionicons name="chatbubble-outline" size={18} color="#6B7280" />
         <Text className="text-gray-600 text-[13px]">{item.comments}</Text>
       </TouchableOpacity>
     </View>
-  </View>
+  </TouchableOpacity>
 );

@@ -34,13 +34,17 @@ export const CommunityCard = ({
 
   if (variant === "compact") {
     return (
-      <View className="mb-5 mr-3 bg-white rounded shadow">
+      <TouchableOpacity 
+        className="mb-5 mr-3 bg-white rounded shadow"
+        onPress={handlePress}
+        activeOpacity={0.8}
+      >
         <Image source={{ uri: image }} className="w-32 h-20 mb-1 rounded-t" />
         <View className="flex-row items-center justify-between px-2 pb-2">
           <Text className="text-[13px] font-semibold">{name}</Text>
           <Text className="text-[12px] text-gray-500">{members}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -77,7 +81,7 @@ export const CommunityCard = ({
             className="flex-row items-center gap-2 px-6 py-3 rounded-lg bg-[#0066CC]"
             onPress={handlePress}
           >
-            <Text className="text-[13px] text-white">Join</Text>
+            <Text className="text-[13px] text-white" style={{ fontFamily: "HankenGrotesk_500Medium" }}>Join</Text>
           </TouchableOpacity>
         </View>
       )}

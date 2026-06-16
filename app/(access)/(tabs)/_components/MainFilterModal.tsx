@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
+import React from "react";
 import {
   Modal,
   ScrollView,
-  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -47,8 +47,14 @@ export const MainFilterModal = ({
   onApply,
   onReset,
 }: MainFilterModalProps) => {
+  const activeThumbRef = React.useRef<"min" | "max" | null>(null);
   return (
-    <Modal visible={visible} transparent={false} animationType="slide" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent={false}
+      animationType="slide"
+      onRequestClose={onClose}
+    >
       <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
         {/* Header */}
         <View
@@ -62,7 +68,11 @@ export const MainFilterModal = ({
             borderBottomColor: "#F3F4F6",
           }}
         >
-          <TouchableOpacity onPress={onClose} style={{ padding: 8 }} activeOpacity={0.7}>
+          <TouchableOpacity
+            onPress={onClose}
+            style={{ padding: 8 }}
+            activeOpacity={0.7}
+          >
             <Ionicons name="chevron-back" size={22} color="#0066CC" />
           </TouchableOpacity>
           <Text
@@ -84,7 +94,7 @@ export const MainFilterModal = ({
           contentContainerStyle={{
             paddingHorizontal: 24,
             paddingTop: 16,
-            paddingBottom: 100,
+            paddingBottom: 10,
           }}
         >
           {/* Distance Card */}
@@ -92,7 +102,12 @@ export const MainFilterModal = ({
             <Text style={filterCardTitle}>Distance</Text>
             <Text style={filterCardDesc}>
               Show results within{" "}
-              <Text style={{ color: "#0066CC", fontFamily: "HankenGrotesk_500Medium" }}>
+              <Text
+                style={{
+                  color: "#0066CC",
+                  fontFamily: "HankenGrotesk_500Medium",
+                }}
+              >
                 {distance === 0 ? "Not specified" : `${distance}km`}
               </Text>{" "}
               of your current location
@@ -105,12 +120,18 @@ export const MainFilterModal = ({
               onMoveShouldSetResponder={() => true}
               onResponderGrant={(e) => {
                 const x = e.nativeEvent.locationX;
-                const pct = Math.max(0, Math.min(100, (x / (sliderWidth || 250)) * 100));
+                const pct = Math.max(
+                  0,
+                  Math.min(100, (x / (sliderWidth || 250)) * 100),
+                );
                 setDistance(Math.round(pct));
               }}
               onResponderMove={(e) => {
                 const x = e.nativeEvent.locationX;
-                const pct = Math.max(0, Math.min(100, (x / (sliderWidth || 250)) * 100));
+                const pct = Math.max(
+                  0,
+                  Math.min(100, (x / (sliderWidth || 250)) * 100),
+                );
                 setDistance(Math.round(pct));
               }}
             >
@@ -158,50 +179,56 @@ export const MainFilterModal = ({
           <View style={filterCard}>
             <Text style={filterCardTitle}>Item Type</Text>
             <View style={{ marginTop: 12, gap: 12 }}>
-              {(["All", "Goods", "Services", "Requests"] as const).map((type) => {
-                const isActive = itemType === type;
-                return (
-                  <TouchableOpacity
-                    key={type}
-                    onPress={() => setItemType(type)}
-                    style={{ flexDirection: "row", alignItems: "center", paddingVertical: 8 }}
-                    activeOpacity={0.7}
-                  >
-                    <View
+              {(["All", "Goods", "Services", "Requests"] as const).map(
+                (type) => {
+                  const isActive = itemType === type;
+                  return (
+                    <TouchableOpacity
+                      key={type}
+                      onPress={() => setItemType(type)}
                       style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 10,
-                        borderWidth: 2,
-                        borderColor: isActive ? "#0066CC" : "#9CA3AF",
-                        marginRight: 12,
-                        justifyContent: "center",
+                        flexDirection: "row",
                         alignItems: "center",
+                        paddingVertical: 8,
                       }}
+                      activeOpacity={0.7}
                     >
-                      {isActive && (
-                        <View
-                          style={{
-                            width: 10,
-                            height: 10,
-                            borderRadius: 5,
-                            backgroundColor: "#0066CC",
-                          }}
-                        />
-                      )}
-                    </View>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontFamily: "HankenGrotesk_500Medium",
-                        color: isActive ? "#000000" : "#4B5563",
-                      }}
-                    >
-                      {type}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+                      <View
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 10,
+                          borderWidth: 2,
+                          borderColor: isActive ? "#0066CC" : "#9CA3AF",
+                          marginRight: 12,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        {isActive && (
+                          <View
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 5,
+                              backgroundColor: "#0066CC",
+                            }}
+                          />
+                        )}
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontFamily: "HankenGrotesk_500Medium",
+                          color: isActive ? "#000000" : "#4B5563",
+                        }}
+                      >
+                        {type}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                },
+              )}
             </View>
           </View>
 
@@ -210,29 +237,122 @@ export const MainFilterModal = ({
             <Text style={filterCardTitle}>Price</Text>
             <Text style={filterCardDesc}>
               Set your desired minimum and maximum price in{" "}
-              <Text style={{ color: "#0066CC", fontFamily: "HankenGrotesk_500Medium" }}>NGN</Text>
+              <Text
+                style={{
+                  color: "#0066CC",
+                  fontFamily: "HankenGrotesk_500Medium",
+                }}
+              >
+                NGN
+              </Text>
             </Text>
 
             <View style={{ marginTop: 8 }}>
               <View
-                style={{
-                  height: 6,
-                  backgroundColor: "#E5E7EB",
-                  borderRadius: 3,
-                  position: "relative",
-                  marginVertical: 8,
+                style={{ height: 40, justifyContent: "center", marginTop: 8 }}
+                onLayout={(e) => setSliderWidth(e.nativeEvent.layout.width)}
+                onStartShouldSetResponder={() => true}
+                onMoveShouldSetResponder={() => true}
+                onResponderGrant={(e) => {
+                  const x = e.nativeEvent.locationX;
+                  const pct = Math.max(
+                    0,
+                    Math.min(100, (x / (sliderWidth || 250)) * 100),
+                  );
+                  const val = Math.round((pct / 100) * 1000000);
+
+                  const currentMin = parseInt(minPrice.replace(/\D/g, "")) || 0;
+                  const currentMax =
+                    maxPrice === ""
+                      ? 1000000
+                      : parseInt(maxPrice.replace(/\D/g, "")) || 0;
+
+                  if (Math.abs(val - currentMin) < Math.abs(val - currentMax)) {
+                    activeThumbRef.current = "min";
+                    setMinPrice(val.toString());
+                  } else {
+                    activeThumbRef.current = "max";
+                    setMaxPrice(val.toString());
+                  }
+                }}
+                onResponderMove={(e) => {
+                  const x = e.nativeEvent.locationX;
+                  const pct = Math.max(
+                    0,
+                    Math.min(100, (x / (sliderWidth || 250)) * 100),
+                  );
+                  const val = Math.round((pct / 100) * 1000000);
+
+                  const currentMin = parseInt(minPrice.replace(/\D/g, "")) || 0;
+                  const currentMax =
+                    maxPrice === ""
+                      ? 1000000
+                      : parseInt(maxPrice.replace(/\D/g, "")) || 0;
+
+                  if (activeThumbRef.current === "min") {
+                    setMinPrice(Math.min(val, currentMax).toString());
+                  } else if (activeThumbRef.current === "max") {
+                    setMaxPrice(Math.max(val, currentMin).toString());
+                  }
+                }}
+                onResponderRelease={() => {
+                  activeThumbRef.current = null;
                 }}
               >
                 <View
+                  pointerEvents="none"
                   style={{
-                    position: "absolute",
-                    left: "5%",
-                    right: "10%",
-                    top: 0,
-                    bottom: 0,
-                    backgroundColor: "#0066CC",
+                    height: 6,
+                    backgroundColor: "#E5E7EB",
+                    borderRadius: 3,
+                    position: "relative",
                   }}
-                />
+                >
+                  <View
+                    pointerEvents="none"
+                    style={{
+                      position: "absolute",
+                      left: `${Math.min(100, Math.max(0, ((parseInt(minPrice.replace(/\D/g, "")) || 0) / 1000000) * 100))}%`,
+                      right: `${100 - Math.min(100, Math.max(0, ((maxPrice === "" ? 1000000 : parseInt(maxPrice.replace(/\D/g, "")) || 0) / 1000000) * 100))}%`,
+                      top: 0,
+                      bottom: 0,
+                      backgroundColor: "#0066CC",
+                      borderRadius: 3,
+                    }}
+                  />
+                  {/* Min Thumb */}
+                  <View
+                    pointerEvents="none"
+                    style={{
+                      position: "absolute",
+                      left: `${Math.min(100, Math.max(0, ((parseInt(minPrice.replace(/\D/g, "")) || 0) / 1000000) * 100))}%`,
+                      marginLeft: -10,
+                      top: -7,
+                      width: 20,
+                      height: 20,
+                      borderRadius: 10,
+                      backgroundColor: "#FFFFFF",
+                      borderWidth: 2,
+                      borderColor: "#0066CC",
+                    }}
+                  />
+                  {/* Max Thumb */}
+                  <View
+                    pointerEvents="none"
+                    style={{
+                      position: "absolute",
+                      left: `${Math.min(100, Math.max(0, ((maxPrice === "" ? 1000000 : parseInt(maxPrice.replace(/\D/g, "")) || 0) / 1000000) * 100))}%`,
+                      marginLeft: -10,
+                      top: -7,
+                      width: 20,
+                      height: 20,
+                      borderRadius: 10,
+                      backgroundColor: "#FFFFFF",
+                      borderWidth: 2,
+                      borderColor: "#0066CC",
+                    }}
+                  />
+                </View>
               </View>
 
               <View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
@@ -290,7 +410,11 @@ export const MainFilterModal = ({
                   <TouchableOpacity
                     key={type}
                     onPress={() => setListingType(type)}
-                    style={{ flexDirection: "row", alignItems: "center", paddingVertical: 8 }}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      paddingVertical: 8,
+                    }}
                     activeOpacity={0.7}
                   >
                     <View
@@ -338,7 +462,7 @@ export const MainFilterModal = ({
             flexDirection: "row",
             gap: 12,
             backgroundColor: "#FFFFFF",
-            paddingBottom: 32,
+            paddingBottom: 0,
             paddingTop: 16,
             paddingHorizontal: 24,
             borderTopWidth: 1,

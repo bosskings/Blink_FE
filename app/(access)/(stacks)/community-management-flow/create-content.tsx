@@ -1,6 +1,7 @@
 import { Headers } from "@/components/Headers";
 import { SolidMainButton } from "@/components/Btns";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -15,6 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { CustomAlert } from "@/components/CustomAlert";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { EventItem } from "./community-details/[id]";
 
@@ -31,6 +33,13 @@ const getDateTimePicker = () => {
 
 const CreateContent = () => {
   const { communityId, communityName } = useLocalSearchParams();
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ title: "", message: "" });
+
+  const showAlert = (title: string, message: string) => {
+    setAlertConfig({ title, message });
+    setAlertVisible(true);
+  };
   const [contentType, setContentType] = useState<"post" | "event">("post");
   const [content, setContent] = useState("");
   const [allowComments, setAllowComments] = useState(false);
@@ -50,6 +59,8 @@ const CreateContent = () => {
   const [eventDescription, setEventDescription] = useState("");
   const [eventImages, setEventImages] = useState<string[]>([]);
   const [eventVideos, setEventVideos] = useState<string[]>([]);
+  const [postImages, setPostImages] = useState<string[]>([]);
+  const [postVideos, setPostVideos] = useState<string[]>([]);
 
   // Mock user data - in a real app, this would come from auth context
   const currentUser = {
@@ -186,8 +197,7 @@ const CreateContent = () => {
         videos: eventVideos.length > 0 ? eventVideos : undefined,
       };
 
-      console.log("Creating event:", eventData);
-      // In a real app, this would submit the event to the API
+      showAlert("Event Created", "Your event has been successfully created.");
     } else {
       // Create post
       const postData = {
@@ -202,64 +212,39 @@ const CreateContent = () => {
           : undefined,
       };
 
-      console.log("Creating post:", postData);
-      // In a real app, this would submit the post to the API
-    }
-
-    // Navigate back after creation
-    router.back();
-  };
-
-  const handlePhotoPress = () => {
-    // TODO: Implement image picker functionality
-    // Requires new dev build with image picker library
-    // For now, using placeholder URLs for demonstration
-    if (contentType === "post") {
-      console.log("Post Photo functionality - TODO: Implement image picker");
-      // In real implementation:
-      // const result = await ImagePicker.launchImageLibraryAsync({...});
-      // if (!result.canceled) {
-      //   setPostImages([...postImages, result.assets[0].uri]);
-      // }
-    } else {
-      // Event image selection
-      console.log("Event Photo functionality - TODO: Implement image picker");
-      // In real implementation:
-      // const result = await ImagePicker.launchImageLibraryAsync({...});
-      // if (!result.canceled) {
-      //   setEventImages([...eventImages, result.assets[0].uri]);
-      // }
-      // For demo, adding a placeholder
-      setEventImages([
-        ...eventImages,
-        "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop",
-      ]);
+      showAlert("Post Created", "Your post has been successfully published.");
     }
   };
 
-  const handleVideoPress = () => {
-    // TODO: Implement video picker functionality
-    // Requires new dev build with video picker library
-    if (contentType === "post") {
-      console.log("Post Video functionality - TODO: Implement video picker");
-      // In real implementation:
-      // const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'videos' });
-      // if (!result.canceled) {
-      //   setPostVideos([...postVideos, result.assets[0].uri]);
-      // }
-    } else {
-      // Event video selection
-      console.log("Event Video functionality - TODO: Implement video picker");
-      // In real implementation:
-      // const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'videos' });
-      // if (!result.canceled) {
-      //   setEventVideos([...eventVideos, result.assets[0].uri]);
-      // }
-      // For demo, adding a placeholder
-      setEventVideos([
-        ...eventVideos,
-        "https://example.com/video-placeholder.mp4",
-      ]);
+  const handlePhotoPress = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      if (contentType === "post") {
+        setPostImages([...postImages, result.assets[0].uri]);
+      } else {
+        setEventImages([...eventImages, result.assets[0].uri]);
+      }
+    }
+  };
+
+  const handleVideoPress = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      if (contentType === "post") {
+        setPostVideos([...postVideos, result.assets[0].uri]);
+      } else {
+        setEventVideos([...eventVideos, result.assets[0].uri]);
+      }
     }
   };
 
@@ -271,6 +256,16 @@ const CreateContent = () => {
   const handleRemoveEventVideo = (index: number) => {
     const newVideos = eventVideos.filter((_, i) => i !== index);
     setEventVideos(newVideos);
+  };
+
+  const handleRemovePostImage = (index: number) => {
+    const newImages = postImages.filter((_, i) => i !== index);
+    setPostImages(newImages);
+  };
+
+  const handleRemovePostVideo = (index: number) => {
+    const newVideos = postVideos.filter((_, i) => i !== index);
+    setPostVideos(newVideos);
   };
 
   return (
@@ -305,14 +300,11 @@ const CreateContent = () => {
                 color={contentType === "post" ? "#0066CC" : "#6C757D"}
               />
               <Text
-                className={`text-[15px] ${
+                className={`text-[13px] ${
                   contentType === "post" ? "text-[#0066CC]" : "text-[#6C757D]"
                 }`}
                 style={{
-                  fontFamily:
-                    contentType === "post"
-                      ? "HankenGrotesk_500Medium"
-                      : "HankenGrotesk_500Medium",
+                  fontFamily: "HankenGrotesk_500Medium",
                 }}
               >
                 Post
@@ -334,14 +326,11 @@ const CreateContent = () => {
                 color={contentType === "event" ? "#0066CC" : "#6C757D"}
               />
               <Text
-                className={`text-[15px] ${
+                className={`text-[13px] ${
                   contentType === "event" ? "text-[#0066CC]" : "text-[#6C757D]"
                 }`}
                 style={{
-                  fontFamily:
-                    contentType === "event"
-                      ? "HankenGrotesk_500Medium"
-                      : "HankenGrotesk_500Medium",
+                  fontFamily: "HankenGrotesk_500Medium",
                 }}
               >
                 Event
@@ -358,15 +347,15 @@ const CreateContent = () => {
               className="w-12 h-12 rounded-full"
             />
             <View className="flex-1">
-              <Text className="text-[15px] text-black mb-1" style={{}}>
+              <Text className="text-[17px] text-black mb-1 font-bold" style={{}}>
                 {currentUser.name}
               </Text>
               <View className="flex-row items-center gap-1">
-                <Text className="text-[13px] text-black" style={{}}>
+                <Text className="text-[13px] text-black" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                   Posting to
                 </Text>
                 <TouchableOpacity>
-                  <Text className="text-[13px] text-[#0066CC]" style={{}}>
+                  <Text className="text-[13px] text-[#0066CC]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                     {communityName || "Covenant University Community"}
                   </Text>
                 </TouchableOpacity>
@@ -392,6 +381,64 @@ const CreateContent = () => {
                   minHeight: 200,
                 }}
               />
+
+              {/* Selected Post Images */}
+              {postImages.length > 0 && (
+                <View className="mt-4">
+                  <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
+                    Selected Images ({postImages.length})
+                  </Text>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ gap: 10 }}
+                  >
+                    {postImages.map((imageUri, index) => (
+                      <View key={index} className="relative">
+                        <Image
+                          source={{ uri: imageUri }}
+                          className="w-24 h-24 rounded-xl"
+                          resizeMode="cover"
+                        />
+                        <TouchableOpacity
+                          onPress={() => handleRemovePostImage(index)}
+                          className="absolute -top-0 -right-0 bg-[#D01111] rounded-full w-6 h-6 items-center justify-center"
+                        >
+                          <Ionicons name="close" size={14} color="#FFFFFF" />
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
+
+              {/* Selected Post Videos */}
+              {postVideos.length > 0 && (
+                <View className="mt-4">
+                  <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
+                    Selected Videos ({postVideos.length})
+                  </Text>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ gap: 10 }}
+                  >
+                    {postVideos.map((videoUri, index) => (
+                      <View key={index} className="relative">
+                        <View className="w-24 h-24 rounded-xl bg-[#EAEAEA] border border-[#D9D9D9] items-center justify-center">
+                          <Feather name="video" size={32} color="#6C757D" />
+                        </View>
+                        <TouchableOpacity
+                          onPress={() => handleRemovePostVideo(index)}
+                          className="absolute -top-0 -right-0 bg-[#D01111] rounded-full w-6 h-6 items-center justify-center"
+                        >
+                          <Ionicons name="close" size={14} color="#FFFFFF" />
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
             </View>
           </View>
         )}
@@ -401,7 +448,7 @@ const CreateContent = () => {
           <View className="px-6 mb-6 gap-4">
             {/* Event Title */}
             <View>
-              <Text className="text-[13px] text-black mb-2" style={{}}>
+              <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                 Event Title
               </Text>
               <TextInput
@@ -419,7 +466,7 @@ const CreateContent = () => {
             {/* Date and Time Row */}
             <View className="flex-row gap-3">
               <View className="flex-1">
-                <Text className="text-[13px] text-black mb-2" style={{}}>
+                <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                   Date
                 </Text>
                 <TouchableOpacity
@@ -481,7 +528,7 @@ const CreateContent = () => {
                         onPress={() => setShowDatePicker(false)}
                         className="flex-1 bg-[#D9D9D9] rounded-xl py-2 items-center"
                       >
-                        <Text style={{}} className="text-[#6C757D]">
+                        <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-[#6C757D] text-[13px]">
                           Cancel
                         </Text>
                       </TouchableOpacity>
@@ -489,7 +536,7 @@ const CreateContent = () => {
                         onPress={() => setShowDatePicker(false)}
                         className="flex-1 bg-[#0066CC] rounded-xl py-2 items-center"
                       >
-                        <Text style={{}} className="text-white">
+                        <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-white text-[13px]">
                           Done
                         </Text>
                       </TouchableOpacity>
@@ -497,7 +544,7 @@ const CreateContent = () => {
                   )}
               </View>
               <View className="flex-1">
-                <Text className="text-[13px] text-black mb-2" style={{}}>
+                <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                   Time
                 </Text>
                 <TouchableOpacity
@@ -578,7 +625,7 @@ const CreateContent = () => {
 
             {/* Location */}
             <View>
-              <Text className="text-[13px] text-black mb-2" style={{}}>
+              <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                 Location
               </Text>
               <TextInput
@@ -595,7 +642,7 @@ const CreateContent = () => {
 
             {/* Category */}
             <View>
-              <Text className="text-[13px] text-black mb-2" style={{}}>
+              <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                 Category
               </Text>
               <ScrollView
@@ -635,7 +682,7 @@ const CreateContent = () => {
 
             {/* Description */}
             <View>
-              <Text className="text-[13px] text-black mb-2" style={{}}>
+              <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                 Description (Optional)
               </Text>
               <TextInput
@@ -655,7 +702,7 @@ const CreateContent = () => {
 
             {/* Event Media Action Buttons */}
             <View>
-              <Text className="text-[13px] text-black mb-2" style={{}}>
+              <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                 Media (Optional)
               </Text>
               <View className="flex-row gap-3">
@@ -848,7 +895,7 @@ const CreateContent = () => {
         {contentType === "post" && (
           <View className="px-6 mb-6">
             <View className="bg-white rounded-xl border-2 border-[#D9D9D9] p-4">
-              <Text className="text-[15px] text-black" style={{}}>
+              <Text className="text-[15px] text-black font-bold" style={{}}>
                 Allow Comments
               </Text>
               <View className="flex-row items-center justify-between">
@@ -885,17 +932,17 @@ const CreateContent = () => {
         <View className="flex-1 bg-black/50 justify-center items-center px-6">
           <View className="bg-white rounded-2xl w-full max-w-md p-6">
             <View className="flex-row items-center justify-between mb-4">
-              <Text className="text-[17px] text-black" style={{}}>
+              <Text className="text-[17px] text-black font-bold" style={{}}>
                 Create Poll
               </Text>
               <TouchableOpacity onPress={() => setShowPollModal(false)}>
-                <Ionicons name="close" size={22} color="#666666" />
+                <Ionicons name="close-outline" size={22} color="#666666" />
               </TouchableOpacity>
             </View>
 
             {/* Poll Question */}
             <View className="mb-4">
-              <Text className="text-[13px] text-black mb-2" style={{}}>
+              <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                 Poll Question
               </Text>
               <TextInput
@@ -912,7 +959,7 @@ const CreateContent = () => {
 
             {/* Poll Options */}
             <View className="mb-4">
-              <Text className="text-[13px] text-black mb-2" style={{}}>
+              <Text className="text-[13px] text-black mb-2 font-bold" style={{}}>
                 Options ({pollOptions.length}/6)
               </Text>
               <ScrollView className="max-h-64">
@@ -937,7 +984,7 @@ const CreateContent = () => {
                           className="p-2"
                         >
                           <Ionicons
-                            name="close-circle"
+                            name="close-circle-outline"
                             size={22}
                             color="#D01111"
                           />
@@ -956,7 +1003,7 @@ const CreateContent = () => {
                 className="flex-row items-center justify-center gap-2 py-3 border-2 border-[#0066CC] rounded-xl mb-4"
               >
                 <Ionicons name="add" size={18} color="#0066CC" />
-                <Text className="text-[#0066CC] text-[15px]" style={{}}>
+                <Text className="text-[#0066CC] text-[15px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                   Add Option
                 </Text>
               </TouchableOpacity>
@@ -973,7 +1020,7 @@ const CreateContent = () => {
                 }}
                 className="flex-1 py-3 border-2 border-[#D9D9D9] rounded-xl items-center"
               >
-                <Text className="text-[#6C757D] text-[15px]" style={{}}>
+                <Text className="text-[#6C757D] text-[15px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                   Cancel
                 </Text>
               </TouchableOpacity>
@@ -981,7 +1028,7 @@ const CreateContent = () => {
                 onPress={handleSavePoll}
                 className="flex-1 py-3 bg-[#0066CC] rounded-xl items-center"
               >
-                <Text className="text-white text-[15px]" style={{}}>
+                <Text className="text-white text-[15px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                   Save Poll
                 </Text>
               </TouchableOpacity>
@@ -989,6 +1036,16 @@ const CreateContent = () => {
           </View>
         </View>
       </Modal>
+
+      <CustomAlert
+        visible={alertVisible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => {
+          setAlertVisible(false);
+          router.back();
+        }}
+      />
     </SafeAreaView>
   );
 };

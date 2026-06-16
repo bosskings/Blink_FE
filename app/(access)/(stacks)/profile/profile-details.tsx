@@ -13,10 +13,12 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomAlert } from "@/components/CustomAlert";
 
 export default function ProfileDetails() {
   const [blinkTag, setBlinkTag] = useState("Lasman Ade");
   const [bio, setBio] = useState("");
+  const [alertVisible, setAlertVisible] = useState(false);
 
   const formattedBlinkTag = blinkTag.trim().toLowerCase().replace(/\s+/g, "~");
 
@@ -27,12 +29,8 @@ export default function ProfileDetails() {
 
   const onSubmit = async () => {
     if (!isFormValid) return;
-    console.log("Profile details submitted:", {
-      blinkTag,
-      bio,
-    });
     await AsyncStorage.setItem("blink_tag", blinkTag);
-    router.push("/(access)/(stacks)/profile/interests");
+    setAlertVisible(true);
   };
 
   return (
@@ -140,6 +138,16 @@ export default function ProfileDetails() {
           />
         </View>
       </View>
+
+      <CustomAlert
+        visible={alertVisible}
+        title="Profile Saved"
+        message="Your profile details have been saved successfully."
+        onClose={() => {
+          setAlertVisible(false);
+          router.push("/(access)/(stacks)/profile/interests");
+        }}
+      />
     </SafeAreaView>
   );
 }

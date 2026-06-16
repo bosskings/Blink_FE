@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
@@ -25,6 +25,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { FadeInDown } from "react-native-reanimated";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -186,13 +187,18 @@ const HomeScreen = () => {
   const [requestTitle, setRequestTitle] = React.useState("");
   const [requestDesc, setRequestDesc] = React.useState("");
   const [requestType, setRequestType] = React.useState<
-    "Buy" | "Rent" | "Borrow"
-  >("Borrow");
+    "Buy" | "Rent" | "Borrow" | null
+  >(null);
   const [requestBudget, setRequestBudget] = React.useState("");
-  const [requestUrgency, setRequestUrgency] = React.useState("Low priority");
-  const [requestDuration, setRequestDuration] = React.useState("Few hours");
-  const [requestCommType, setRequestCommType] =
-    React.useState("Joined Communities");
+  const [requestUrgency, setRequestUrgency] = React.useState<string | null>(
+    null,
+  );
+  const [requestDuration, setRequestDuration] = React.useState<string | null>(
+    null,
+  );
+  const [requestCommType, setRequestCommType] = React.useState<string | null>(
+    null,
+  );
 
   const communitiesList = [
     { name: "Covenant University", slug: "covenant" },
@@ -238,109 +244,115 @@ const HomeScreen = () => {
     }, []),
   );
 
-  const products = [
-    {
-      id: "1",
-      title: "Road Bicycle",
-      price: "₦45,000",
-      description:
-        "Great condition road bicycle, perfect for city rides and weekend adventures.",
-      timePosted: "2h ago",
-      distance: "0.7km away",
-      image:
-        "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop",
-      tag: "SALE",
-      images: [
-        "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800",
-      ],
-    },
-    {
-      id: "2",
-      title: "Laptop Stand",
-      price: "₦12,500",
-      description: "Adjustable aluminum laptop stand, barely used",
-      distance: "0.5km away",
-      timePosted: "5h ago",
-      image:
-        "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop",
-      tag: "RENT",
-      images: [
-        "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop",
-      ],
-    },
-    {
-      id: "3",
-      title: "Office Chair",
-      price: "₦35,000",
-      description: "Ergonomic office chair with lumbar support",
-      distance: "1.2km away",
-      timePosted: "1d ago",
-      image:
-        "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
-      tag: "SERVICE",
-      images: [
-        "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
-      ],
-    },
-    {
-      id: "4",
-      title: "MacBook Pro M1 Laptop",
-      price: "₦420,000",
-      description: "Super fast Apple MacBook Pro M1, 8GB RAM, 256GB SSD",
-      distance: "0.3km away",
-      timePosted: "1h ago",
-      image:
-        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=600&fit=crop",
-      tag: "SALE",
-      images: [
-        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800",
-      ],
-    },
-    {
-      id: "5",
-      title: "HP EliteBook Laptop",
-      price: "₦180,000",
-      description: "Core i7 business laptop, 16GB RAM, 512GB SSD",
-      distance: "1.8km away",
-      timePosted: "3h ago",
-      image:
-        "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&h=600&fit=crop",
-      tag: "SALE",
-      images: [
-        "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800",
-      ],
-    },
-  ];
+  const products = React.useMemo(
+    () => [
+      {
+        id: "1",
+        title: "Road Bicycle",
+        price: "₦45,000",
+        description:
+          "Great condition road bicycle, perfect for city rides and weekend adventures.",
+        timePosted: "2h ago",
+        distance: "0.7km away",
+        image:
+          "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop",
+        tag: "SALE",
+        images: [
+          "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800",
+        ],
+      },
+      {
+        id: "2",
+        title: "Laptop Stand",
+        price: "₦12,500",
+        description: "Adjustable aluminum laptop stand, barely used",
+        distance: "0.5km away",
+        timePosted: "5h ago",
+        image:
+          "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop",
+        tag: "RENT",
+        images: [
+          "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop",
+        ],
+      },
+      {
+        id: "3",
+        title: "Office Chair",
+        price: "₦35,000",
+        description: "Ergonomic office chair with lumbar support",
+        distance: "1.2km away",
+        timePosted: "1d ago",
+        image:
+          "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
+        tag: "SERVICE",
+        images: [
+          "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
+        ],
+      },
+      {
+        id: "4",
+        title: "MacBook Pro M1 Laptop",
+        price: "₦420,000",
+        description: "Super fast Apple MacBook Pro M1, 8GB RAM, 256GB SSD",
+        distance: "0.3km away",
+        timePosted: "1h ago",
+        image:
+          "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=600&fit=crop",
+        tag: "SALE",
+        images: [
+          "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800",
+        ],
+      },
+      {
+        id: "5",
+        title: "HP EliteBook Laptop",
+        price: "₦180,000",
+        description: "Core i7 business laptop, 16GB RAM, 512GB SSD",
+        distance: "1.8km away",
+        timePosted: "3h ago",
+        image:
+          "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&h=600&fit=crop",
+        tag: "SALE",
+        images: [
+          "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800",
+        ],
+      },
+    ],
+    [],
+  );
 
-  const requests = [
-    {
-      id: "req1",
-      priority: "URGENT PRIORITY",
-      title: "Looking for: An umbrella",
-      description: "I need an umbrella ASAP!",
-      timePosted: "Posted 8 mins ago",
-      responsesCount: "3 responses",
-      requester: {
-        name: "Anna Montana",
-        distance: "0.2km away",
-        avatar: require("../../../assets/avatars/avatar3.png"),
+  const requests = React.useMemo(
+    () => [
+      {
+        id: "req1",
+        priority: "URGENT PRIORITY",
+        title: "Looking for: An umbrella",
+        description: "I need an umbrella ASAP!",
+        timePosted: "Posted 8 mins ago",
+        responsesCount: "3 responses",
+        requester: {
+          name: "Anna Montana",
+          distance: "0.2km away",
+          avatar: require("../../../assets/avatars/avatar3.png"),
+        },
       },
-    },
-    {
-      id: "req2",
-      priority: "URGENT PRIORITY",
-      title: "Looking for: Laptop Charger",
-      description:
-        "My USB-C laptop charger stopped working, need to borrow one for tonight!",
-      timePosted: "Posted 15 mins ago",
-      responsesCount: "1 response",
-      requester: {
-        name: "David Adeleke",
-        distance: "0.6km away",
-        avatar: require("../../../assets/avatars/avatar2.png"),
+      {
+        id: "req2",
+        priority: "URGENT PRIORITY",
+        title: "Looking for: Laptop Charger",
+        description:
+          "My USB-C laptop charger stopped working, need to borrow one for tonight!",
+        timePosted: "Posted 15 mins ago",
+        responsesCount: "1 response",
+        requester: {
+          name: "David Adeleke",
+          distance: "0.6km away",
+          avatar: require("../../../assets/avatars/avatar2.png"),
+        },
       },
-    },
-  ];
+    ],
+    [],
+  );
 
   const communities = [
     {
@@ -359,32 +371,37 @@ const HomeScreen = () => {
     },
   ];
 
-  const discussions = [
-    {
-      id: "1",
-      user: "Mike Berger",
-      time: "2 hours ago",
-      community: "Covenant University",
-      content: "Anyone with ENG 201 past questions?\nExams are coming fast 😩",
-      tags: ["#ExamSeason", "#StudyTips"],
-      likes: 124,
-      comments: 67,
-      avatar:
-        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-    },
-    {
-      id: "2",
-      user: "Mike Berger",
-      time: "2 hours ago",
-      community: "Ota Central Market",
-      content: "Anyone with ENG 201 past questions?\nExams are coming fast 😩",
-      tags: ["#ExamSeason", "#StudyTips"],
-      likes: 124,
-      comments: 67,
-      avatar:
-        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-    },
-  ];
+  const discussions = React.useMemo(
+    () => [
+      {
+        id: "1",
+        user: "Mike Berger",
+        time: "2 hours ago",
+        community: "Covenant University",
+        content:
+          "Anyone with ENG 201 past questions?\nExams are coming fast 😩",
+        tags: ["#ExamSeason", "#StudyTips"],
+        likes: 124,
+        comments: 67,
+        avatar:
+          "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
+      },
+      {
+        id: "2",
+        user: "Mike Berger",
+        time: "2 hours ago",
+        community: "Ota Central Market",
+        content:
+          "Anyone with ENG 201 past questions?\nExams are coming fast 😩",
+        tags: ["#ExamSeason", "#StudyTips"],
+        likes: 124,
+        comments: 67,
+        avatar:
+          "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
+      },
+    ],
+    [],
+  );
 
   const openFilter = () => setMainFilterVisible(true);
   const openSearchFilter = () => {
@@ -551,6 +568,7 @@ const HomeScreen = () => {
     appliedMaxPrice,
     appliedListingType,
     activeSort,
+    products,
   ]);
 
   const filteredRequests = React.useMemo(() => {
@@ -584,11 +602,17 @@ const HomeScreen = () => {
   const renderHeader = () => (
     <View>
       <View className="flex-row items-center justify-between px-4 py-3 pt-6">
-        <TouchableOpacity className="flex-row items-center">
+        <TouchableOpacity
+          className="flex-row items-center"
+          onPress={() => router.push("/(access)/(tabs)/community")}
+        >
           <Ionicons name="people-outline" size={16} color="#9CA3AF" />
           <Text className="ml-1 text-[13px] text-gray-400">Following</Text>
         </TouchableOpacity>
-        <TouchableOpacity className="bg-[#0066CC] px-4 py-2 rounded flex-row items-center">
+        <TouchableOpacity
+          className="bg-[#0066CC] px-4 py-2 rounded flex-row items-center"
+          onPress={() => router.push({ pathname: "/(access)/(tabs)/community", params: { defaultTab: "explore" } })}
+        >
           <Ionicons name="eye-outline" size={16} color="#fff" />
           <Text className="ml-2 text-[13px] font-semibold text-white">
             Explore
@@ -629,7 +653,10 @@ const HomeScreen = () => {
               <Text className="text-[12px] text-gray-500">0.2km away</Text>
             </View>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity 
+            className="w-10 h-10 rounded-full border border-gray-200 items-center justify-center bg-white"
+            onPress={() => router.push("/(access)/(stacks)/chat-flow/chat/new-chat")}
+          >
             <Ionicons name="chatbubble-outline" size={18} color="#9CA3AF" />
           </TouchableOpacity>
         </View>
@@ -671,11 +698,19 @@ const HomeScreen = () => {
           gap: 12,
         }}
       >
-        <SearchInput
-          placeholder="Search items and communities..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          activeOpacity={1}
+          onPress={openSearchFilter}
+        >
+          <View pointerEvents="none" style={{ flex: 1 }}>
+            <SearchInput
+              placeholder="Search items and communities..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={openFilter}
           style={{
@@ -725,42 +760,62 @@ const HomeScreen = () => {
 
       {/* Conditionally Swap FlatLists based on activeTab */}
       {activeTab === "requests" ? (
-        <FlatList
-          data={filteredRequests}
-          renderItem={({ item }) => <RequestCard item={item} styles={styles} />}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: insets.bottom + 80,
-            paddingTop: 8,
-          }}
-        />
+        <Animated.View
+          // @ts-ignore
+          entering={FadeInDown.duration(400).springify()}
+          style={{ flex: 1 }}
+        >
+          <FlatList
+            data={filteredRequests}
+            renderItem={({ item }) => (
+              <RequestCard item={item} styles={styles} />
+            )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: insets.bottom + 80,
+              paddingTop: 8,
+            }}
+          />
+        </Animated.View>
       ) : activeTab === "discussions" ? (
-        <FlatList
-          data={filteredDiscussions}
-          renderItem={({ item }) => (
-            <DiscussionCard
-              item={item}
-              likedDiscussions={likedDiscussions}
-              toggleLikeDiscussion={toggleLikeDiscussion}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: insets.bottom + 80,
-            paddingTop: 8,
-          }}
-        />
+        <Animated.View
+          // @ts-ignore
+          entering={FadeInDown.duration(400).springify()}
+          style={{ flex: 1 }}
+        >
+          <FlatList
+            data={filteredDiscussions}
+            renderItem={({ item }) => (
+              <DiscussionCard
+                item={item}
+                likedDiscussions={likedDiscussions}
+                toggleLikeDiscussion={toggleLikeDiscussion}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: insets.bottom + 80,
+              paddingTop: 8,
+            }}
+          />
+        </Animated.View>
       ) : (
-        <FlatList
-          data={filteredProducts}
-          renderItem={({ item }) => <ProductCard item={item} />}
-          keyExtractor={(item) => item.id}
-          ListHeaderComponent={renderHeader}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}
-        />
+        <Animated.View
+          // @ts-ignore
+          entering={FadeInDown.duration(400).springify()}
+          style={{ flex: 1 }}
+        >
+          <FlatList
+            data={filteredProducts}
+            renderItem={({ item }) => <ProductCard item={item} />}
+            keyExtractor={(item) => item.id}
+            ListHeaderComponent={renderHeader}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}
+          />
+        </Animated.View>
       )}
 
       {/* Search Filter Modal */}
@@ -783,6 +838,7 @@ const HomeScreen = () => {
         onApply={handleApplyFilters}
         onReset={handleResetFilters}
         onSortPress={() => setSortVisible(true)}
+        onFilterPress={() => setMainFilterVisible(true)}
       />
 
       {/* Main Filter Modal */}
@@ -834,14 +890,17 @@ const HomeScreen = () => {
           closeFloatingMenu();
           setRequestTitle("");
           setRequestDesc("");
-          setRequestType("Borrow");
+          setRequestType(null);
           setRequestBudget("");
-          setRequestUrgency("Low priority");
-          setRequestDuration("Few hours");
-          setRequestCommType("Joined Communities");
+          setRequestUrgency(null);
+          setRequestDuration(null);
+          setRequestCommType(null);
           setCreateRequestVisible(true);
         }}
-        onPostToForum={closeFloatingMenu}
+        onPostToForum={() => {
+          closeFloatingMenu();
+          router.push("/(access)/(stacks)/community-management-flow/create-content");
+        }}
       />
 
       {/* Create Listing Flow Modal */}
@@ -2703,49 +2762,53 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               ))}
             </View>
-            <Text style={[styles.fieldLabel, { marginBottom: 12 }]}>
-              Duration
-            </Text>
-            <View style={{ marginBottom: 12 }}>
-              {[
-                { title: "Few hours", desc: "Same day return" },
-                { title: "1 - 3 days", desc: "Short term borrow" },
-                { title: "Up to 1 week", desc: "Medium-term borrow" },
-                { title: "To keep", desc: "Looking to buy or receive" },
-              ].map((level) => (
-                <TouchableOpacity
-                  key={level.title}
-                  onPress={() => setRequestDuration(level.title)}
-                  style={[
-                    styles.conditionOptionCard,
-                    requestDuration === level.title &&
-                      styles.categoryCardSelected,
-                    { marginBottom: 12, paddingVertical: 12 },
-                  ]}
-                  activeOpacity={0.7}
-                >
-                  <View
-                    style={[
-                      styles.radioCircleLeft,
-                      requestDuration === level.title &&
-                        styles.radioCircleLeftActive,
-                    ]}
-                  >
-                    {requestDuration === level.title && (
-                      <View style={styles.radioDotInner} />
-                    )}
-                  </View>
-                  <View>
-                    <Text style={[styles.conditionTitle, { fontSize: 12 }]}>
-                      {level.title}
-                    </Text>
-                    <Text style={[styles.conditionDesc, { fontSize: 12 }]}>
-                      {level.desc}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {(requestType === "Rent" || requestType === "Borrow") && (
+              <>
+                <Text style={[styles.fieldLabel, { marginBottom: 12 }]}>
+                  Duration
+                </Text>
+                <View style={{ marginBottom: 12 }}>
+                  {[
+                    { title: "Few hours", desc: "Same day return" },
+                    { title: "1 - 3 days", desc: "Short term borrow" },
+                    { title: "Up to 1 week", desc: "Medium-term borrow" },
+                    { title: "To keep", desc: "Looking to buy or receive" },
+                  ].map((level) => (
+                    <TouchableOpacity
+                      key={level.title}
+                      onPress={() => setRequestDuration(level.title)}
+                      style={[
+                        styles.conditionOptionCard,
+                        requestDuration === level.title &&
+                          styles.categoryCardSelected,
+                        { marginBottom: 12, paddingVertical: 12 },
+                      ]}
+                      activeOpacity={0.7}
+                    >
+                      <View
+                        style={[
+                          styles.radioCircleLeft,
+                          requestDuration === level.title &&
+                            styles.radioCircleLeftActive,
+                        ]}
+                      >
+                        {requestDuration === level.title && (
+                          <View style={styles.radioDotInner} />
+                        )}
+                      </View>
+                      <View>
+                        <Text style={[styles.conditionTitle, { fontSize: 12 }]}>
+                          {level.title}
+                        </Text>
+                        <Text style={[styles.conditionDesc, { fontSize: 12 }]}>
+                          {level.desc}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </>
+            )}
             <Text style={[styles.fieldLabel, { marginTop: 12 }]}>
               Choose communities
             </Text>

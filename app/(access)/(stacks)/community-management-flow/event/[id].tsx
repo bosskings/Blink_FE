@@ -13,7 +13,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Share,
 } from "react-native";
+import { CustomAlert } from "@/components/CustomAlert";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { EventItem } from "../community-details/[id]";
 
@@ -37,6 +39,14 @@ const EventDetail = () => {
   const [showAllComments, setShowAllComments] = useState(false);
   const slideAnim = useRef(new Animated.Value(height)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ title: "", message: "" });
+
+  const showAlert = (title: string, message: string) => {
+    setAlertConfig({ title, message });
+    setAlertVisible(true);
+  };
 
   useEffect(() => {
     setEventLikes(45);
@@ -358,9 +368,18 @@ const EventDetail = () => {
     });
   };
 
-  const handleShare = () => {
-    // In a real app, this would open the native share dialog
-    console.log("Share event:", event.id);
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: `Check out ${event.title} happening at ${event.location}!`,
+      });
+    } catch (error) {
+      console.log("Error sharing:", error);
+    }
+  };
+
+  const handleMessageOrganizer = () => {
+    showAlert("Coming Soon", "Direct messaging the event organizer will be available in the next update.");
   };
 
   const handleSendComment = () => {
@@ -397,7 +416,7 @@ const EventDetail = () => {
           <View className="px-6 mb-4">
             <View className="flex-row items-center justify-between mb-2">
               <View className="bg-[#0066CC] rounded-full px-4 py-2">
-                <Text className="text-white text-xs font-bold" style={{}}>
+                <Text className="text-white text-[13px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                   {event.category}
                 </Text>
               </View>
@@ -405,7 +424,7 @@ const EventDetail = () => {
                 <Ionicons name="share-outline" size={22} color="#0066CC" />
               </TouchableOpacity>
             </View>
-            <Text className="text-2xl text-black mb-3" style={{}}>
+            <Text className="text-2xl text-black mb-3 font-bold" style={{}}>
               {event.title}
             </Text>
           </View>
@@ -448,7 +467,7 @@ const EventDetail = () => {
           {/* Description */}
           {event.description && (
             <View className="px-6 mb-4">
-              <Text className="text-sm text-[#6C757D] mb-2" style={{}}>
+              <Text className="text-sm text-[#6C757D] mb-2 font-bold" style={{}}>
                 About This Event
               </Text>
               <Text className="text-[15px] text-black leading-6" style={{}}>
@@ -511,10 +530,10 @@ const EventDetail = () => {
                 color={going ? "#FFFFFF" : "#0066CC"}
               />
               <Text
-                className={`text-[15px] ${
+                className={`text-[13px] ${
                   going ? "text-white" : "text-[#0066CC]"
                 }`}
-                style={{}}
+                style={{ fontFamily: "HankenGrotesk_500Medium" }}
               >
                 {going ? "Going" : "Interested"} ({goingCount})
               </Text>
@@ -534,7 +553,7 @@ const EventDetail = () => {
           {/* Comments Header */}
           <View className="flex-row items-center justify-between mb-4 px-6">
             <View className="flex-row items-center gap-2">
-              <Text className="font-semibold text-[15px]" style={{}}>
+              <Text className="font-semibold text-[15px] font-bold" style={{}}>
                 Comments
               </Text>
               <View className="bg-black px-3 py-1 rounded-full">
@@ -544,7 +563,7 @@ const EventDetail = () => {
               </View>
             </View>
             <TouchableOpacity onPress={() => setShowAllComments(true)}>
-              <Text className="text-[#0066CC] text-sm font-bold" style={{}}>
+              <Text className="text-[#0066CC] text-[13px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                 View All
               </Text>
             </TouchableOpacity>
@@ -654,7 +673,7 @@ const EventDetail = () => {
             {/* Header */}
             <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-100">
               <View className="flex-row items-center gap-2">
-                <Text className="font-semibold text-lg" style={{}}>
+                <Text className="font-semibold text-lg font-bold" style={{}}>
                   All Comments
                 </Text>
                 <View className="bg-black px-3 py-1 rounded-full">
@@ -732,6 +751,13 @@ const EventDetail = () => {
           </Animated.View>
         </View>
       </Modal>
+
+      <CustomAlert
+        visible={alertVisible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => setAlertVisible(false)}
+      />
     </SafeAreaView>
   );
 };

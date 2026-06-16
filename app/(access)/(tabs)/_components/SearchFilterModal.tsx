@@ -33,6 +33,7 @@ interface SearchFilterModalProps {
   onApply: () => void;
   onReset: () => void;
   onSortPress: () => void;
+  onFilterPress: () => void;
 }
 
 export const SearchFilterModal = ({
@@ -54,6 +55,7 @@ export const SearchFilterModal = ({
   onApply,
   onReset,
   onSortPress,
+  onFilterPress,
 }: SearchFilterModalProps) => {
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -74,10 +76,12 @@ export const SearchFilterModal = ({
                 style={{
                   flex: 1,
                   height: 44,
-                  backgroundColor: "#F9FAFB",
+                  backgroundColor: "#FFFFFF",
                   borderRadius: 10,
                   paddingHorizontal: 14,
                   justifyContent: "center",
+                  borderWidth: 1.5,
+                  borderColor: "#0066CC"
                 }}
               >
                 <TextInput
@@ -95,33 +99,33 @@ export const SearchFilterModal = ({
               </View>
 
               <TouchableOpacity
+                onPress={onFilterPress}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  backgroundColor: "#F9FAFB",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="options-outline" size={18} color="#000000" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
                 onPress={onSortPress}
                 style={{
                   width: 40,
                   height: 40,
                   borderRadius: 20,
-                  backgroundColor: "#F3F4F6",
+                  backgroundColor: "#F9FAFB",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
                 activeOpacity={0.8}
               >
                 <Ionicons name="swap-vertical" size={18} color="#000000" />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={onClose}
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: "#F3F4F6",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                activeOpacity={0.8}
-              >
-                <Ionicons name="close" size={18} color="#000000" />
               </TouchableOpacity>
             </View>
 
@@ -133,12 +137,10 @@ export const SearchFilterModal = ({
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    paddingHorizontal: 14,
+                    paddingHorizontal: 16,
                     paddingVertical: 10,
                     borderRadius: 20,
-                    borderWidth: 1,
-                    borderColor: activeSearchPill === "map" ? "#0066CC" : "#D1D5DB",
-                    backgroundColor: activeSearchPill === "map" ? "#E0EBFF" : "#F9FAFB",
+                    backgroundColor: activeSearchPill === "map" ? "#0066CC" : "#F3F6FA",
                   }}
                   activeOpacity={0.8}
                 >
@@ -146,7 +148,7 @@ export const SearchFilterModal = ({
                     style={{
                       fontFamily: "HankenGrotesk_500Medium",
                       fontSize: 12,
-                      color: activeSearchPill === "map" ? "#0066CC" : "#6B7280",
+                      color: activeSearchPill === "map" ? "#FFFFFF" : "#4B5563",
                     }}
                   >
                     Search by Map Area
@@ -162,12 +164,10 @@ export const SearchFilterModal = ({
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    paddingHorizontal: 14,
+                    paddingHorizontal: 16,
                     paddingVertical: 10,
                     borderRadius: 20,
-                    borderWidth: 1,
-                    borderColor: activeSearchPill === "community" ? "#0066CC" : "#D1D5DB",
-                    backgroundColor: activeSearchPill === "community" ? "#E0EBFF" : "#F9FAFB",
+                    backgroundColor: activeSearchPill === "community" ? "#0066CC" : "#F3F6FA",
                   }}
                   activeOpacity={0.8}
                 >
@@ -175,7 +175,7 @@ export const SearchFilterModal = ({
                     style={{
                       fontFamily: "HankenGrotesk_500Medium",
                       fontSize: 12,
-                      color: activeSearchPill === "community" ? "#0066CC" : "#6B7280",
+                      color: activeSearchPill === "community" ? "#FFFFFF" : "#4B5563",
                     }}
                   >
                     Search by Community
@@ -200,46 +200,30 @@ export const SearchFilterModal = ({
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        paddingVertical: 12,
-                        paddingHorizontal: 14,
-                        borderRadius: 10,
-                        borderWidth: 1,
-                        borderColor: isSelected ? "#0066CC" : "#E5E7EB",
-                        backgroundColor: isSelected ? "#F5F9FF" : "#FFFFFF",
+                        paddingVertical: 16,
+                        paddingHorizontal: isSelected ? 16 : 4,
+                        borderRadius: isSelected ? 10 : 0,
+                        borderWidth: isSelected ? 1 : 0,
+                        borderColor: isSelected ? "#0066CC" : "transparent",
+                        backgroundColor: isSelected ? "#F5F9FF" : "transparent",
+                        marginBottom: isSelected ? 8 : 0,
                       }}
                       activeOpacity={0.8}
                     >
                       <Text
                         style={{
-                          fontFamily: "HankenGrotesk_500Medium",
-                          fontSize: 12,
-                          color: isSelected ? "#0066CC" : "#374151",
+                          fontFamily: "HankenGrotesk_600SemiBold",
+                          fontSize: 13,
+                          color: "#111827",
                         }}
                       >
                         {area.charAt(0).toUpperCase() + area.slice(1)}
                       </Text>
-                      <View
-                        style={{
-                          width: 20,
-                          height: 20,
-                          borderRadius: 10,
-                          borderWidth: 2,
-                          borderColor: isSelected ? "#0066CC" : "#9CA3AF",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        {isSelected && (
-                          <View
-                            style={{
-                              width: 10,
-                              height: 10,
-                              borderRadius: 5,
-                              backgroundColor: "#0066CC",
-                            }}
-                          />
-                        )}
-                      </View>
+                      {isSelected ? (
+                        <Ionicons name="radio-button-on" size={20} color="#0066CC" />
+                      ) : (
+                        <Ionicons name="radio-button-off" size={20} color="#9CA3AF" />
+                      )}
                     </TouchableOpacity>
                   );
                 })}
@@ -258,8 +242,8 @@ export const SearchFilterModal = ({
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    paddingVertical: 12,
-                    paddingHorizontal: 14,
+                    paddingVertical: 16,
+                    paddingHorizontal: 16,
                     borderRadius: 10,
                     borderWidth: 1,
                     borderColor: selectedCommunityOption === "joined" ? "#0066CC" : "#E5E7EB",
@@ -269,35 +253,18 @@ export const SearchFilterModal = ({
                 >
                   <Text
                     style={{
-                      fontFamily: "HankenGrotesk_500Medium",
-                      fontSize: 12,
-                      color: selectedCommunityOption === "joined" ? "#0066CC" : "#374151",
+                      fontFamily: "HankenGrotesk_600SemiBold",
+                      fontSize: 13,
+                      color: selectedCommunityOption === "joined" ? "#0066CC" : "#111827",
                     }}
                   >
                     Joined Communities
                   </Text>
-                  <View
-                    style={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: 10,
-                      borderWidth: 2,
-                      borderColor: selectedCommunityOption === "joined" ? "#0066CC" : "#9CA3AF",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    {selectedCommunityOption === "joined" && (
-                      <View
-                        style={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: 5,
-                          backgroundColor: "#0066CC",
-                        }}
-                      />
-                    )}
-                  </View>
+                  {selectedCommunityOption === "joined" ? (
+                    <Ionicons name="radio-button-on" size={20} color="#0066CC" />
+                  ) : (
+                    <Ionicons name="radio-button-off" size={20} color="#E5E7EB" />
+                  )}
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -309,8 +276,8 @@ export const SearchFilterModal = ({
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    paddingVertical: 12,
-                    paddingHorizontal: 14,
+                    paddingVertical: 16,
+                    paddingHorizontal: 16,
                     borderRadius: 10,
                     borderWidth: 1,
                     borderColor: selectedCommunityOption === "specific" ? "#0066CC" : "#E5E7EB",
@@ -321,16 +288,16 @@ export const SearchFilterModal = ({
                 >
                   <Text
                     style={{
-                      fontFamily: "HankenGrotesk_500Medium",
-                      fontSize: 12,
-                      color: selectedCommunityOption === "specific" ? "#0066CC" : "#374151",
+                      fontFamily: "HankenGrotesk_600SemiBold",
+                      fontSize: 13,
+                      color: selectedCommunityOption === "specific" ? "#0066CC" : "#111827",
                     }}
                   >
                     Specific Communities
                   </Text>
                   <Ionicons
                     name={specificCommunitiesExpanded ? "chevron-up" : "chevron-down"}
-                    size={18}
+                    size={20}
                     color={selectedCommunityOption === "specific" ? "#0066CC" : "#9CA3AF"}
                   />
                 </TouchableOpacity>

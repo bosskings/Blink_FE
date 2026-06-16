@@ -370,7 +370,10 @@ const PostDetail = () => {
         {/* Main Post Card */}
         <View className="bg-white py-6 rounded-2xl border border-gray-100 overflow-hidden shadow mb-4 mx-6">
           {/* User Info */}
-          <View className="flex-row items-center mb-3 px-6">
+          <TouchableOpacity 
+            className="flex-row items-center mb-3 px-6"
+            onPress={() => router.push(`/(access)/(stacks)/user/${post.user.replace(' ', '_')}` as any)}
+          >
             <Image
               source={{ uri: post.avatar }}
               className="w-14 h-14 rounded-full"
@@ -383,7 +386,7 @@ const PostDetail = () => {
                 {post.time}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
 
           {/* Content */}
           <Text
@@ -396,14 +399,15 @@ const PostDetail = () => {
           {/* Tags */}
           <View className="flex-row gap-2 mb-3 px-6">
             {post.tags.map((tag: string, index: number) => (
-              <View
+              <TouchableOpacity
                 key={index}
                 className="border-[1.5px] border-[#6C757D] px-4 py-1 rounded-full"
+                onPress={() => router.push(`/(access)/(stacks)/community-management-flow/hashtag/${tag.replace('#', '')}` as any)}
               >
                 <Text className="text-[#6C757D] text-xs font-bold" style={{}}>
                   {tag}
                 </Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
 
@@ -450,7 +454,7 @@ const PostDetail = () => {
           {/* Comments Header */}
           <View className="flex-row items-center justify-between mb-4 px-6">
             <View className="flex-row items-center gap-2">
-              <Text className="font-semibold text-[15px]" style={{}}>
+              <Text className="font-semibold text-[15px] font-bold" style={{}}>
                 Comments
               </Text>
               <View className="bg-black px-3 py-1 rounded-full">
@@ -460,7 +464,7 @@ const PostDetail = () => {
               </View>
             </View>
             <TouchableOpacity onPress={() => setShowAllComments(true)}>
-              <Text className="text-[#0066CC] text-sm font-bold" style={{}}>
+              <Text className="text-[#0066CC] text-[13px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                 View All
               </Text>
             </TouchableOpacity>
@@ -469,7 +473,11 @@ const PostDetail = () => {
           {/* Individual Comments */}
           <View className="px-6 gap-4 mb-4">
             {comments.map((comment) => (
-              <View key={comment.id} className="flex-row gap-3">
+              <TouchableOpacity 
+                key={comment.id} 
+                className="flex-row gap-3"
+                onPress={() => router.push(`/(access)/(stacks)/user/${comment.user.replace(' ', '_')}` as any)}
+              >
                 <Image
                   source={{ uri: comment.avatar }}
                   className="w-10 h-10 rounded-full"
@@ -485,7 +493,7 @@ const PostDetail = () => {
                     {comment.time}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
 
@@ -570,7 +578,7 @@ const PostDetail = () => {
             {/* Header */}
             <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-100">
               <View className="flex-row items-center gap-2">
-                <Text className="font-semibold text-lg" style={{}}>
+                <Text className="font-semibold text-lg font-bold" style={{}}>
                   All Comments
                 </Text>
                 <View className="bg-black px-3 py-1 rounded-full">

@@ -21,6 +21,7 @@ export const FilterPill = ({ label, active, onPress }: FilterPillProps) => {
         className={`text-[13px] ${
           active ? "text-[#0066CC]" : "text-[#6C757D]"
         }`}
+        style={{ fontFamily: "HankenGrotesk_500Medium" }}
       >
         {label}
       </Text>

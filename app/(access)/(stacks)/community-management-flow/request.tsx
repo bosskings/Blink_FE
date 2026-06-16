@@ -12,36 +12,17 @@ const Requests = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Load requests with staggered animation
   useEffect(() => {
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-    setLoading(true);
-    setRequests([]);
-    initialRequests.forEach((req, index) => {
-      const t = setTimeout(() => {
-        setRequests((prev) => [...prev, req]);
-        if (index === initialRequests.length - 1) setLoading(false);
-      }, index * 150);
-      timeouts.push(t);
-    });
-    return () => timeouts.forEach(clearTimeout);
+    setRequests(initialRequests);
+    setLoading(false);
   }, []);
 
   // Pull to refresh
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setRequests([]);
-    setLoading(true);
     setTimeout(() => {
-      initialRequests.forEach((req, index) => {
-        setTimeout(() => {
-          setRequests((prev) => [...prev, req]);
-          if (index === initialRequests.length - 1) {
-            setRefreshing(false);
-            setLoading(false);
-          }
-        }, index * 120);
-      });
+      setRequests(initialRequests);
+      setRefreshing(false);
     }, 700);
   }, []);
 

@@ -41,16 +41,23 @@ export const SortModal = ({ visible, onClose, activeSort, onSelect }: SortModalP
             elevation: 5,
           }}
         >
-          <Text
-            style={{
-              fontFamily: "HankenGrotesk_500Medium",
-              fontSize: 17,
-              color: "#000000",
-              marginBottom: 12,
-            }}
-          >
-            Sort By
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
+            <TouchableOpacity onPress={onClose} style={{ padding: 4 }}>
+              <Ionicons name="chevron-back" size={24} color="#0066CC" />
+            </TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: "HankenGrotesk_600SemiBold",
+                fontSize: 18,
+                color: "#0066CC",
+                flex: 1,
+                textAlign: "center",
+              }}
+            >
+              Sort By
+            </Text>
+            <View style={{ width: 32 }} />
+          </View>
           <View style={{ height: 1, backgroundColor: "#F3F4F6" }} />
 
           {options.map((opt) => {
@@ -72,15 +79,17 @@ export const SortModal = ({ visible, onClose, activeSort, onSelect }: SortModalP
               >
                 <Text
                   style={{
-                    fontFamily: "HankenGrotesk_500Medium",
-                    fontSize: 12,
-                    color: isSelected ? "#0066CC" : "#374151",
+                    fontFamily: "HankenGrotesk_600SemiBold",
+                    fontSize: 13,
+                    color: "#111827",
                   }}
                 >
                   {opt}
                 </Text>
-                {isSelected && (
-                  <Ionicons name="checkmark" size={18} color="#0066CC" />
+                {isSelected ? (
+                  <Ionicons name="radio-button-on" size={20} color="#0066CC" />
+                ) : (
+                  <Ionicons name="radio-button-off" size={20} color="#E5E7EB" />
                 )}
               </TouchableOpacity>
             );

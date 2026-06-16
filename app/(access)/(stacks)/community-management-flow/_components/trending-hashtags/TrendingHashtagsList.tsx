@@ -1,9 +1,9 @@
-import { Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
+import { Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Animated, {
-  FadeInRight,
-  FadeOutRight,
+  FadeInDown,
+  FadeOutDown,
   LinearTransition,
 } from "react-native-reanimated";
 import TrendingHashtagsSkeletonItem from "./trending-hashtags-skeleton";
@@ -32,9 +32,9 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
 }) => {
   return (
     <Animated.View
-      layout={LinearTransition.springify().damping(15).stiffness(90)}
-      entering={FadeInRight.duration(300)}
-      exiting={FadeOutRight.duration(250)}
+      layout={LinearTransition.springify()}
+      entering={FadeInDown.duration(300)}
+      exiting={FadeOutDown.duration(250)}
       style={{ rowGap: 20 }}
     >
       {title && (
@@ -53,15 +53,21 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
       ) : hashtags.length === 0 ? (
         // 🚫 Empty State
         <Animated.View
-          entering={FadeInRight.duration(400).springify().damping(18)}
-          exiting={FadeOutRight.duration(250)}
+          entering={FadeInDown.duration(400).springify().damping(18)}
+          exiting={FadeOutDown.duration(250)}
           className="flex-1 items-center justify-center mt-32"
         >
-          <MaterialIcons name="inbox" size={60} color="#d1d1d1" />
-          <Text className="text-lg text-gray-700 text-center" style={{}}>
+          <Feather name="inbox" size={60} color="#d1d1d1" />
+          <Text
+            className="text-[17px] text-gray-700 text-center font-bold"
+            style={{}}
+          >
             No Trending Hashtags
           </Text>
-          <Text className="text-gray-500 mt-1 text-center px-10" style={{}}>
+          <Text
+            className="text-gray-500 mt-1 text-center px-10 text-[13px]"
+            style={{ fontFamily: "HankenGrotesk_500Medium" }}
+          >
             There are currently no trending hashtags to display.
           </Text>
         </Animated.View>
@@ -69,16 +75,18 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
         // 🟢 Content
         <Animated.View
           layout={LinearTransition.springify().damping(15).stiffness(90)}
-          entering={FadeInRight.duration(300)}
-          exiting={FadeOutRight.duration(250)}
+          entering={FadeInDown.duration(300)}
+          exiting={FadeOutDown.duration(250)}
           style={{ rowGap: 20 }}
         >
-          {hashtags.map((item) => (
+          {hashtags.map((item, index) => (
             <Animated.View
               key={item.id}
               layout={LinearTransition.springify()}
-              entering={FadeInRight.duration(250)}
-              exiting={FadeOutRight.duration(250)}
+              entering={FadeInDown.duration(600)
+                .delay(100 + index * 50)
+                .springify()}
+              exiting={FadeOutDown.duration(250)}
               className="bg-white px-6 py-6 rounded-2xl border border-gray-100 shadow"
             >
               <View className="flex-row items-center justify-between">
@@ -88,7 +96,7 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
                     style={{ rowGap: 10 }}
                   >
                     <Text
-                      className="text-lg font-black"
+                      className="text-[17px] font-bold"
                       style={{
                         color: "#0066CC",
                       }}
@@ -96,13 +104,19 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
                       {item.tag}
                     </Text>
                     <Entypo name="dot-single" size={10} color="#0066CC" />
-                    <Text className="text-black text-sm font-black" style={{}}>
+                    <Text
+                      className="text-black text-[13px] font-bold"
+                      style={{ fontFamily: "HankenGrotesk_500Medium" }}
+                    >
                       {typeof item.posts === "number"
                         ? `${item.posts} posts`
                         : item.posts}
                     </Text>
                   </View>
-                  <Text className="text-black text-sm" style={{}}>
+                  <Text
+                    className="text-black text-[13px]"
+                    style={{ fontFamily: "HankenGrotesk_500Medium" }}
+                  >
                     {item.location}
                   </Text>
                 </View>
@@ -112,7 +126,11 @@ const TrendingHashtagsList: React.FC<TrendingHashtagsListProps> = ({
                   className="p-3 rounded-full"
                   style={{ backgroundColor: "#0066CC" }}
                 >
-                  <Feather name="arrow-right" size={18} color="#fff" />
+                  <Ionicons
+                    name="arrow-forward-outline"
+                    size={18}
+                    color="#fff"
+                  />
                 </TouchableOpacity>
               </View>
             </Animated.View>

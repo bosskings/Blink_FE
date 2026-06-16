@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, TouchableOpacity, Text, View } from "react-native";
+import Animated from "react-native-reanimated";
 
 export const ProductCard = ({ item }: { item: any }) => {
   const handleRedirectItem = () => {
@@ -12,7 +13,8 @@ export const ProductCard = ({ item }: { item: any }) => {
   };
 
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.7}
       onPress={handleRedirectItem}
       className="mb-4 overflow-hidden bg-white border border-gray-200 rounded-xl"
     >
@@ -35,20 +37,22 @@ export const ProductCard = ({ item }: { item: any }) => {
           </View>
         )}
 
-        <Image
+        <Animated.Image
           source={{ uri: item.image }}
           className="w-full h-56"
           resizeMode="cover"
+          // @ts-ignore
+          sharedTransitionTag={`item-image-${item.id}`}
         />
       </View>
       <View className="p-4">
-        <View className="flex-row items-start justify-between mb-2">
-          <Text className="flex-1 text-[17px] font-bold">{item.title}</Text>
-          <Text className="text-[#0066CC] font-bold text-[17px]">
+        <View className="mb-2">
+          <Text className="text-[15px] font-bold mb-1" numberOfLines={1}>{item.title}</Text>
+          <Text className="text-[#0066CC] font-bold text-[15px]">
             {item.price}
           </Text>
         </View>
-        <Text className="mb-3 text-[13px] text-gray-600">
+        <Text className="mb-3 text-[13px] text-gray-600" numberOfLines={2}>
           {item.description}
         </Text>
         <View className="flex-row items-center justify-between">
@@ -66,6 +70,6 @@ export const ProductCard = ({ item }: { item: any }) => {
           </View>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };

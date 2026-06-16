@@ -11,65 +11,32 @@ import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Animated, {
-  FadeInRight,
-  FadeOutRight,
+  FadeInDown,
+  FadeOutDown,
   LinearTransition,
 } from "react-native-reanimated";
 
 import ReportedPostsList from "../community-management-flow/_components/report/ReportedPostsList";
 import RequestsList from "../community-management-flow/_components/request/RequestsList";
+import { CustomAlert } from "@/components/CustomAlert";
 
 const CommunityMembership = () => {
-  const [requests, setRequests] = useState<typeof initialRequests>([]);
-  const [posts, setPosts] = useState<typeof initialReportedPosts>([]);
+  const [requests, setRequests] = useState<typeof initialRequests>(initialRequests);
+  const [posts, setPosts] = useState<typeof initialReportedPosts>(initialReportedPosts);
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  // 🔁 Function to simulate data load with staggered animation
-  const loadData = useCallback((callback?: () => void) => {
-    setLoading(true);
-    setRequests([]);
-    setPosts([]);
-
-    const allTimeouts: ReturnType<typeof setTimeout>[] = [];
-
-    initialReportedPosts.forEach((post, index) => {
-      const t = setTimeout(() => {
-        setPosts((prev) => [...prev, post]);
-      }, index * 120);
-      allTimeouts.push(t);
-    });
-
-    initialRequests.forEach((req, index) => {
-      const t = setTimeout(() => {
-        setRequests((prev) => [...prev, req]);
-        if (index === initialRequests.length - 1) {
-          setLoading(false);
-          callback?.();
-        }
-      }, index * 120);
-      allTimeouts.push(t);
-    });
-
-    return () => allTimeouts.forEach(clearTimeout);
-  }, []);
-
-  // 🔥 Load once on mount
-  useEffect(() => {
-    const cleanup = loadData();
-    return cleanup;
-  }, [loadData]);
+  const [loading, setLoading] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ title: "", message: "", postId: null as number | string | null, action: null as "review" | "takedown" | null });
 
   // 🔁 Pull to refresh
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    const cleanup = loadData(() => {
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 400);
-    });
-    return cleanup;
-  }, [loadData]);
+    setTimeout(() => {
+      setRequests(initialRequests);
+      setPosts(initialReportedPosts);
+      setRefreshing(false);
+    }, 600);
+  }, []);
 
   // Actions
   const handleRemove = (id: string | number) => {
@@ -77,12 +44,29 @@ const CommunityMembership = () => {
   };
 
   const handleReview = (postId: number | string) => {
-    console.log("Review post:", postId);
+    setAlertConfig({
+      title: "Review Post",
+      message: "Are you sure you want to review this post?",
+      postId,
+      action: "review"
+    });
+    setAlertVisible(true);
   };
 
   const handleTakeDown = (postId: number | string) => {
-    console.log("Take Down Post:", postId);
-    setPosts((prev) => prev.filter((item) => item.id !== postId));
+    setAlertConfig({
+      title: "Take Down Post",
+      message: "Are you sure you want to take down this post? This action cannot be undone.",
+      postId,
+      action: "takedown"
+    });
+    setAlertVisible(true);
+  };
+
+  const confirmAction = () => {
+    if (alertConfig.action === "takedown" && alertConfig.postId) {
+      setPosts((prev) => prev.filter((item) => item.id !== alertConfig.postId));
+    }
   };
 
   return (
@@ -109,13 +93,13 @@ const CommunityMembership = () => {
         >
           <Animated.View
             layout={LinearTransition.springify().damping(15).stiffness(90)}
-            entering={FadeInRight.duration(400)}
-            exiting={FadeOutRight.duration(250)}
+            entering={FadeInDown.duration(600).springify()}
+            exiting={FadeOutDown.duration(250)}
             className="bg-white mx-6 px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow"
             style={{ rowGap: 15 }}
           >
             <View className="flex-row items-center justify-between w-full">
-              <Text className="text-[15px]" style={{}}>
+              <Text className="text-[17px] font-bold" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                 Moderation Overview
               </Text>
 
@@ -140,18 +124,18 @@ const CommunityMembership = () => {
             {/* Animated inner stats */}
             <Animated.View
               layout={LinearTransition.springify().damping(15).stiffness(100)}
-              entering={FadeInRight.duration(500).delay(150)}
-              exiting={FadeOutRight.duration(250)}
+              entering={FadeInDown.duration(600).delay(200).springify()}
+              exiting={FadeOutDown.duration(250)}
               className="w-full flex-row justify-between items-center gap-4"
             >
               <View className="bg-[#F8F9FA] p-4 flex-1 flex-col items-center rounded-lg gap-2">
                 <View className="flex-row items-center gap-1">
                   <EvilIcons name="clock" size={22} color="#0066CC" />
-                  <Text style={{}} className="text-[17px]">
+                  <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-[17px] font-bold">
                     52
                   </Text>
                 </View>
-                <Text style={{}} className="text-[13px]">
+                <Text style={{ fontFamily: "HankenGrotesk_500Medium", color: "#6C757D" }} className="text-[13px]">
                   Pending Reviews
                 </Text>
               </View>
@@ -163,11 +147,11 @@ const CommunityMembership = () => {
                     size={22}
                     color="#FF3333"
                   />
-                  <Text style={{}} className="text-[17px]">
+                  <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-[17px] font-bold">
                     8
                   </Text>
                 </View>
-                <Text style={{}} className="text-[13px]">
+                <Text style={{ fontFamily: "HankenGrotesk_500Medium", color: "#6C757D" }} className="text-[13px]">
                   Reported Users
                 </Text>
               </View>
@@ -182,8 +166,7 @@ const CommunityMembership = () => {
               handleRemove={handleRemove}
             />
           </View>
-          🚨 Reported Posts
-          <View className="bg-[#F1F8FF] pt-8 pb-8 px-6">
+          <View className="bg-[#F1F8FF] pt-8 pb-8 px-6 mt-4">
             <ReportedPostsList
               title="Reported Posts"
               posts={posts}
@@ -195,6 +178,15 @@ const CommunityMembership = () => {
           </View>
         </Animated.View>
       </ScrollView>
+
+      <CustomAlert
+        visible={alertVisible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => setAlertVisible(false)}
+        onConfirm={confirmAction}
+        confirmText={alertConfig.action === "takedown" ? "Take Down" : "Review"}
+      />
     </SafeAreaView>
   );
 };

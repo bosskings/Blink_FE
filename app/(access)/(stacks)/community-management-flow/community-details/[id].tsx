@@ -7,6 +7,7 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import { SearchInput } from "@/components/SearchInput";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -408,16 +409,19 @@ const CommunityDetail = () => {
       <StatusBar style="dark" />
 
       {/* Header */}
-      <View className="mt-6 mb-6 px-6">
+      <View className="mt-6 mb-4 px-6">
         <Headers
           text={truncate(community?.name || "", 20, "...")}
           onPress={() => router.back()}
         />
+        <View className="mt-4">
+          <SearchInput placeholder={`Search in ${truncate(community?.name || "Community", 20, "...")}`} />
+        </View>
       </View>
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingBottom: 50 }}
+        contentContainerStyle={{ paddingBottom: 0 }}
         showsVerticalScrollIndicator={false}
       >
         <Image
@@ -436,9 +440,9 @@ const CommunityDetail = () => {
               className={`flex-row items-center gap-2 p-2 px-4 rounded-full border border-[#0066CC] ${community?.status === "Active" || community?.status === "Owned" ? "bg-[#0066CC]" : "bg-white"}`}
             >
               <Text
-                className={`text-xs ${community?.status === "Active" || community?.status === "Owned" ? "text-white" : "text-[#0066CC]"}`}
+                className={`text-[13px] ${community?.status === "Active" || community?.status === "Owned" ? "text-white" : "text-[#0066CC]"}`}
                 style={{
-                  fontFamily: `HankenGrotesk_${community?.status === "Active" || community?.status === "Owned" ? "500Medium" : "700Bold"}`,
+                  fontFamily: `HankenGrotesk_500Medium`,
                 }}
               >
                 {community?.status === "Active" || community?.status === "Owned"
@@ -485,7 +489,7 @@ const CommunityDetail = () => {
         />
 
         <View className="mt-6 px-6 mb-6">
-          <Text className="text-[17px] text-black mb-4" style={{}}>
+          <Text className="text-[17px] text-black mb-4 font-bold" style={{}}>
             Posts
           </Text>
 
@@ -504,7 +508,7 @@ const CommunityDetail = () => {
 
         <View className="bg-[#F1F8FF] px-6 py-8">
           <View className="flex-row items-center justify-between mb-4">
-            <Text className="text-[17px] text-black" style={{}}>
+            <Text className="text-[17px] text-black font-bold" style={{}}>
               Upcoming Events
             </Text>
 
@@ -520,7 +524,7 @@ const CommunityDetail = () => {
                 })
               }
             >
-              <Text className="text-[15px] text-[#0066CC]" style={{}}>
+              <Text className="text-[13px] text-[#0066CC]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                 All Events
               </Text>
             </TouchableOpacity>
@@ -588,7 +592,7 @@ const CommunityDetail = () => {
 
         {community?.status !== "Owned" && (
           <View className="mt-6 px-6">
-            <Text className="text-[17px] text-black mb-4" style={{}}>
+            <Text className="text-[17px] text-black mb-4 font-bold" style={{}}>
               Community Rules
             </Text>
 
@@ -634,13 +638,13 @@ const CommunityDetail = () => {
               className="w-full py-3 flex-row justify-center items-center gap-3 bg-[#F8F9FA] border-2 border-[#D9D9D9] rounded-xl"
             >
               <Feather name="flag" size={22} color="#6C757D" />
-              <Text style={{}} className="text-[15px] text-[#000000]">
+              <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-[15px] text-[#000000]">
                 Report Community
               </Text>
             </TouchableOpacity>
             <TouchableOpacity className="w-full py-3 flex-row justify-center items-center gap-3 bg-[#D01111] border-2 border-[#D01111] rounded-xl">
               <MaterialCommunityIcons name="logout" size={22} color="#F96262" />
-              <Text style={{}} className="text-[15px] text-[#ffff]">
+              <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-[15px] text-[#ffff]">
                 Leave Community
               </Text>
             </TouchableOpacity>
@@ -648,7 +652,47 @@ const CommunityDetail = () => {
         )}
 
         {community?.status === "Owned" && (
-          <View className="flex-col gap-4 mt-10 px-6">
+          <View className="mt-8 px-6 pb-6">
+            <View className="flex-row items-center justify-between mb-4">
+              <Text className="text-[17px] text-black font-bold" style={{}}>
+                Moderation Overview
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  className="text-[13px] text-[#0066CC]"
+                  style={{ fontFamily: "HankenGrotesk_500Medium" }}
+                >
+                  View All →
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row items-center justify-between gap-3 mb-6">
+              <View className="flex-1 bg-[#F9FAFB] rounded-xl p-4 items-center justify-center border border-[#F3F4F6]">
+                <View className="flex-row items-center gap-2 mb-1">
+                  <Feather name="clock" size={16} color="#0066CC" />
+                  <Text className="text-[18px] font-bold text-black" style={{}}>
+                    52
+                  </Text>
+                </View>
+                <Text className="text-[12px] text-[#6B7280]" style={{}}>
+                  Pending Reviews
+                </Text>
+              </View>
+
+              <View className="flex-1 bg-[#F9FAFB] rounded-xl p-4 items-center justify-center border border-[#F3F4F6]">
+                <View className="flex-row items-center gap-2 mb-1">
+                  <Feather name="alert-circle" size={16} color="#D01111" />
+                  <Text className="text-[18px] font-bold text-black" style={{}}>
+                    8
+                  </Text>
+                </View>
+                <Text className="text-[12px] text-[#6B7280]" style={{}}>
+                  Reported Users
+                </Text>
+              </View>
+            </View>
+
             <TouchableOpacity
               onPress={() =>
                 router.push({
@@ -660,19 +704,20 @@ const CommunityDetail = () => {
                   },
                 })
               }
-              className="flex-row items-center justify-between bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow mb-1"
+              className="flex-row items-center justify-between bg-white py-4 border-b border-[#F3F4F6]"
+              activeOpacity={0.7}
             >
-              <View className="flex-row items-center justify-start gap-2">
-                <Text style={{}} className="text-[15px] text-[#000000]">
-                  Requests
-                </Text>
-                <View className="items-center justify-center px-3 py-1 bg-[#0066CC] rounded-full">
-                  <Text style={{}} className="text-xs text-[#fff]">
-                    10
+              <Text style={{}} className="text-[15px] font-bold text-black">
+                Requests
+              </Text>
+              <View className="flex-row items-center gap-2">
+                <View className="items-center justify-center w-6 h-6 bg-[#0066CC] rounded-full">
+                  <Text style={{}} className="text-[12px] font-bold text-white">
+                    3
                   </Text>
                 </View>
+                <Feather name="chevron-right" size={18} color="#D1D5DB" />
               </View>
-              <Feather name="arrow-right" size={18} color="#D9D9D9" />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -686,24 +731,25 @@ const CommunityDetail = () => {
                   },
                 })
               }
-              className="flex-row items-center justify-between bg-white px-6 py-6 rounded-2xl border border-gray-100 overflow-hidden shadow mb-4"
+              className="flex-row items-center justify-between bg-white py-4 mb-6 border-b border-[#F3F4F6]"
+              activeOpacity={0.7}
             >
-              <View className="flex-row items-center justify-start gap-2">
-                <Text style={{}} className="text-[15px] text-[#000000]">
-                  Reported Posts
-                </Text>
-                <View className="items-center justify-center px-3 py-1 bg-[#0066CC] rounded-full">
-                  <Text style={{}} className="text-xs text-[#fff]">
-                    10
+              <Text style={{}} className="text-[15px] font-bold text-black">
+                Reported Posts
+              </Text>
+              <View className="flex-row items-center gap-2">
+                <View className="items-center justify-center w-6 h-6 bg-[#0066CC] rounded-full">
+                  <Text style={{}} className="text-[12px] font-bold text-white">
+                    2
                   </Text>
                 </View>
+                <Feather name="chevron-right" size={18} color="#D1D5DB" />
               </View>
-              <Feather name="arrow-right" size={18} color="#D9D9D9" />
             </TouchableOpacity>
 
-            <TouchableOpacity className="w-full py-3 flex-row justify-center items-center gap-3 bg-[#D01111] border-2 border-[#D01111] rounded-xl">
-              <MaterialCommunityIcons name="logout" size={22} color="#F96262" />
-              <Text style={{}} className="text-[15px] text-[#ffff]">
+            <TouchableOpacity className="w-full py-3.5 flex-row justify-center items-center gap-3 bg-[#D01111] rounded-xl shadow-sm">
+              <MaterialCommunityIcons name="logout" size={20} color="#FFFFFF" />
+              <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-[15px] text-white">
                 Delete Community
               </Text>
             </TouchableOpacity>

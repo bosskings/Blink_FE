@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { CustomAlert } from "@/components/CustomAlert";
 import RNPickerSelect from "react-native-picker-select";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -26,6 +27,13 @@ const CreateCommunity = () => {
   const [currentLocation, setCurrentLocation] =
     useState<string>("000, 0000 State");
   const [, setLocation] = useState<Location.LocationObject | null>(null);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({ title: "", message: "", navigateBack: false });
+
+  const showAlert = (title: string, message: string, navigateBack = false) => {
+    setAlertConfig({ title, message, navigateBack });
+    setAlertVisible(true);
+  };
 
   useEffect(() => {
     (async () => {
@@ -120,7 +128,7 @@ const CreateCommunity = () => {
             style={{ color: "#3A3541", minHeight: 100, fontSize: 13 }}
           />
 
-          <SolidMainButton text="Save Community" />
+          <SolidMainButton text="Save Community" onPress={() => showAlert("Community Created", "Your new community has been successfully created.", true)} />
         </View>
 
         {/* Admin Settings & Join Rules Section */}
@@ -190,9 +198,21 @@ const CreateCommunity = () => {
             />
           </View>
 
-          <SolidMainButton text="Update Setting" />
+          <SolidMainButton text="Update Setting" onPress={() => showAlert("Settings Updated", "Your community settings have been saved.")} />
         </View>
       </ScrollView>
+
+      <CustomAlert
+        visible={alertVisible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => {
+          setAlertVisible(false);
+          if (alertConfig.navigateBack) {
+            router.back();
+          }
+        }}
+      />
     </SafeAreaView>
   );
 };

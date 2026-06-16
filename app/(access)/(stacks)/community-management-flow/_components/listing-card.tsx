@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import React from "react";
 import { Image, Pressable, Text, View } from "react-native";
+import Animated from "react-native-reanimated";
 import { ListingItem } from "../community-details/[id]";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -47,10 +48,12 @@ const ListingCard = ({ item }: ListingCardProps) => {
           </View>
         )}
 
-        <Image
+        <Animated.Image
           source={{ uri: item.image }}
           className="w-full h-56"
           resizeMode="cover"
+          // @ts-ignore
+          sharedTransitionTag={`item-image-${item.id}`}
         />
       </View>
       <View className="p-4">

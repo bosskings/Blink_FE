@@ -282,15 +282,15 @@ const AllEvents = () => {
       />
       <View className="p-6">
         <View className="flex-row items-center justify-start mb-2">
-          <Text style={{}} className="text-[#0066CC] text-[13px]">
+          <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-[#0066CC] text-[13px]">
             {item.date}
           </Text>
           <Entypo name="dot-single" size={12} color="#0066CC" />
-          <Text style={{}} className="text-[#0066CC] text-[13px]">
+          <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-[#0066CC] text-[13px]">
             {item.time}
           </Text>
         </View>
-        <Text style={{}} className="text-[#000000] text-[17px] mb-2">
+        <Text style={{}} className="text-[#000000] text-[17px] mb-2 font-bold">
           {item.title}
         </Text>
         {item.description && (
@@ -309,7 +309,7 @@ const AllEvents = () => {
           </Text>
         </View>
         <View className="bg-[#0066CC] rounded-full px-4 py-2 w-fit">
-          <Text style={{}} className="text-white text-xs">
+          <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className="text-white text-[13px]">
             {item.category}
           </Text>
         </View>
@@ -337,8 +337,8 @@ const AllEvents = () => {
       {/* Search and Filter Bar */}
       <View className="px-6 mb-4">
         <View className="flex-row gap-3">
-          <View className="flex-1 flex-row items-center bg-[#F8F9FA] rounded-xl border border-[#D9D9D9] px-4 py-3">
-            <Ionicons name="search" size={18} color="#6C757D" />
+          <View className="flex-1 flex-row items-center bg-[#F8F9FA] rounded-xl border border-[#D9D9D9] px-3 py-2">
+            <Ionicons name="search-outline" size={16} color="#6C757D" />
             <TextInput
               placeholder="Search events..."
               placeholderTextColor="#D9D9D9"
@@ -349,19 +349,19 @@ const AllEvents = () => {
             />
             {searchQuery !== "" && (
               <TouchableOpacity onPress={() => setSearchQuery("")}>
-                <Ionicons name="close-circle" size={18} color="#6C757D" />
+                <Ionicons name="close-circle-outline" size={18} color="#6C757D" />
               </TouchableOpacity>
             )}
           </View>
           <TouchableOpacity
             onPress={() => setShowFilters(true)}
-            className={`flex-row items-center justify-center gap-2 bg-[#F8F9FA] rounded-xl border border-[#D9D9D9] px-4 py-3 ${
+            className={`flex-row items-center justify-center gap-2 bg-[#F8F9FA] rounded-xl border border-[#D9D9D9] px-3 py-2 ${
               hasActiveFilters ? "border-[#0066CC]" : ""
             }`}
           >
             <Ionicons
-              name="filter"
-              size={18}
+              name="options-outline"
+              size={16}
               color={hasActiveFilters ? "#0066CC" : "#6C757D"}
             />
             {hasActiveFilters && (
@@ -388,7 +388,7 @@ const AllEvents = () => {
                   onPress={() => setSelectedCategory(null)}
                   className="ml-1"
                 >
-                  <Ionicons name="close-circle" size={16} color="#0066CC" />
+                  <Ionicons name="close-circle-outline" size={16} color="#0066CC" />
                 </TouchableOpacity>
               </View>
             )}
@@ -401,7 +401,7 @@ const AllEvents = () => {
                   onPress={() => setSelectedDateFilter("upcoming")}
                   className="ml-1"
                 >
-                  <Ionicons name="close-circle" size={16} color="#0066CC" />
+                  <Ionicons name="close-circle-outline" size={16} color="#0066CC" />
                 </TouchableOpacity>
               </View>
             )}
@@ -490,7 +490,7 @@ const AllEvents = () => {
 
             {/* Filter Header */}
             <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-100">
-              <Text className="text-[17px] text-black" style={{}}>
+              <Text className="text-[17px] text-black font-bold" style={{}}>
                 Filter Events
               </Text>
               <TouchableOpacity onPress={handleCloseFilters}>
@@ -505,7 +505,7 @@ const AllEvents = () => {
             >
               {/* Date Filter */}
               <View className="px-6 py-4 border-b border-gray-100">
-                <Text className="text-[15px] text-black mb-3" style={{}}>
+                <Text className="text-[15px] text-black mb-3 font-bold" style={{}}>
                   Date
                 </Text>
                 <View className="flex-row gap-3">
@@ -545,7 +545,7 @@ const AllEvents = () => {
 
               {/* Category Filter */}
               <View className="px-6 py-4">
-                <Text className="text-[15px] text-black mb-3" style={{}}>
+                <Text className="text-[15px] text-black mb-3 font-bold" style={{}}>
                   Category
                 </Text>
                 <View className="flex-row flex-wrap gap-2">

@@ -61,7 +61,7 @@ const PaymentSuccess = () => {
         entering={FadeInDown.duration(600).delay(400).springify()}
       >
         <TouchableOpacity
-          onPress={() => router.push("/(access)/(tabs)/messages")}
+          onPress={() => router.push("/(access)/(stacks)/chat-flow/chat/new-chat")}
           className="w-full h-14 bg-[#0066CC] rounded-xl flex-row items-center justify-center gap-2"
           activeOpacity={0.8}
         >

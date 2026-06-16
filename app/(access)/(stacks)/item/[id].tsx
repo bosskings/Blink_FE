@@ -239,7 +239,7 @@ const Item = () => {
           <View className="mb-14 mt-5">
             <Animated.View
               className="mb-4"
-              entering={FadeInDown.duration(600).delay(400).springify()}
+              entering={FadeInDown.duration(400).springify()}
             >
               <Text className="text-[15px] font-bold " style={{}}>
                 Details & Category
@@ -247,7 +247,7 @@ const Item = () => {
             </Animated.View>
 
             <Animated.View
-              entering={FadeInDown.duration(600).delay(600).springify()}
+              entering={FadeInDown.duration(400).springify()}
               className="flex-row mb-2"
             >
               <View className="flex-1 bg-gray-100 p-4 rounded-lg mr-2">
@@ -269,7 +269,7 @@ const Item = () => {
             </Animated.View>
 
             <Animated.View
-              entering={FadeInDown.duration(600).delay(800).springify()}
+              entering={FadeInDown.duration(400).springify()}
               className="flex-row mb-2"
             >
               <View className="flex-1 bg-gray-100 p-4 rounded-lg mr-2">
@@ -620,7 +620,7 @@ const Item = () => {
 
               {/* Action Buttons */}
               <View className="">
-                <SolidMainButton text="Message" />
+                <SolidMainButton text="Message" onPress={() => router.push('/(access)/(stacks)/chat-flow/chat/new-chat')} />
               </View>
             </View>
           </View>

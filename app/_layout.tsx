@@ -21,20 +21,27 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import { ToastProvider } from "react-native-toast-notifications";
 import "../global.css";
+import { useEffect, useRef } from "react";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { AuthProvider } from "@/providers/AuthProvider";
+import { UserProfileProvider } from "@/providers/UserProfileProvider";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { seedIfNeeded } from "@/services/staged/seed";
+import { db } from "@/services/staged/db";
+
+// 🚨 SET TO true TO CLEAR ALL STORAGE ON NEXT LAUNCH, THEN SET BACK TO false
+const CLEAR_ON_START = true;
 
 export const unstable_settings = {
   anchor: "(tabs)",
 };
 
 export default function RootLayout() {
-  const queryClient = new QueryClient({
+  const queryClient = useRef(new QueryClient({
     defaultOptions: { queries: { retry: 2 } },
-  });
+  })).current;
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -46,6 +53,14 @@ export default function RootLayout() {
     HankenGrotesk_700Bold,
     HankenGrotesk_900Black,
   });
+
+  useEffect(() => {
+    const init = async () => {
+      if (CLEAR_ON_START) await db.clearAll();
+      await seedIfNeeded();
+    };
+    init();
+  }, []);
 
   if (!loaded) {
     return null;
@@ -75,22 +90,24 @@ export default function RootLayout() {
           warningIcon={<MaterialIcons name="warning" size={22} color="#fff" />}
         >
           <QueryClientProvider client={queryClient}>
-            <KeyboardProvider>
-              <GestureHandlerRootView>
-                <Stack>
-                  <Stack.Screen
-                    name="(noaccess)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="(access)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
-                <StatusBar style="dark" />
-              </GestureHandlerRootView>
-            </KeyboardProvider>
+            <UserProfileProvider>
+              <KeyboardProvider>
+                <GestureHandlerRootView>
+                  <Stack>
+                    <Stack.Screen
+                      name="(noaccess)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="(access)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                  </Stack>
+                  <StatusBar style="dark" />
+                </GestureHandlerRootView>
+              </KeyboardProvider>
+            </UserProfileProvider>
           </QueryClientProvider>
         </ToastProvider>
       </AuthProvider>

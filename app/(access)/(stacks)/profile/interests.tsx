@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomAlert } from "@/components/CustomAlert";
 
 // Mock interests data
 const INTERESTS = [
@@ -36,6 +37,7 @@ const INTERESTS = [
 
 export default function InterestsScreen() {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [alertVisible, setAlertVisible] = useState(false);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -46,10 +48,7 @@ export default function InterestsScreen() {
   };
 
   const onSubmit = () => {
-    console.log("Interest:", {
-      selectedInterests,
-    });
-    router.push("/(access)/(stacks)/profile/profile-setup-completed");
+    setAlertVisible(true);
   };
 
   const isCompleteActive = selectedInterests.length > 0;
@@ -132,6 +131,16 @@ export default function InterestsScreen() {
           />
         </View>
       </View>
+
+      <CustomAlert
+        visible={alertVisible}
+        title="Interests Saved"
+        message="Your interests have been saved successfully."
+        onClose={() => {
+          setAlertVisible(false);
+          router.push("/(access)/(stacks)/profile/profile-setup-completed");
+        }}
+      />
     </SafeAreaView>
   );
 }

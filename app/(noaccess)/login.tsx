@@ -35,7 +35,7 @@ const isEmailOrPhone = (value: string): boolean => {
 };
 
 const Login = () => {
-  const params = useLocalSearchParams<{ variant?: string }>();
+  const params = useLocalSearchParams<{ variant?: string; method?: "email" | "phone" }>();
   const queryClient = useQueryClient();
   const { login } = useAuth();
 
@@ -61,8 +61,10 @@ const Login = () => {
 
   // Smart Input Detection: Hide flag prefix if they write letters (email address)
   const isEnteringEmail = useMemo(() => {
+    if (params.method === "email") return true;
+    if (params.method === "phone") return false;
     return /[a-zA-Z]/.test(identifier.trim().substring(0, 1));
-  }, [identifier]);
+  }, [identifier, params.method]);
 
   const handleLogin = async () => {
     if (
@@ -235,7 +237,9 @@ const Login = () => {
         {/* Rising Card Container */}
         <View style={styles.formCard}>
           {/* Email or Phone Number Input */}
-          <Text style={styles.cardFieldLabel}>Email or Phone Number</Text>
+          <Text style={styles.cardFieldLabel}>
+            {params.method === "email" ? "Email Address" : params.method === "phone" ? "Phone Number" : "Email or Phone Number"}
+          </Text>
           <View
             style={[
               styles.inputWrapper,

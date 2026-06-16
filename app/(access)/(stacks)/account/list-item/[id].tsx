@@ -21,6 +21,8 @@ const { width } = Dimensions.get("window");
 const ListItem = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [expired, setExpired] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [returnedStatus, setReturnedStatus] = useState<"yes" | "no" | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
   const { itemData } = useLocalSearchParams();
@@ -73,8 +75,11 @@ const ListItem = () => {
               <Ionicons name="arrow-back" size={25} color="#3A3541" />
             </TouchableOpacity>
 
-            <TouchableOpacity className="w-12 h-12 rounded-full bg-white/80 items-center justify-center">
-              <Ionicons name="heart-outline" size={25} color="#374151" />
+            <TouchableOpacity
+              className="w-12 h-12 rounded-full bg-white/80 items-center justify-center"
+              onPress={() => setIsLiked(!isLiked)}
+            >
+              <Ionicons name={isLiked ? "heart" : "heart-outline"} size={25} color={isLiked ? "#FF3333" : "#374151"} />
             </TouchableOpacity>
           </View>
 
@@ -280,24 +285,30 @@ const ListItem = () => {
 
               <View className="flex-row items-center gap-4">
                 <TouchableOpacity
-                  className="px-6 py-3 bg-white border-2 border-[#60A5FA] rounded-lg"
-                  onPress={() => console.log("Returned: yes")}
+                  className={`px-6 py-3 bg-white border-2 rounded-lg ${
+                    returnedStatus === "yes" ? "border-[#0066CC]" : "border-gray-200"
+                  }`}
+                  onPress={() => setReturnedStatus("yes")}
                 >
                   <Text
                     style={{
-                      color: "#1E90FF",
+                      color: returnedStatus === "yes" ? "#0066CC" : "#374151",
+                      fontFamily: "HankenGrotesk_500Medium"
                     }}
                   >
                     Yes
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  className="px-6 py-3 bg-white border-2 border-gray-200 rounded-lg"
-                  onPress={() => console.log("Returned: no")}
+                  className={`px-6 py-3 bg-white border-2 rounded-lg ${
+                    returnedStatus === "no" ? "border-[#FF3333]" : "border-gray-200"
+                  }`}
+                  onPress={() => setReturnedStatus("no")}
                 >
                   <Text
                     style={{
-                      color: "#374151",
+                      color: returnedStatus === "no" ? "#FF3333" : "#374151",
+                      fontFamily: "HankenGrotesk_500Medium"
                     }}
                   >
                     No

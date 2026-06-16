@@ -9,7 +9,7 @@ const StackPagesLayout = () => {
 
   useEffect(() => {
     if (!isLoading && !token) {
-      router.replace("/login");
+      router.replace("/(noaccess)/sign-in-method");
     }
   }, [isLoading, token]);
 
