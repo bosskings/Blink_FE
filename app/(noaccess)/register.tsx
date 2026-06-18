@@ -18,24 +18,40 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
+interface PhoneFormData {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email?: string;
+}
+
+interface EmailFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+}
+
 const Register = () => {
   const [activeTab, setActiveTab] = useState<"phone" | "email">("phone");
   const [joinAsBusiness, setJoinAsBusiness] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
-  const [isFocused, setIsFocused] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<PhoneFormData & EmailFormData>({
     defaultValues: {
+      firstName: "",
+      lastName: "",
       phoneNumber: "",
       email: "",
     },
   });
 
-  const onPhoneSubmit = async (data: any) => {
+  const onPhoneSubmit = async (data: PhoneFormData) => {
     const normalizedPhone = data.phoneNumber.replace(/^0/, "");
 
     router.push({
@@ -43,17 +59,21 @@ const Register = () => {
       params: {
         method: "phone",
         identifier: `${selectedCountry.code}${normalizedPhone}`,
+        firstName: data.firstName.trim(),
+        lastName: data.lastName.trim(),
         business: joinAsBusiness ? "true" : "false",
       },
     });
   };
 
-  const onEmailSubmit = async (data: any) => {
+  const onEmailSubmit = async (data: EmailFormData) => {
     router.push({
       pathname: "/(noaccess)/create-password",
       params: {
         method: "email",
         identifier: data.email.trim().toLowerCase(),
+        firstName: data.firstName.trim(),
+        lastName: data.lastName.trim(),
         business: joinAsBusiness ? "true" : "false",
       },
     });
@@ -107,6 +127,83 @@ const Register = () => {
         </View>
 
         {/* Input Forms */}
+        <View style={{ flexDirection: "row", gap: 12, marginBottom: 4 }}>
+          <View style={{ flex: 1 }}>
+            <Controller
+              name="firstName"
+              control={control}
+              rules={{ required: "First name is required" }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <View
+                  style={[
+                    styles.inputContainer,
+                    focusedField === "firstName" && styles.inputFocused,
+                  ]}
+                >
+                  <TextInput
+                    placeholder="First name"
+                    placeholderTextColor="#AFAFAF"
+                    onChangeText={onChange}
+                    onBlur={() => {
+                      onBlur();
+                      setFocusedField(null);
+                    }}
+                    onFocus={() => setFocusedField("firstName")}
+                    value={value || ""}
+                    style={[styles.textInput, { paddingLeft: 4 }]}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                  />
+                </View>
+              )}
+            />
+            <ErrorMessage
+              errors={errors}
+              name="firstName"
+              render={({ message }) => (
+                <Text style={styles.errorText}>{message}</Text>
+              )}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Controller
+              name="lastName"
+              control={control}
+              rules={{ required: "Last name is required" }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <View
+                  style={[
+                    styles.inputContainer,
+                    focusedField === "lastName" && styles.inputFocused,
+                  ]}
+                >
+                  <TextInput
+                    placeholder="Last name"
+                    placeholderTextColor="#AFAFAF"
+                    onChangeText={onChange}
+                    onBlur={() => {
+                      onBlur();
+                      setFocusedField(null);
+                    }}
+                    onFocus={() => setFocusedField("lastName")}
+                    value={value || ""}
+                    style={[styles.textInput, { paddingLeft: 4 }]}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                  />
+                </View>
+              )}
+            />
+            <ErrorMessage
+              errors={errors}
+              name="lastName"
+              render={({ message }) => (
+                <Text style={styles.errorText}>{message}</Text>
+              )}
+            />
+          </View>
+        </View>
+
         {activeTab === "phone" ? (
           <View>
             <Controller
@@ -123,16 +220,14 @@ const Register = () => {
                 <View
                   style={[
                     styles.inputContainer,
-                    isFocused && styles.inputFocused,
+                    focusedField === "phone" && styles.inputFocused,
                   ]}
                 >
-                  {/* Real Dynamic Country Picker Dropdown */}
                   <CountryPicker
                     selectedCountry={selectedCountry}
                     onSelectCountry={setSelectedCountry}
                   />
 
-                  {/* Vertical separator divider */}
                   <View style={styles.verticalDivider} />
 
                   <TextInput
@@ -141,9 +236,9 @@ const Register = () => {
                     onChangeText={onChange}
                     onBlur={() => {
                       onBlur();
-                      setIsFocused(false);
+                      setFocusedField(null);
                     }}
-                    onFocus={() => setIsFocused(true)}
+                    onFocus={() => setFocusedField("phone")}
                     value={value || ""}
                     keyboardType="phone-pad"
                     style={styles.textInput}
@@ -200,7 +295,7 @@ const Register = () => {
                 <View
                   style={[
                     styles.inputContainer,
-                    isFocused && styles.inputFocused,
+                    focusedField === "email" && styles.inputFocused,
                   ]}
                 >
                   <TextInput
@@ -209,9 +304,9 @@ const Register = () => {
                     onChangeText={onChange}
                     onBlur={() => {
                       onBlur();
-                      setIsFocused(false);
+                      setFocusedField(null);
                     }}
-                    onFocus={() => setIsFocused(true)}
+                    onFocus={() => setFocusedField("email")}
                     value={value || ""}
                     keyboardType="email-address"
                     style={[styles.textInput, { paddingLeft: 4 }]}
@@ -266,7 +361,7 @@ const Register = () => {
           style={styles.alternateButton}
           onPress={() => {
             setActiveTab((prev) => (prev === "phone" ? "email" : "phone"));
-            setIsFocused(false);
+            setFocusedField(null);
           }}
           activeOpacity={0.7}
         >

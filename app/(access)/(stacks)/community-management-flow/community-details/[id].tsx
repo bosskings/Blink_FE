@@ -24,6 +24,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ExpandableDescription from "../_components/ExpandableDescription";
 import ListingCard from "../_components/listing-card";
 import PostCard from "../_components/post-card";
+import { useCommunity, useCommunityFeed } from "@/services";
 
 export type PostItem = {
   id: string;
@@ -72,6 +73,8 @@ export type EventItem = {
 
 const CommunityDetail = () => {
   const { id } = useLocalSearchParams();
+  const { data: apiCommunity } = useCommunity(id as string ?? "");
+  const { data: apiFeed } = useCommunityFeed(id as string ?? "");
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState<string>("");
   const [reportDescription, setReportDescription] = useState<string>("");
@@ -99,147 +102,106 @@ const CommunityDetail = () => {
     // You can add a success toast/notification here
   };
 
-  const universityCommunities = [
-    {
-      id: 1,
-      name: "Covenant University",
-      desc: "A vibrant student community in Ota, Ogun State, Nigeria, well-known for its academic excellence and active campus life. Connect for learning resources, peer support, campus events, and buy/sell opportunities.",
-      members: "18k",
-      status: "Active",
-      nested: "2",
-      image:
-        "https://images.unsplash.com/photo-1587466738777-28022963e45a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Q2l0eSUyMHNreWxpbmUlMjBuaWdodCUyMGxpZ2h0c3xlbnwwfHwwfHx8MA%3D%3D",
-    },
-    {
-      id: 2,
-      name: "Obafemi Awolowo University",
-      desc: "Join OAU’s passionate student community for collaborative learning, events, and discussions. Network with fellow students, find campus deals, ask academic questions, and stay updated on student-led activities.",
-      members: "22k",
-      status: "Owned",
-      nested: "2",
-      image:
-        "https://images.unsplash.com/photo-1464983953574-0892a716854b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGNhbXB1c3xlbnwwfHwwfHx8MA%3D%3D",
-    },
-    {
-      id: 3,
-      name: "University of Lagos",
-      desc: "Connect with UNILAG’s energetic community at Nigeria’s premier urban university. Dive into conversations about classes, events, club activities, housing, and trending news on campus.",
-      members: "25k",
-      status: "Discover",
-      nested: "2",
-      image:
-        "https://images.unsplash.com/photo-1522752562114-9deaf20c2058?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fFVyYmFuJTIwY2l0eSUyMHNreWxpbmV8ZW58MHx8MHx8fDA%3D",
-    },
-    {
-      id: 4,
-      name: "University of Ibadan",
-      desc: "Engage with Nigeria’s premier university community. Share reading materials, find study groups, discover campus events, and stay in the loop on departmental updates.",
-      members: "19k",
-      status: "Discover",
-      nested: "3",
-      image:
-        "https://images.unsplash.com/photo-1444201983204-c43cbd584d93?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-    },
-    {
-      id: 5,
-      name: "Lagos State University",
-      desc: "Join LASU’s buzzing student hub. Connect over lectures, projects, student politics, social events, and everything happening on and around campus.",
-      members: "16k",
-      status: "Discover",
-      nested: "1",
-      image:
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-    },
-    {
-      id: 6,
-      name: "Babcock University",
-      desc: "A close‑knit private university community for sharing faith, academics, business ideas, and campus lifestyle tips.",
-      members: "12k",
-      status: "Discover",
-      nested: "2",
-      image:
-        "https://images.unsplash.com/photo-1460518451285-97b6aa326961?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-    },
-    {
-      id: 7,
-      name: "Federal University of Technology, Akure",
-      desc: "Tech‑driven community for FUTA students to collaborate on projects, hackathons, research, and internships while staying updated on campus gist.",
-      members: "14k",
-      status: "Discover",
-      nested: "3",
-      image:
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-    },
-  ];
-
-  const posts: CommunityPost[] = [
-    {
-      id: "1",
-      type: "post",
-      user: "Mike Berger",
-      time: "2 hours ago",
-      community: "Convenant University",
-      content: "Anyone with ENG 201 past question?\nExams are coming fast 🔥",
-      tags: ["#ExamSeason", "#StudyTips"],
-      likes: 124,
-      comments: 67,
-      avatar:
-        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fHVzZXJ8ZW58MHx8MHx8fDA%3D",
-    },
-    {
-      id: "2",
-      type: "listing",
-      title: "Road Bicycle",
-      price: "₦45,000",
-      community: "Convenant University",
-      description:
-        "Great condition road bicycle, perfect for city rides and weekend adventures. Recently serviced with new brake pads and chain. Includes helmet",
-      timePosted: "2h ago",
-      distance: "0.7km away",
-      image:
-        "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop",
-      tag: "SALE",
-      images: [
-        "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800",
-        "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800",
-        "https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=800",
-      ],
-    },
-    {
-      id: "3",
-      type: "post",
-      user: "Mike Berger",
-      time: "2 hours ago",
-      community: "Convenant University",
-      content: "Anyone with ENG 201 past question?\nExams are coming fast 🔥",
-      images: [
-        "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800",
-      ],
-      tags: ["#ExamSeason", "#StudyTips"],
-      likes: 124,
-      comments: 67,
-      avatar:
-        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx8fHx8MA%3D",
-    },
-    {
-      id: "4",
-      type: "listing",
-      title: "Office Chair",
-      price: "₦35,000",
-      community: "Convenant University",
-      description: "Ergonomic office chair with lumbar support",
-      distance: "1.2km away",
-      timePosted: "1d ago",
-      image:
-        "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
-      tag: "SERVICE",
-      images: [
-        "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&h=600&fit=crop",
-      ],
-    },
-  ];
+  const posts: CommunityPost[] = apiFeed
+    ? apiFeed.map((item: any) =>
+        item.type === "listing"
+          ? {
+              id: item._id,
+              type: "listing" as const,
+              title: item.title ?? "",
+              price: item.price ?? "",
+              community: item.community?.name ?? "",
+              description: item.description ?? "",
+              timePosted: item.createdAt ?? "",
+              distance: item.distance ?? "",
+              image: item.images?.[0] ?? "",
+              tag: item.tag ?? "",
+              images: item.images ?? [],
+            }
+          : {
+              id: item._id,
+              type: "post" as const,
+              user: item.author?.firstName
+                ? `${item.author.firstName} ${item.author.lastName ?? ""}`.trim()
+                : "Unknown",
+              time: item.createdAt ?? "",
+              community: item.community?.name ?? "",
+              content: item.content ?? "",
+              tags: item.tags ?? [],
+              likes: item.likesCount ?? 0,
+              comments: item.commentsCount ?? 0,
+              avatar: item.author?.avatar ?? "",
+              images: item.images ?? [],
+            },
+      )
+    : [
+        {
+          id: "1",
+          type: "post",
+          user: "Mike Berger",
+          time: "2 hours ago",
+          community: "Convenant University",
+          content: "Anyone with ENG 201 past question?\nExams are coming fast 🔥",
+          tags: ["#ExamSeason", "#StudyTips"],
+          likes: 124,
+          comments: 67,
+          avatar:
+            "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fHVzZXJ8ZW58MHx8MHx8fDA%3D",
+        },
+        {
+          id: "2",
+          type: "listing",
+          title: "Road Bicycle",
+          price: "₦45,000",
+          community: "Convenant University",
+          description:
+            "Great condition road bicycle, perfect for city rides and weekend adventures. Recently serviced with new brake pads and chain. Includes helmet",
+          timePosted: "2h ago",
+          distance: "0.7km away",
+          image:
+            "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop",
+          tag: "SALE",
+          images: [
+            "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800",
+            "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800",
+            "https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=800",
+          ],
+        },
+        {
+          id: "3",
+          type: "post",
+          user: "Mike Berger",
+          time: "2 hours ago",
+          community: "Convenant University",
+          content: "Anyone with ENG 201 past question?\nExams are coming fast 🔥",
+          images: [
+            "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800",
+          ],
+          tags: ["#ExamSeason", "#StudyTips"],
+          likes: 124,
+          comments: 67,
+          avatar:
+            "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx8fHx8MA%3D",
+        },
+        {
+          id: "4",
+          type: "listing",
+          title: "Office Chair",
+          price: "₦35,000",
+          community: "Convenant University",
+          description: "Ergonomic office chair with lumbar support",
+          distance: "1.2km away",
+          timePosted: "1d ago",
+          image:
+            "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
+          tag: "SERVICE",
+          images: [
+            "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
+            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop",
+            "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&h=600&fit=crop",
+          ],
+        },
+      ];
 
   const events: EventItem[] = [
     {
@@ -400,9 +362,15 @@ const CommunityDetail = () => {
     },
   ];
 
-  const community = universityCommunities.find(
-    (community) => community.id === Number(id),
-  );
+  const community = apiCommunity ? {
+    id: apiCommunity._id,
+    name: apiCommunity.name,
+    desc: apiCommunity.description ?? "",
+    members: apiCommunity.memberCount ?? 0,
+    status: apiCommunity.status ?? "Active",
+    nested: "",
+    image: apiCommunity.image ?? "",
+  } : null;
 
   return (
     <SafeAreaView className="flex-1 bg-white">

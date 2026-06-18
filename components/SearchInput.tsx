@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, View } from "react-native";
 
 interface SearchInputProps {
   placeholder?: string;

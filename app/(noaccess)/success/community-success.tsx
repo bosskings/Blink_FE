@@ -1,9 +1,6 @@
 import { SolidMainButton } from "@/components/Btns";
 import { useAuth } from "@/providers/AuthProvider";
-import {
-  consumePendingSignupSession,
-  createSignupSession,
-} from "@/utils/fake-auth";
+import type { AuthUser } from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React from "react";
@@ -11,17 +8,26 @@ import { Alert, Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Path, Svg } from "react-native-svg";
 
+interface PendingRegistration {
+  token: string;
+  user: AuthUser;
+}
+
 const CommunitySuccess = () => {
   const { login } = useAuth();
 
   const handleFindCommunities = async () => {
     try {
-      const pendingSession = await consumePendingSignupSession();
-      const session =
-        pendingSession ?? createSignupSession("email", "unknown@blink.local");
+      const raw = await AsyncStorage.getItem("pending_registration");
+      if (!raw) {
+        Alert.alert("Session expired", "Please register again.");
+        router.replace("/(noaccess)/register");
+        return;
+      }
 
-      await AsyncStorage.setItem("just_registered", "true");
-      await login(session.token, session.profile);
+      const pending = JSON.parse(raw) as PendingRegistration;
+      await AsyncStorage.removeItem("pending_registration");
+      await login(pending.token, pending.user);
       router.push(
         "/(access)/(stacks)/community-verification-flow/findCommunity",
       );

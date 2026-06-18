@@ -6,7 +6,7 @@ import initialReportedPosts from "@/dummyData/reportedPostsData";
 import { requests as initialRequests } from "@/dummyData/requestsData";
 
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -24,7 +24,6 @@ const CommunityMembership = () => {
   const [requests, setRequests] = useState<typeof initialRequests>(initialRequests);
   const [posts, setPosts] = useState<typeof initialReportedPosts>(initialReportedPosts);
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ title: "", message: "", postId: null as number | string | null, action: null as "review" | "takedown" | null });
 
@@ -162,7 +161,7 @@ const CommunityMembership = () => {
             <RequestsList
               title="Requests"
               requests={requests}
-              loading={loading}
+              loading={false}
               handleRemove={handleRemove}
             />
           </View>
@@ -170,7 +169,7 @@ const CommunityMembership = () => {
             <ReportedPostsList
               title="Reported Posts"
               posts={posts}
-              loading={loading}
+              loading={false}
               handleReview={handleReview}
               handleTakeDown={handleTakeDown}
               initialReportedPosts={initialReportedPosts}

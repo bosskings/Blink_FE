@@ -1,9 +1,8 @@
 import { SolidMainButton } from "@/components/Btns";
-import {
-  createSignupSession,
-  storePendingSignupSession,
-} from "@/utils/fake-auth";
+import LoadingOverlay from "@/components/LoadingOverlay";
+import { useRegister } from "@/services/hooks/useAuth";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useMemo, useState } from "react";
@@ -16,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import type { RegisterRequest } from "@/types/auth";
 
 type SignupMethod = "phone" | "email";
 
@@ -23,18 +23,25 @@ const CreatePassword = () => {
   const params = useLocalSearchParams<{
     method?: string;
     identifier?: string;
+    firstName?: string;
+    lastName?: string;
     business?: string;
   }>();
 
   const [password, setPassword] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
+  const registerMutation = useRegister();
+
   const method: SignupMethod = params.method === "phone" ? "phone" : "email";
   const identifier =
     typeof params.identifier === "string" && params.identifier.length > 0
       ? params.identifier
-      : "unknown@blink.local";
-  const isBusiness = params.business === "true";
+      : "";
+  const firstName =
+    typeof params.firstName === "string" ? params.firstName : "";
+  const lastName =
+    typeof params.lastName === "string" ? params.lastName : "";
 
   const checks = useMemo(
     () => ({
@@ -55,9 +62,29 @@ const CreatePassword = () => {
       return;
     }
 
-    const session = createSignupSession(method, identifier, isBusiness);
-    await storePendingSignupSession(session);
-    router.push("/(noaccess)/success/community-success");
+    const payload: RegisterRequest = {
+      firstName,
+      lastName,
+      email: method === "email" ? identifier : "",
+      phone: method === "phone" ? identifier : "",
+      password,
+    };
+
+    registerMutation.mutate(payload, {
+      onSuccess: async (response) => {
+        await AsyncStorage.setItem(
+          "pending_registration",
+          JSON.stringify({ token: response.token, user: response.user }),
+        );
+        await AsyncStorage.setItem("just_registered", "true");
+        router.push("/(noaccess)/success/community-success");
+      },
+      onError: (error) => {
+        const message =
+          error instanceof Error ? error.message : "Registration failed. Please try again.";
+        Alert.alert("Registration failed", message);
+      },
+    });
   };
 
   const RequirementRow = ({
@@ -87,9 +114,9 @@ const CreatePassword = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <StatusBar style="dark" />
+      <LoadingOverlay visible={registerMutation.isPending} />
 
       <View style={styles.container}>
-        {/* Working Back Navigation Arrow */}
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
@@ -101,7 +128,6 @@ const CreatePassword = () => {
         <View style={styles.contentWrap}>
           <Text style={styles.title}>Create Password</Text>
 
-          {/* Interactive Focus Highlight Input */}
           <TextInput
             value={password}
             onChangeText={setPassword}
@@ -137,6 +163,7 @@ const CreatePassword = () => {
             <SolidMainButton
               text="Create Account"
               onPress={handleCreateAccount}
+              disabled={!canCreate || registerMutation.isPending}
             />
           </View>
         </View>

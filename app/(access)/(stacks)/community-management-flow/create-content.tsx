@@ -1,5 +1,8 @@
 import { Headers } from "@/components/Headers";
 import { SolidMainButton } from "@/components/Btns";
+import LoadingOverlay from "@/components/LoadingOverlay";
+import { useCreatePost } from "@/services";
+import { useUserProfile } from "@/providers/UserProfileProvider";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
@@ -18,7 +21,6 @@ import {
 } from "react-native";
 import { CustomAlert } from "@/components/CustomAlert";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { EventItem } from "./community-details/[id]";
 
 // Lazy load DateTimePicker - requires native build
 // Note: This package requires a dev build. Run: npx expo prebuild
@@ -35,6 +37,7 @@ const CreateContent = () => {
   const { communityId, communityName } = useLocalSearchParams();
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ title: "", message: "" });
+  const createPostMutation = useCreatePost();
 
   const showAlert = (title: string, message: string) => {
     setAlertConfig({ title, message });
@@ -62,11 +65,10 @@ const CreateContent = () => {
   const [postImages, setPostImages] = useState<string[]>([]);
   const [postVideos, setPostVideos] = useState<string[]>([]);
 
-  // Mock user data - in a real app, this would come from auth context
+  const { profile } = useUserProfile();
   const currentUser = {
-    name: "Lasman Ade",
-    avatar:
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
+    name: profile ? `${profile.firstName ?? ""} ${profile.lastName ?? ""}`.trim() : "",
+    avatar: profile?.avatar ?? "",
   };
 
   const eventCategories = [
@@ -170,49 +172,39 @@ const CreateContent = () => {
 
   const handleCreatePost = () => {
     if (contentType === "event") {
-      // Validate event fields
       if (!eventTitle.trim() || !eventLocation || !eventCategory) {
-        // In a real app, show error message
         return;
       }
 
-      // Format date and time for display
-      const formattedDate = formatDate(eventDate);
-      const formattedTime = formatTime(eventTime);
-
-      const eventData: EventItem = {
-        id: Date.now().toString(),
-        title: eventTitle,
-        date: formattedDate,
-        time: formattedTime,
-        location: eventLocation,
-        category: eventCategory,
-        community: communityName as string,
-        description: eventDescription || undefined,
-        image:
-          eventImages.length > 0
-            ? eventImages[0]
-            : "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop", // Default image or first image
-        images: eventImages.length > 0 ? eventImages : undefined,
-        videos: eventVideos.length > 0 ? eventVideos : undefined,
-      };
-
       showAlert("Event Created", "Your event has been successfully created.");
     } else {
-      // Create post
-      const postData = {
-        content,
-        allowComments,
-        communityId,
-        poll: hasPoll
-          ? {
-              question: pollQuestion,
-              options: pollOptions.filter((opt) => opt.trim() !== ""),
-            }
-          : undefined,
-      };
+      if (!content.trim()) return;
 
-      showAlert("Post Created", "Your post has been successfully published.");
+      const filteredOptions = pollOptions.filter((opt) => opt.trim() !== "");
+
+      createPostMutation.mutate(
+        {
+          content,
+          community: (communityId as string) ?? "",
+          type: "discussion",
+          allowComments,
+          poll:
+            hasPoll && pollQuestion.trim() && filteredOptions.length >= 2
+              ? { question: pollQuestion, options: filteredOptions }
+              : undefined,
+        },
+        {
+          onSuccess: () => {
+            showAlert("Post Created", "Your post has been successfully published.");
+          },
+          onError: (err) => {
+            showAlert(
+              "Error",
+              err instanceof Error ? err.message : "Failed to create post.",
+            );
+          },
+        },
+      );
     }
   };
 
@@ -271,6 +263,7 @@ const CreateContent = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <StatusBar style="dark" />
+      <LoadingOverlay visible={createPostMutation.isPending} />
 
       {/* Header */}
       <View className="mt-6 mb-6 px-6">

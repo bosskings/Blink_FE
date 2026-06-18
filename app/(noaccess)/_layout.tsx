@@ -21,6 +21,8 @@ const StackPagesLayout = () => {
         pathname.includes("/register") ||
         pathname.includes("/create-password") ||
         pathname.includes("/login") ||
+        pathname.includes("/forgot-password") ||
+        pathname.includes("/reset-password") ||
         pathname.includes("/success");
 
       if (!isNoAccessPath) {
@@ -66,6 +68,8 @@ const StackPagesLayout = () => {
       <Stack.Screen name="register" />
       <Stack.Screen name="create-password" />
       <Stack.Screen name="login" />
+      <Stack.Screen name="forgot-password" />
+      <Stack.Screen name="reset-password" />
       <Stack.Screen name="success/community-success" />
     </Stack>
   );

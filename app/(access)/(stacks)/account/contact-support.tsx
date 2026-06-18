@@ -7,8 +7,6 @@ import { Headers } from "@/components/Headers";
 import { router } from "expo-router";
 import Animated, {
   FadeInDown,
-  FadeOutDown,
-  LinearTransition,
 } from "react-native-reanimated";
 
 export default function ContactSupportScreen() {

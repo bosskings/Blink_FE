@@ -1,6 +1,6 @@
 import { SolidMainButton } from "@/components/Btns";
+import { useUserProfile } from "@/providers/UserProfileProvider";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useCallback } from "react";
@@ -15,43 +15,25 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const VerifyBronze = () => {
-  const [phoneNumber, setPhoneNumber] = useState("+2348022194139");
-  const [emailAddress, setEmailAddress] = useState("gcruz@gmail.com");
+  const { profile } = useUserProfile();
   const [isEditable, setIsEditable] = useState(false);
+  const [localPhone, setLocalPhone] = useState("");
 
-  // Dynamic Verification States
-  const [phoneVerified, setPhoneVerified] = useState(false);
-  const [emailVerified, setEmailVerified] = useState(false);
-
-  // Reload verified states whenever the screen is focused
   useFocusEffect(
     useCallback(() => {
-      const loadStatus = async () => {
-        const phoneVal = await AsyncStorage.getItem("phone_verified");
-        const emailVal = await AsyncStorage.getItem("email_verified");
-        setPhoneVerified(phoneVal === "true");
-        setEmailVerified(emailVal === "true");
-
-        // Fetch custom email from AsyncStorage if saved during emailVerification
-        const savedEmail = await AsyncStorage.getItem("user_email");
-        if (savedEmail) {
-          setEmailAddress(savedEmail);
-        }
-      };
-      loadStatus();
-    }, []),
+      if (profile?.phone) {
+        setLocalPhone(profile.phone);
+      }
+    }, [profile?.phone]),
   );
+
+  const phoneNumber = localPhone || profile?.phone || "";
+  const emailAddress = profile?.email || "";
+  const phoneVerified = profile?.phoneVerified ?? false;
+  const emailVerified = profile?.emailVerified ?? false;
 
   const handleProceed = () => {
     router.replace("/(access)/(stacks)/profile/choose-avatar");
-  };
-
-  const handleResetVerification = async () => {
-    // Helper to allow testing multiple times
-    await AsyncStorage.removeItem("phone_verified");
-    await AsyncStorage.removeItem("email_verified");
-    setPhoneVerified(false);
-    setEmailVerified(false);
   };
 
   const bothVerified = phoneVerified && emailVerified;
@@ -76,14 +58,7 @@ const VerifyBronze = () => {
 
           <Text style={styles.headerTitle}>Bronze</Text>
 
-          {/* Debug reset button to easily re-test layout transitions */}
-          <TouchableOpacity
-            style={styles.resetButton}
-            onPress={handleResetVerification}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="refresh" size={16} color="#6B7280" />
-          </TouchableOpacity>
+          <View style={{ width: 44 }} />
         </View>
 
         {/* Large Centered Medal */}
@@ -148,7 +123,7 @@ const VerifyBronze = () => {
 
               <TextInput
                 value={phoneNumber}
-                onChangeText={setPhoneNumber}
+                onChangeText={setLocalPhone}
                 editable={isEditable && !phoneVerified}
                 style={[
                   styles.pillInput,

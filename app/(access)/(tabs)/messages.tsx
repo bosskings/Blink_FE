@@ -135,14 +135,18 @@ export default function MessagesScreen() {
           ) : (
             chats.map((chat) => (
               <Swipeable
-                key={chat.id}
-                renderRightActions={() => renderRightActions(chat.id)}
+                key={chat._id}
+                renderRightActions={() => renderRightActions(chat._id)}
               >
                 <TouchableOpacity
                   onPress={() =>
-                    router.push(
-                      `/(access)/(stacks)/chat-flow/chat/${chat.id}` as any,
-                    )
+                    router.push({
+                      pathname: `/(access)/(stacks)/chat-flow/chat/${chat._id}`,
+                      params: {
+                        name: chat.participantName ?? "",
+                        avatar: chat.participantAvatar ?? "",
+                      },
+                    } as never)
                   }
                   className="flex-row items-center py-4 border-b border-gray-100 bg-white"
                 >
@@ -167,7 +171,7 @@ export default function MessagesScreen() {
                       style={{ fontFamily: "HankenGrotesk_500Medium" }}
                       numberOfLines={1}
                     >
-                      {chat.lastMessage}
+                      {chat.lastMessage?.text}
                     </Text>
                   </View>
                   <View className="items-end">
@@ -177,7 +181,7 @@ export default function MessagesScreen() {
                     >
                       {chat.lastMessageTime}
                     </Text>
-                    {chat.unreadCount > 0 ? (
+                    {(chat.unreadCount ?? 0) > 0 ? (
                       <View className="bg-[#0066CC] w-5 h-5 rounded-full items-center justify-center">
                         <Text
                           className="text-white text-[11px] font-bold"

@@ -36,8 +36,8 @@ export default function VerifyGold() {
   const [addressUploaded, setAddressUploaded] = useState(false);
   const [socialLinked, setSocialLinked] = useState(false);
   const [socialHandle, setSocialHandle] = useState("");
-  const [idImageUri, setIdImageUri] = useState<string | null>(null);
-  const [addressImageUri, setAddressImageUri] = useState<string | null>(null);
+  const [, setIdImageUri] = useState<string | null>(null);
+  const [, setAddressImageUri] = useState<string | null>(null);
 
   const allVerified = idUploaded && addressUploaded && socialLinked;
 

@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -6,6 +6,9 @@ import { Path, Svg } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 
 const PaymentSuccess = () => {
+  const { pickupCode = "", sellerName = "Seller", chatId = "" } =
+    useLocalSearchParams<{ pickupCode: string; sellerName: string; chatId: string }>();
+
   return (
     <View className="flex-1 bg-white items-center justify-between px-6 py-12">
       <View className="flex-1 items-center justify-center">
@@ -28,7 +31,6 @@ const PaymentSuccess = () => {
           </Svg>
         </Animated.View>
 
-        {/* Text Content */}
         <Animated.View
           className="items-center"
           entering={FadeInDown.duration(600).delay(200).springify()}
@@ -50,7 +52,7 @@ const PaymentSuccess = () => {
               className="text-[15px] font-bold text-[#0066CC]"
               style={{ fontFamily: "HankenGrotesk_500Medium" }}
             >
-              Pickup Code: 8472-XKQ
+              Pickup Code: {pickupCode || "N/A"}
             </Text>
           </View>
         </Animated.View>
@@ -61,7 +63,12 @@ const PaymentSuccess = () => {
         entering={FadeInDown.duration(600).delay(400).springify()}
       >
         <TouchableOpacity
-          onPress={() => router.push("/(access)/(stacks)/chat-flow/chat/new-chat")}
+          onPress={() =>
+            router.push({
+              pathname: `/(access)/(stacks)/chat-flow/chat/${chatId || "new-chat"}`,
+              params: { name: sellerName },
+            } as never)
+          }
           className="w-full h-14 bg-[#0066CC] rounded-xl flex-row items-center justify-center gap-2"
           activeOpacity={0.8}
         >
@@ -72,7 +79,7 @@ const PaymentSuccess = () => {
               fontSize: 12,
             }}
           >
-            Chat with Alexa
+            Chat with {sellerName}
           </Text>
           <Ionicons name="chatbubble-ellipses" size={18} color="#FFFFFF" />
         </TouchableOpacity>

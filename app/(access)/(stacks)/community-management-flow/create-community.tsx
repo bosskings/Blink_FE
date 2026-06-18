@@ -1,5 +1,7 @@
 import { Headers } from "@/components/Headers";
 import { SolidMainButton } from "@/components/Btns";
+import LoadingOverlay from "@/components/LoadingOverlay";
+import { useCreateCommunity } from "@/services";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { router } from "expo-router";
@@ -29,6 +31,7 @@ const CreateCommunity = () => {
   const [, setLocation] = useState<Location.LocationObject | null>(null);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ title: "", message: "", navigateBack: false });
+  const createMutation = useCreateCommunity();
 
   const showAlert = (title: string, message: string, navigateBack = false) => {
     setAlertConfig({ title, message, navigateBack });
@@ -69,6 +72,7 @@ const CreateCommunity = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <StatusBar style="dark" />
+      <LoadingOverlay visible={createMutation.isPending} />
 
       <View className="mt-6 mb-6 px-6">
         <Headers text="Create/Manage Community" onPress={() => router.back()} />
@@ -128,7 +132,24 @@ const CreateCommunity = () => {
             style={{ color: "#3A3541", minHeight: 100, fontSize: 13 }}
           />
 
-          <SolidMainButton text="Save Community" onPress={() => showAlert("Community Created", "Your new community has been successfully created.", true)} />
+          <SolidMainButton
+            text="Save Community"
+            disabled={createMutation.isPending || !communityName.trim()}
+            onPress={() => {
+              createMutation.mutate(
+                {
+                  name: communityName.trim(),
+                  description: communityDescription.trim() || undefined,
+                  city: currentLocation,
+                  type: requireVerification ? "PRIVATE" : "PUBLIC",
+                },
+                {
+                  onSuccess: () => showAlert("Community Created", "Your new community has been successfully created.", true),
+                  onError: (err) => showAlert("Error", err instanceof Error ? err.message : "Failed to create community."),
+                },
+              );
+            }}
+          />
         </View>
 
         {/* Admin Settings & Join Rules Section */}

@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Dimensions, ImageBackground, Text, View } from "react-native";
+import { ImageBackground, Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 

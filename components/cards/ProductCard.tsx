@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
-import { Image, TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
 
 export const ProductCard = ({ item }: { item: any }) => {

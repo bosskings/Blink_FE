@@ -34,17 +34,26 @@ import { FloatingActionMenu } from "./_components/FloatingActionMenu";
 import { MainFilterModal } from "./_components/MainFilterModal";
 import { SearchFilterModal } from "./_components/SearchFilterModal";
 import { SortModal } from "./_components/SortModal";
+import { useCreateAndPublish, useCreateDraft, useListings, useRequests, useDiscussions, useCommunities } from "@/services";
+import LoadingOverlay from "@/components/LoadingOverlay";
+import type { CreateAndPublishRequest, CreateDraftRequest } from "@/types/listing";
+import { useUserProfile } from "@/providers/UserProfileProvider";
 
 const { height } = Dimensions.get("window");
 
 const HomeScreen = () => {
   const [activeTab, setActiveTab] = React.useState("forYou");
-  const [viewMode, setViewMode] = React.useState("list");
   const [filterVisible, setFilterVisible] = React.useState(false);
   const slideAnim = React.useRef(new Animated.Value(height)).current;
   const insets = useSafeAreaInsets();
 
-  const [displayName, setDisplayName] = React.useState("Lasman Ade");
+  const { profile: userProfile } = useUserProfile();
+  const { data: apiListings } = useListings();
+  const { data: apiRequests } = useRequests();
+  const { data: apiDiscussions } = useDiscussions();
+  const { data: apiCommunities } = useCommunities();
+
+  const displayName = userProfile ? `${userProfile.firstName ?? ""} ${userProfile.lastName ?? ""}`.trim() : "";
   const [avatarSource, setAvatarSource] = React.useState<any>(
     require("../../../assets/avatars/avatar1.png"),
   );
@@ -146,11 +155,6 @@ const HomeScreen = () => {
   const [listingDetails, setListingDetails] = React.useState<string[]>([]);
   const [listingPhotos, setListingPhotos] = React.useState<string[]>([]);
   const [listingPrice, setListingPrice] = React.useState("");
-  const [listingLocation, setListingLocation] = React.useState(
-    "Covenant University",
-  );
-  const [listingVerification, setListingVerification] =
-    React.useState("Bronze");
 
   const [listingTransactionType, setListingTransactionType] = React.useState<
     "Sale" | "Lease" | "Free"
@@ -183,6 +187,9 @@ const HomeScreen = () => {
   const [listingPublishRepost, setListingPublishRepost] = React.useState(false);
   const [listingAgreement, setListingAgreement] = React.useState(false);
 
+  const publishMutation = useCreateAndPublish();
+  const draftMutation = useCreateDraft();
+
   const [createRequestVisible, setCreateRequestVisible] = React.useState(false);
   const [requestTitle, setRequestTitle] = React.useState("");
   const [requestDesc, setRequestDesc] = React.useState("");
@@ -200,18 +207,11 @@ const HomeScreen = () => {
     null,
   );
 
-  const communitiesList = [
-    { name: "Covenant University", slug: "covenant" },
-    { name: "Downtown", slug: "downtown" },
-    { name: "Riverside", slug: "riverside" },
-    { name: "Hillside", slug: "hillside" },
-  ];
+  const communitiesList = (apiCommunities ?? []).map((c: any) => ({ name: c.name, slug: c._id }));
 
   useFocusEffect(
     React.useCallback(() => {
       const loadUserData = async () => {
-        const savedTag = await AsyncStorage.getItem("blink_tag");
-        if (savedTag) setDisplayName(savedTag);
         const savedAvatar = await AsyncStorage.getItem("user_avatar");
         if (savedAvatar) {
           if (
@@ -244,164 +244,51 @@ const HomeScreen = () => {
     }, []),
   );
 
-  const products = React.useMemo(
-    () => [
-      {
-        id: "1",
-        title: "Road Bicycle",
-        price: "₦45,000",
-        description:
-          "Great condition road bicycle, perfect for city rides and weekend adventures.",
-        timePosted: "2h ago",
-        distance: "0.7km away",
-        image:
-          "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop",
-        tag: "SALE",
-        images: [
-          "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800",
-        ],
-      },
-      {
-        id: "2",
-        title: "Laptop Stand",
-        price: "₦12,500",
-        description: "Adjustable aluminum laptop stand, barely used",
-        distance: "0.5km away",
-        timePosted: "5h ago",
-        image:
-          "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop",
-        tag: "RENT",
-        images: [
-          "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop",
-        ],
-      },
-      {
-        id: "3",
-        title: "Office Chair",
-        price: "₦35,000",
-        description: "Ergonomic office chair with lumbar support",
-        distance: "1.2km away",
-        timePosted: "1d ago",
-        image:
-          "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
-        tag: "SERVICE",
-        images: [
-          "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&h=600&fit=crop",
-        ],
-      },
-      {
-        id: "4",
-        title: "MacBook Pro M1 Laptop",
-        price: "₦420,000",
-        description: "Super fast Apple MacBook Pro M1, 8GB RAM, 256GB SSD",
-        distance: "0.3km away",
-        timePosted: "1h ago",
-        image:
-          "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=600&fit=crop",
-        tag: "SALE",
-        images: [
-          "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800",
-        ],
-      },
-      {
-        id: "5",
-        title: "HP EliteBook Laptop",
-        price: "₦180,000",
-        description: "Core i7 business laptop, 16GB RAM, 512GB SSD",
-        distance: "1.8km away",
-        timePosted: "3h ago",
-        image:
-          "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&h=600&fit=crop",
-        tag: "SALE",
-        images: [
-          "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800",
-        ],
-      },
-    ],
-    [],
-  );
+  const products = (apiListings ?? []).map((l) => ({
+    id: l._id,
+    title: l.title,
+    price: `\u20A6 ${l.price?.toLocaleString() ?? "0"}`,
+    description: l.description ?? "",
+    image: l.images?.[0] ?? "",
+    images: l.images ?? [],
+    tag: l.tag ?? l.status ?? "",
+    distance: l.distance ?? "",
+    timePosted: l.timePosted ?? "",
+    isPromoted: l.isPromoted ?? false,
+    condition: l.condition ?? "",
+  }));
 
-  const requests = React.useMemo(
-    () => [
-      {
-        id: "req1",
-        priority: "URGENT PRIORITY",
-        title: "Looking for: An umbrella",
-        description: "I need an umbrella ASAP!",
-        timePosted: "Posted 8 mins ago",
-        responsesCount: "3 responses",
-        requester: {
-          name: "Anna Montana",
-          distance: "0.2km away",
-          avatar: require("../../../assets/avatars/avatar3.png"),
-        },
-      },
-      {
-        id: "req2",
-        priority: "URGENT PRIORITY",
-        title: "Looking for: Laptop Charger",
-        description:
-          "My USB-C laptop charger stopped working, need to borrow one for tonight!",
-        timePosted: "Posted 15 mins ago",
-        responsesCount: "1 response",
-        requester: {
-          name: "David Adeleke",
-          distance: "0.6km away",
-          avatar: require("../../../assets/avatars/avatar2.png"),
-        },
-      },
-    ],
-    [],
-  );
+  const requests = (apiRequests ?? []).map((r) => ({
+    id: r._id,
+    title: r.title ?? r.content ?? "",
+    description: r.content ?? "",
+    priority: "Normal",
+    requester: { name: r.author?.firstName ?? "", avatar: r.author?.avatar ?? "" },
+    timePosted: r.createdAt ?? "",
+    location: "",
+    responsesCount: r.commentsCount ?? 0,
+    details: [] as string[],
+  }));
 
-  const communities = [
-    {
-      id: "1",
-      name: "Downtown",
-      members: "2.3k",
-      image:
-        "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop",
-    },
-    {
-      id: "2",
-      name: "Riverside",
-      members: "1.0k",
-      image:
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    },
-  ];
+  const communities = (apiCommunities ?? []).slice(0, 4).map((c) => ({
+    id: c._id,
+    name: c.name,
+    members: c.memberCount >= 1000 ? `${(c.memberCount / 1000).toFixed(1)}k` : `${c.memberCount}`,
+    image: c.image ?? "",
+  }));
 
-  const discussions = React.useMemo(
-    () => [
-      {
-        id: "1",
-        user: "Mike Berger",
-        time: "2 hours ago",
-        community: "Covenant University",
-        content:
-          "Anyone with ENG 201 past questions?\nExams are coming fast 😩",
-        tags: ["#ExamSeason", "#StudyTips"],
-        likes: 124,
-        comments: 67,
-        avatar:
-          "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-      },
-      {
-        id: "2",
-        user: "Mike Berger",
-        time: "2 hours ago",
-        community: "Ota Central Market",
-        content:
-          "Anyone with ENG 201 past questions?\nExams are coming fast 😩",
-        tags: ["#ExamSeason", "#StudyTips"],
-        likes: 124,
-        comments: 67,
-        avatar:
-          "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-      },
-    ],
-    [],
-  );
+  const discussions = (apiDiscussions ?? []).map((d) => ({
+    id: d._id,
+    user: d.author ? `${d.author.firstName} ${d.author.lastName ?? ""}`.trim() : "",
+    time: d.createdAt ?? "",
+    community: d.community?.name ?? "",
+    content: d.content ?? "",
+    likes: d.likesCount ?? 0,
+    comments: d.commentsCount ?? 0,
+    tags: d.tags ?? [],
+    avatar: d.author?.avatar ?? "",
+    images: d.images ?? [],
+  }));
 
   const openFilter = () => setMainFilterVisible(true);
   const openSearchFilter = () => {
@@ -911,6 +798,7 @@ const HomeScreen = () => {
         onRequestClose={() => setCreateListingVisible(false)}
       >
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+          <LoadingOverlay visible={publishMutation.isPending || draftMutation.isPending} />
           {createListingStep < 8 && (
             <View style={styles.wizardHeader}>
               <TouchableOpacity
@@ -2488,7 +2376,19 @@ const HomeScreen = () => {
                 <TouchableOpacity
                   onPress={() => {
                     if (createListingStep === 7) {
-                      setCreateListingVisible(false);
+                      const draftPayload: CreateDraftRequest = {
+                        title: listingTitle,
+                        description: listingDesc || undefined,
+                        price: Number(listingPrice) || 0,
+                        type: listingTransactionType.toLowerCase(),
+                        category: listingCategory || undefined,
+                        condition: listingCondition || undefined,
+                      };
+                      draftMutation.mutate(draftPayload, {
+                        onSuccess: () => setCreateListingVisible(false),
+                        onError: (err) =>
+                          alert(err instanceof Error ? err.message : "Failed to save draft."),
+                      });
                       return;
                     }
                     if (createListingStep > 1)
@@ -2530,6 +2430,29 @@ const HomeScreen = () => {
                       alert(
                         "Please agree to the Community Guidelines to publish.",
                       );
+                      return;
+                    }
+                    if (createListingStep === 7) {
+                      const publishPayload: CreateAndPublishRequest = {
+                        title: listingTitle,
+                        description: listingDesc,
+                        price: Number(listingPrice) || 0,
+                        type: listingTransactionType.toLowerCase(),
+                        transactionType: listingTransactionType,
+                        category: listingCategory || undefined,
+                        condition: listingCondition || undefined,
+                        communities: listingRecComms.length > 0 ? listingRecComms : undefined,
+                        pickupOption: listingPickupOption,
+                        availabilitySchedule: listingAvailability.join(", "),
+                        listingDuration: listingDuration,
+                        agreedToTerms: listingAgreement,
+                        images: listingPhotos.length > 0 ? listingPhotos : undefined,
+                      };
+                      publishMutation.mutate(publishPayload, {
+                        onSuccess: () => setCreateListingStep(8),
+                        onError: (err) =>
+                          alert(err instanceof Error ? err.message : "Failed to publish listing."),
+                      });
                       return;
                     }
                     setCreateListingStep(createListingStep + 1);

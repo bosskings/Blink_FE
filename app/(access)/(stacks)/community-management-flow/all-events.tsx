@@ -1,5 +1,4 @@
 import { Headers } from "@/components/Headers";
-import { SearchInput } from "@/components/SearchInput";
 import { SolidMainButton, SolidGrayButton } from "@/components/Btns";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";

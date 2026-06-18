@@ -10,7 +10,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Image,
   ScrollView,
-  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -122,7 +121,7 @@ export default function StorefrontSetup() {
   }, [storeName, storeDescription, logoUri, bannerUri, category, tags,
       contactEmail, contactPhone, instagram, twitter, whatsapp, address,
       operatingDays, openTime, closeTime, returnPolicy, shippingInfo,
-      paymentMethods, storePhotos, existingStore]);
+      paymentMethods, storePhotos, existingStore, createStorefront, updateStorefront]);
 
   const pickImage = async (setter: (uri: string) => void) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();

@@ -29,10 +29,6 @@ import { UserProfileProvider } from "@/providers/UserProfileProvider";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { seedIfNeeded } from "@/services/staged/seed";
-import { db } from "@/services/staged/db";
-
-// 🚨 SET TO true TO CLEAR ALL STORAGE ON NEXT LAUNCH, THEN SET BACK TO false
-const CLEAR_ON_START = true;
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -55,11 +51,7 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    const init = async () => {
-      if (CLEAR_ON_START) await db.clearAll();
-      await seedIfNeeded();
-    };
-    init();
+    seedIfNeeded();
   }, []);
 
   if (!loaded) {

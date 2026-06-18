@@ -14,7 +14,7 @@ export default function TrendingHashtags() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
-  const [alertConfig, setAlertConfig] = useState({ title: "", message: "" });
+  const [alertConfig] = useState({ title: "", message: "" });
 
   // Simulate data load with staggered animation
   useEffect(() => {

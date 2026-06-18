@@ -49,7 +49,7 @@ export default function NotificationsScreen() {
         ListEmptyComponent={
           <View className="items-center py-12">
             <Ionicons name="notifications-off-outline" size={32} color="#9CA3AF" />
-            <Text className="mt-3 text-[15px] text-gray-500">You're all caught up!</Text>
+            <Text className="mt-3 text-[15px] text-gray-500">You&apos;re all caught up!</Text>
           </View>
         }
       />
