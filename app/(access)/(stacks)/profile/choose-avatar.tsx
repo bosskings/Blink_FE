@@ -7,7 +7,6 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
-  Alert,
   Image,
   ImageSourcePropType,
   Platform,
@@ -18,6 +17,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 interface AvatarOption {
   id: number;
@@ -27,13 +28,14 @@ interface AvatarOption {
 }
 
 export default function ProfileSetup() {
+  const { showAlert } = useAlert();
   const [avatars] = useState<AvatarOption[]>([
-    { id: 1, uri: require("../../../../assets/avatars/avatar1.png"), bg: "#E0DBFF", name: "avatar1" },
-    { id: 2, uri: require("../../../../assets/avatars/avatar2.png"), bg: "#D4F0FC", name: "avatar2" },
-    { id: 3, uri: require("../../../../assets/avatars/avatar3.png"), bg: "#FFE5C3", name: "avatar3" },
-    { id: 4, uri: require("../../../../assets/avatars/avatar1.png"), bg: "#E0DBFF", name: "avatar4" },
-    { id: 5, uri: require("../../../../assets/avatars/avatar4.png"), bg: "#FFE5C3", name: "avatar5" },
-    { id: 6, uri: require("../../../../assets/avatars/avatar1.png"), bg: "#E0DBFF", name: "avatar6" },
+    { id: 1, uri: require("../../../../assets/avatars/avatar1.webp"), bg: "#E0DBFF", name: "avatar1" },
+    { id: 2, uri: require("../../../../assets/avatars/avatar2.webp"), bg: "#D4F0FC", name: "avatar2" },
+    { id: 3, uri: require("../../../../assets/avatars/avatar3.webp"), bg: "#FFE5C3", name: "avatar3" },
+    { id: 4, uri: require("../../../../assets/avatars/avatar1.webp"), bg: "#E0DBFF", name: "avatar4" },
+    { id: 5, uri: require("../../../../assets/avatars/avatar4.webp"), bg: "#FFE5C3", name: "avatar5" },
+    { id: 6, uri: require("../../../../assets/avatars/avatar1.webp"), bg: "#E0DBFF", name: "avatar6" },
   ]);
 
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
@@ -63,7 +65,7 @@ export default function ProfileSetup() {
           router.push("/(access)/(stacks)/profile/profile-details");
         },
         onError: (error) => {
-          Alert.alert("Error", error instanceof Error ? error.message : "Failed to upload avatar.");
+          showAlert("Error", error instanceof Error ? error.message : "Failed to upload avatar.");
         },
       });
     } else if (selectedAvatar !== null) {
@@ -75,7 +77,7 @@ export default function ProfileSetup() {
             router.push("/(access)/(stacks)/profile/profile-details");
           },
           onError: (error) => {
-            Alert.alert("Error", error instanceof Error ? error.message : "Failed to save avatar.");
+            showAlert("Error", error instanceof Error ? error.message : "Failed to save avatar.");
           },
         },
       );
@@ -90,7 +92,7 @@ export default function ProfileSetup() {
   const handleCustomPhotoPress = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission needed", "Camera roll permission is required.");
+      showAlert("Permission needed", "Camera roll permission is required.");
       return;
     }
 

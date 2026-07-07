@@ -7,7 +7,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useMemo, useState } from "react";
 import {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -16,13 +15,14 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { RegisterRequest } from "@/types/auth";
+import { useAlert } from "@/providers/AlertProvider";
 
-type SignupMethod = "phone" | "email";
 
 const CreatePassword = () => {
+  const { showAlert } = useAlert();
   const params = useLocalSearchParams<{
-    method?: string;
-    identifier?: string;
+    email?: string;
+    phone?: string;
     firstName?: string;
     lastName?: string;
     business?: string;
@@ -33,11 +33,8 @@ const CreatePassword = () => {
 
   const registerMutation = useRegister();
 
-  const method: SignupMethod = params.method === "phone" ? "phone" : "email";
-  const identifier =
-    typeof params.identifier === "string" && params.identifier.length > 0
-      ? params.identifier
-      : "";
+  const email = typeof params.email === "string" ? params.email : "";
+  const phone = typeof params.phone === "string" ? params.phone : "";
   const firstName =
     typeof params.firstName === "string" ? params.firstName : "";
   const lastName =
@@ -58,15 +55,15 @@ const CreatePassword = () => {
 
   const handleCreateAccount = async () => {
     if (!canCreate) {
-      Alert.alert("Invalid password", "Please meet all password requirements.");
+      showAlert("Invalid password", "Please meet all password requirements.");
       return;
     }
 
     const payload: RegisterRequest = {
       firstName,
       lastName,
-      email: method === "email" ? identifier : "",
-      phone: method === "phone" ? identifier : "",
+      email,
+      phone,
       password,
     };
 
@@ -82,7 +79,7 @@ const CreatePassword = () => {
       onError: (error) => {
         const message =
           error instanceof Error ? error.message : "Registration failed. Please try again.";
-        Alert.alert("Registration failed", message);
+        showAlert("Registration failed", message);
       },
     });
   };

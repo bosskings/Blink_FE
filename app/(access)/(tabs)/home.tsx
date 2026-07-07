@@ -55,7 +55,7 @@ const HomeScreen = () => {
 
   const displayName = userProfile ? `${userProfile.firstName ?? ""} ${userProfile.lastName ?? ""}`.trim() : "";
   const [avatarSource, setAvatarSource] = React.useState<any>(
-    require("../../../assets/avatars/avatar1.png"),
+    require("../../../assets/avatars/avatar1.webp"),
   );
 
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -223,19 +223,19 @@ const HomeScreen = () => {
           } else {
             switch (savedAvatar) {
               case "avatar1":
-                setAvatarSource(require("../../../assets/avatars/avatar1.png"));
+                setAvatarSource(require("../../../assets/avatars/avatar1.webp"));
                 break;
               case "avatar2":
-                setAvatarSource(require("../../../assets/avatars/avatar2.png"));
+                setAvatarSource(require("../../../assets/avatars/avatar2.webp"));
                 break;
               case "avatar3":
-                setAvatarSource(require("../../../assets/avatars/avatar3.png"));
+                setAvatarSource(require("../../../assets/avatars/avatar3.webp"));
                 break;
               case "avatar4":
-                setAvatarSource(require("../../../assets/avatars/avatar4.png"));
+                setAvatarSource(require("../../../assets/avatars/avatar4.webp"));
                 break;
               default:
-                setAvatarSource(require("../../../assets/avatars/avatar1.png"));
+                setAvatarSource(require("../../../assets/avatars/avatar1.webp"));
             }
           }
         }
@@ -531,7 +531,7 @@ const HomeScreen = () => {
           <View className="flex-row items-center">
             <View className="items-center justify-center w-10 h-10 mr-2 overflow-hidden bg-orange-400 rounded-full">
               <Image
-                source={require("../../../assets/avatars/avatar3.png")}
+                source={require("../../../assets/avatars/avatar3.webp")}
                 className="object-contain w-full h-full"
               />
             </View>

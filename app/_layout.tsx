@@ -26,6 +26,7 @@ import { useEffect, useRef } from "react";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { UserProfileProvider } from "@/providers/UserProfileProvider";
+import { AlertProvider } from "@/providers/AlertProvider";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { seedIfNeeded } from "@/services/staged/seed";
@@ -82,24 +83,26 @@ export default function RootLayout() {
           warningIcon={<MaterialIcons name="warning" size={22} color="#fff" />}
         >
           <QueryClientProvider client={queryClient}>
-            <UserProfileProvider>
-              <KeyboardProvider>
-                <GestureHandlerRootView>
-                  <Stack>
-                    <Stack.Screen
-                      name="(noaccess)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="(access)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                  <StatusBar style="dark" />
-                </GestureHandlerRootView>
-              </KeyboardProvider>
-            </UserProfileProvider>
+            <AlertProvider>
+              <UserProfileProvider>
+                <KeyboardProvider>
+                  <GestureHandlerRootView>
+                    <Stack>
+                      <Stack.Screen
+                        name="(noaccess)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="(access)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen name="+not-found" />
+                    </Stack>
+                    <StatusBar style="dark" />
+                  </GestureHandlerRootView>
+                </KeyboardProvider>
+              </UserProfileProvider>
+            </AlertProvider>
           </QueryClientProvider>
         </ToastProvider>
       </AuthProvider>

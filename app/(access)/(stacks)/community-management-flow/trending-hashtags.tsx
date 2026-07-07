@@ -1,37 +1,30 @@
+import { CustomAlert } from "@/components/CustomAlert";
 import { Headers } from "@/components/Headers";
-import trendingHashtagsData from "@/dummyData/trendingHashtagsData";
+import { useTrendingHashtags } from "@/services";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TrendingHashtagsList from "./_components/trending-hashtags/TrendingHashtagsList";
-import { CustomAlert } from "@/components/CustomAlert";
 
 export default function TrendingHashtags() {
   const router = useRouter();
-  const [hashtags, setHashtags] = useState<typeof trendingHashtagsData>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const { data, isLoading, refetch, isRefetching } = useTrendingHashtags();
+  const hashtags = data || [];
+  const loading = isLoading;
+  const refreshing = isRefetching;
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertConfig] = useState({ title: "", message: "" });
 
-  // Simulate data load with staggered animation
-  useEffect(() => {
-    setHashtags(trendingHashtagsData);
-    setLoading(false);
-  }, []);
-
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setHashtags(trendingHashtagsData);
-      setRefreshing(false);
-    }, 700);
-  }, []);
+    refetch();
+  }, [refetch]);
 
   const handleViewHashtag = (tag: string) => {
-    router.push(`/(access)/(stacks)/community-management-flow/hashtag/${tag.replace('#', '')}` as any);
+    router.push(
+      `/(access)/(stacks)/community-management-flow/hashtag/${tag.replace("#", "")}` as any,
+    );
   };
 
   return (
@@ -52,9 +45,9 @@ export default function TrendingHashtags() {
         showsVerticalScrollIndicator={false}
       >
         <TrendingHashtagsList
-          hashtags={hashtags}
+          hashtags={hashtags as any}
           loading={loading}
-          initialHashtags={trendingHashtagsData}
+          initialHashtags={hashtags as any}
           onViewHashtag={handleViewHashtag}
         />
       </ScrollView>

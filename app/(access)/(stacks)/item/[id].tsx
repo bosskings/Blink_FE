@@ -366,7 +366,7 @@ const Item = () => {
           <View className="flex-row items-center gap-3">
             <View className="relative">
               <Image
-                source={eachItemData.seller?.avatar ? { uri: eachItemData.seller.avatar } : require("../../../../assets/avatars/avatar1.png")}
+                source={eachItemData.seller?.avatar ? { uri: eachItemData.seller.avatar } : require("../../../../assets/avatars/avatar1.webp")}
                 style={{ width: 40, height: 40 }}
                 className="rounded-full"
               />
@@ -594,7 +594,7 @@ const Item = () => {
               <View className="items-center mb-6">
                 <View className="relative mb-3">
                   <Image
-                    source={eachItemData.seller?.avatar ? { uri: eachItemData.seller.avatar } : require("../../../../assets/avatars/avatar1.png")}
+                    source={eachItemData.seller?.avatar ? { uri: eachItemData.seller.avatar } : require("../../../../assets/avatars/avatar1.webp")}
                     style={{ width: 80, height: 80 }}
                     className="rounded-full"
                   />

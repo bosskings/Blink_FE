@@ -78,6 +78,10 @@ export type {
   ApproveRejectResponse,
   UpdateMemberRoleResponse,
   RemoveMemberResponse,
+  CommunityJoinRequest,
+  FetchCommunityRequestsResponse,
+  CommunityReport,
+  FetchCommunityReportsResponse,
 } from "./community";
 export type {
   Post,
@@ -95,6 +99,8 @@ export type {
   VotePostRequest,
   VotePostResponse,
   ReportPostResponse,
+  PostComment,
+  FetchPostCommentsResponse,
 } from "./post";
 export type {
   FeedItem,
@@ -145,3 +151,21 @@ export type {
   InitiateCallResponse,
   CallHistoryResponse,
 } from "./call";
+export type {
+  Event,
+  FetchEventsResponse,
+  FetchEventResponse,
+  CreateEventRequest,
+  CreateEventResponse,
+} from "./event";
+export type {
+  Hashtag,
+  FetchTrendingHashtagsResponse,
+  FetchPostsByHashtagResponse,
+} from "./hashtag";
+export type {
+  SupportTicket,
+  CreateTicketRequest,
+  CreateTicketResponse,
+  FetchTicketsResponse,
+} from "./support";

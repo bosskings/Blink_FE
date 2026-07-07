@@ -6,7 +6,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useMemo, useState } from "react";
 import {
-  Alert,
   Pressable,
   StyleSheet,
   Text,
@@ -15,8 +14,11 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 const ResetPassword = () => {
+  const { showAlert } = useAlert();
   const params = useLocalSearchParams<{ email?: string }>();
   const email = typeof params.email === "string" ? params.email : "";
 
@@ -43,7 +45,7 @@ const ResetPassword = () => {
 
   const handleReset = () => {
     if (!canSubmit) {
-      Alert.alert("Incomplete", "Please fill in the OTP and a valid password.");
+      showAlert("Incomplete", "Please fill in the OTP and a valid password.");
       return;
     }
 
@@ -51,7 +53,7 @@ const ResetPassword = () => {
       { email, otp: otp.trim(), newPassword },
       {
         onSuccess: () => {
-          Alert.alert(
+          showAlert(
             "Password Reset",
             "Your password has been reset successfully. Please log in.",
             [
@@ -69,7 +71,7 @@ const ResetPassword = () => {
         onError: (error) => {
           const message =
             error instanceof Error ? error.message : "Reset failed. Please try again.";
-          Alert.alert("Error", message);
+          showAlert("Error", message);
         },
       },
     );

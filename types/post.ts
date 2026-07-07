@@ -94,3 +94,17 @@ export interface ReportPostResponse {
   status: string;
   message: string;
 }
+
+export interface PostComment {
+  _id: string;
+  user: string;
+  avatar?: string;
+  time: string;
+  content: string;
+  parentId: string | null;
+}
+
+export interface FetchPostCommentsResponse {
+  status: string;
+  comments: PostComment[];
+}

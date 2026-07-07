@@ -10,6 +10,7 @@ import type {
   VotePostRequest,
   VotePostResponse,
   ReportPostResponse,
+  FetchPostCommentsResponse,
 } from "@/types/post";
 
 export async function fetchPost(id: string): Promise<PostResponse> {
@@ -64,5 +65,10 @@ export async function reportPost(id: string): Promise<ReportPostResponse> {
     `/posts/${id}/report`,
     {},
   );
+  return response.data;
+}
+
+export async function fetchPostComments(id: string): Promise<FetchPostCommentsResponse> {
+  const response = await apiClient.get<FetchPostCommentsResponse>(`/posts/${id}/comments`);
   return response.data;
 }

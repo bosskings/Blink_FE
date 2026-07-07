@@ -201,3 +201,25 @@ export function useReportCommunity() {
     },
   });
 }
+
+export function useCommunityRequests(id: string) {
+  return useQuery({
+    queryKey: [...COMMUNITIES_KEY, id, "requests"],
+    queryFn: async () => {
+      const response = await communitiesApi.fetchCommunityRequests(id);
+      return response.requests;
+    },
+    enabled: !!id,
+  });
+}
+
+export function useCommunityReports(id: string) {
+  return useQuery({
+    queryKey: [...COMMUNITIES_KEY, id, "reports"],
+    queryFn: async () => {
+      const response = await communitiesApi.fetchCommunityReports(id);
+      return response.reports;
+    },
+    enabled: !!id,
+  });
+}

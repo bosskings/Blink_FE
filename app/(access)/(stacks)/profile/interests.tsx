@@ -6,7 +6,6 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +14,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomAlert } from "@/components/CustomAlert";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 const INTERESTS = [
   "Health", "Fashion", "Food", "Music", "Sports", "Photography",
@@ -23,6 +24,7 @@ const INTERESTS = [
 ];
 
 export default function InterestsScreen() {
+  const { showAlert } = useAlert();
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [alertVisible, setAlertVisible] = useState(false);
   const updateMutation = useUpdateProfile();
@@ -41,7 +43,7 @@ export default function InterestsScreen() {
       {
         onSuccess: () => setAlertVisible(true),
         onError: (error) => {
-          Alert.alert(
+          showAlert(
             "Error",
             error instanceof Error ? error.message : "Failed to save interests.",
           );

@@ -50,6 +50,8 @@ export {
   useUpdateMemberRole,
   useRemoveMember,
   useReportCommunity,
+  useCommunityRequests,
+  useCommunityReports,
 } from "./hooks/useCommunities";
 export {
   usePost,
@@ -59,6 +61,7 @@ export {
   useDeletePost,
   useVotePost,
   useReportPost,
+  usePostComments,
 } from "./hooks/usePosts";
 export { useEvents, useCreateEvent } from "./hooks/useEvents";
 export { useChats, useCreateChat, useChatMessages, useDeleteMessage, useDeleteChat } from "./hooks/useChats";

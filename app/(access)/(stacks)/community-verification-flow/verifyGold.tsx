@@ -69,7 +69,7 @@ export default function VerifyGold() {
 
         <View style={s.medalWrap}>
           <Image
-            source={allVerified ? require("../../../../assets/images/bronze.png") : require("../../../../assets/images/bronzegray.png")}
+            source={allVerified ? require("../../../../assets/images/bronze.webp") : require("../../../../assets/images/bronzegray.webp")}
             style={[s.medalImage, { opacity: allVerified ? 1 : 0.5 }]}
             resizeMode="contain"
           />

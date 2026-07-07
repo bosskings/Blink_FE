@@ -6,7 +6,6 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -14,8 +13,11 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 const ForgotPassword = () => {
+  const { showAlert } = useAlert();
   const [email, setEmail] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const forgotMutation = useForgotPassword();
@@ -23,7 +25,7 @@ const ForgotPassword = () => {
   const handleSubmit = () => {
     const trimmed = email.trim().toLowerCase();
     if (!trimmed || !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(trimmed)) {
-      Alert.alert("Invalid email", "Please enter a valid email address.");
+      showAlert("Invalid email", "Please enter a valid email address.");
       return;
     }
 
@@ -39,7 +41,7 @@ const ForgotPassword = () => {
         onError: (error) => {
           const message =
             error instanceof Error ? error.message : "Something went wrong. Please try again.";
-          Alert.alert("Error", message);
+          showAlert("Error", message);
         },
       },
     );

@@ -66,8 +66,8 @@ const VerifyBronze = () => {
           <Image
             source={
               bothVerified
-                ? require("../../../../assets/images/bronze.png")
-                : require("../../../../assets/images/bronzegray.png")
+                ? require("../../../../assets/images/bronze.webp")
+                : require("../../../../assets/images/bronzegray.webp")
             }
             style={styles.medalImage}
             resizeMode="contain"

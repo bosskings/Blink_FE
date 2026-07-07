@@ -7,7 +7,6 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -16,12 +15,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 interface EmailFormData {
   email: string;
 }
 
 const EmailVerification = () => {
+  const { showAlert } = useAlert();
   const [isFocused, setIsFocused] = useState(false);
   const resendOtpMutation = useResendOtp();
 
@@ -50,7 +52,7 @@ const EmailVerification = () => {
           router.push("/(access)/(stacks)/community-verification-flow/emailOTP");
         },
         onError: (err) => {
-          Alert.alert("Error", err instanceof Error ? err.message : "Failed to send verification code.");
+          showAlert("Error", err instanceof Error ? err.message : "Failed to send verification code.");
         },
       },
     );

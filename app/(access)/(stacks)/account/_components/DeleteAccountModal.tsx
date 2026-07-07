@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Alert,
   Modal,
   StyleSheet,
   Text,
@@ -13,6 +12,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 interface DeleteAccountModalProps {
   visible: boolean;
@@ -26,6 +27,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const deleteAccountMutation = useDeleteAccount();
   const { logout } = useAuth();
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
 
   const handleDelete = () => {
     deleteAccountMutation.mutate(undefined, {
@@ -36,7 +38,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
         router.replace("/(noaccess)/sign-in-method");
       },
       onError: (error) => {
-        Alert.alert(
+        showAlert(
           "Error",
           error instanceof Error ? error.message : "Failed to delete account.",
         );

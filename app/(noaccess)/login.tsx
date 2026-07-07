@@ -1,6 +1,6 @@
 import { SolidMainButton } from "@/components/Btns";
 import LoadingOverlay from "@/components/LoadingOverlay";
-import { CountryPicker, Country, COUNTRIES } from "@/components/CountryPicker";
+
 import { GoogleIcon } from "@/components/GoogleIcon";
 import { useAuth } from "@/providers/AuthProvider";
 import { useLogin as useLoginMutation } from "@/services/hooks/useAuth";
@@ -11,7 +11,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useMemo, useState } from "react";
 import {
-  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -22,17 +21,18 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 type LoginVariant = "signup" | "returning";
 
-const isEmailOrPhone = (value: string): boolean => {
-  const trimmed = value.trim();
+const isValidEmail = (value: string): boolean => {
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  const phoneRegex = /^\+?[0-9]{7,15}$/;
-  return emailRegex.test(trimmed) || phoneRegex.test(trimmed);
+  return emailRegex.test(value.trim());
 };
 
 const Login = () => {
+  const { showAlert } = useAlert();
   const params = useLocalSearchParams<{ variant?: string; method?: "email" | "phone" }>();
   const queryClient = useQueryClient();
   const { login } = useAuth();
@@ -45,8 +45,6 @@ const Login = () => {
   const [isIdentifierFocused, setIsIdentifierFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
-  const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
-
   const variant: LoginVariant =
     params.variant === "signup" ? "signup" : "returning";
   const isSignupVariant = variant === "signup";
@@ -56,31 +54,18 @@ const Login = () => {
     [identifier],
   );
 
-  const isEnteringEmail = useMemo(() => {
-    if (params.method === "email") return true;
-    if (params.method === "phone") return false;
-    return /[a-zA-Z]/.test(identifier.trim().substring(0, 1));
-  }, [identifier, params.method]);
-
   const handleLogin = async () => {
-    if (
-      !isEmailOrPhone(normalizedIdentifier) &&
-      !/^[0-9]/.test(normalizedIdentifier)
-    ) {
-      Alert.alert("Invalid input", "Enter a valid email or phone number.");
+    if (!isValidEmail(normalizedIdentifier)) {
+      showAlert("Invalid email", "Please enter a valid email address.");
       return;
     }
 
     if (password.trim().length < 1) {
-      Alert.alert("Password required", "Enter your password to continue.");
+      showAlert("Password required", "Enter your password to continue.");
       return;
     }
 
-    let finalIdentifier = normalizedIdentifier;
-    if (!isEnteringEmail && /^[0-9]/.test(normalizedIdentifier)) {
-      const cleanPhone = normalizedIdentifier.replace(/^0/, "");
-      finalIdentifier = `${selectedCountry.code}${cleanPhone}`;
-    }
+    const finalIdentifier = normalizedIdentifier;
 
     loginMutation.mutate(
       { email: finalIdentifier, password },
@@ -94,7 +79,7 @@ const Login = () => {
         onError: (error) => {
           const message =
             error instanceof Error ? error.message : "Invalid email or password.";
-          Alert.alert("Login failed", message);
+          showAlert("Login failed", message);
         },
       },
     );
@@ -238,10 +223,8 @@ const Login = () => {
 
         {/* Rising Card Container */}
         <View style={styles.formCard}>
-          {/* Email or Phone Number Input */}
-          <Text style={styles.cardFieldLabel}>
-            {params.method === "email" ? "Email Address" : params.method === "phone" ? "Phone Number" : "Email or Phone Number"}
-          </Text>
+          {/* Email Input */}
+          <Text style={styles.cardFieldLabel}>Email Address</Text>
           <View
             style={[
               styles.inputWrapper,
@@ -249,16 +232,6 @@ const Login = () => {
               { marginBottom: 20 },
             ]}
           >
-            {/* Real Dynamic Flag Selector: Hide flag selector if typing an email address */}
-            {!isEnteringEmail && (
-              <>
-                <CountryPicker
-                  selectedCountry={selectedCountry}
-                  onSelectCountry={setSelectedCountry}
-                />
-                <View style={styles.verticalDivider} />
-              </>
-            )}
 
             <TextInput
               style={styles.textInputStyle}
@@ -266,7 +239,7 @@ const Login = () => {
               onChangeText={setIdentifier}
               placeholder=""
               autoCapitalize="none"
-              keyboardType={isEnteringEmail ? "email-address" : "phone-pad"}
+              keyboardType="email-address"
               onFocus={() => setIsIdentifierFocused(true)}
               onBlur={() => setIsIdentifierFocused(false)}
             />

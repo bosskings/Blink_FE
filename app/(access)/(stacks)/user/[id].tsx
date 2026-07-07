@@ -25,7 +25,7 @@ export default function UserProfile() {
 
   const avatarSource = user?.avatar
     ? { uri: user.avatar }
-    : require("../../../../assets/avatars/avatar1.png");
+    : require("../../../../assets/avatars/avatar1.webp");
 
   if (isLoading) {
     return (

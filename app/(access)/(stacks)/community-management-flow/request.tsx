@@ -1,38 +1,40 @@
 import { Headers } from "@/components/Headers";
 import LoadingOverlay from "@/components/LoadingOverlay";
-import { requests as initialRequests } from "@/dummyData/requestsData";
-import { useApproveJoinRequest, useRejectJoinRequest } from "@/services";
+import { useCommunityRequests, useApproveJoinRequest, useRejectJoinRequest } from "@/services";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RequestsList from "./_components/request/RequestsList";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 const Requests = () => {
+  const { showAlert } = useAlert();
   const { communityId } = useLocalSearchParams<{ communityId?: string }>();
-  const [requests, setRequests] = useState<typeof initialRequests>([]);
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading, refetch, isRefetching } = useCommunityRequests(communityId || "");
+  const [localRequests, setLocalRequests] = useState<any[]>([]);
   const approveMutation = useApproveJoinRequest();
   const rejectMutation = useRejectJoinRequest();
 
   useEffect(() => {
-    setRequests(initialRequests);
-    setLoading(false);
-  }, []);
+    if (data) {
+      setLocalRequests(data);
+    }
+  }, [data]);
+
+  const loading = isLoading;
+  const refreshing = isRefetching;
+  const requests = localRequests;
 
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRequests(initialRequests);
-      setRefreshing(false);
-    }, 700);
-  }, []);
+    refetch();
+  }, [refetch]);
 
   const handleRemove = (id: string | number) => {
     if (!communityId) {
-      setRequests((prev) => prev.filter((item) => item.id !== id));
+      setLocalRequests((prev) => prev.filter((item) => item.id !== id));
       return;
     }
 
@@ -40,10 +42,10 @@ const Requests = () => {
       { communityId, userId: String(id) },
       {
         onSuccess: () => {
-          setRequests((prev) => prev.filter((item) => item.id !== id));
+          setLocalRequests((prev) => prev.filter((item) => item.id !== id));
         },
         onError: (err) => {
-          Alert.alert("Error", err instanceof Error ? err.message : "Failed to reject request.");
+          showAlert("Error", err instanceof Error ? err.message : "Failed to reject request.");
         },
       },
     );

@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -15,8 +14,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useCreateChat } from "@/services";
 import { useUserProfile } from "@/providers/UserProfileProvider";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 export default function StartConversationScreen() {
+  const { showAlert } = useAlert();
   const { name = "User", avatarUrl = "", userId = "" } =
     useLocalSearchParams<{ name: string; avatarUrl: string; userId: string }>();
   const [inputText, setInputText] = useState("");
@@ -29,7 +31,7 @@ export default function StartConversationScreen() {
     if (!inputText.trim()) return;
 
     if (!userId) {
-      Alert.alert("Error", "Cannot start conversation without a user.");
+      showAlert("Error", "Cannot start conversation without a user.");
       return;
     }
 
@@ -43,7 +45,7 @@ export default function StartConversationScreen() {
           } as never);
         },
         onError: (err) => {
-          Alert.alert(
+          showAlert(
             "Error",
             err instanceof Error ? err.message : "Failed to start conversation.",
           );

@@ -1,20 +1,21 @@
+import { CustomAlert } from "@/components/CustomAlert";
 import { Headers } from "@/components/Headers";
 import LoadingOverlay from "@/components/LoadingOverlay";
-import initialReportedPosts from "@/dummyData/reportedPostsData";
-import { useDeletePost } from "@/services";
-import { useRouter } from "expo-router";
+import { useCommunityReports, useDeletePost } from "@/services";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ReportedPostsList from "./_components/report/ReportedPostsList";
-import { CustomAlert } from "@/components/CustomAlert";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 export default function ReportedPosts() {
+  const { showAlert } = useAlert();
   const router = useRouter();
-  const [posts, setPosts] = useState<typeof initialReportedPosts>([]);
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { communityId } = useLocalSearchParams<{ communityId?: string }>();
+
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
     title: "",
@@ -24,18 +25,24 @@ export default function ReportedPosts() {
   });
   const deletePostMutation = useDeletePost();
 
+  const { data, isLoading, refetch, isRefetching } = useCommunityReports(
+    communityId || "",
+  );
+  const [localPosts, setLocalPosts] = useState<any[]>([]);
+
   useEffect(() => {
-    setPosts(initialReportedPosts);
-    setLoading(false);
-  }, []);
+    if (data) {
+      setLocalPosts(data);
+    }
+  }, [data]);
+
+  const loading = isLoading;
+  const refreshing = isRefetching;
+  const posts = localPosts;
 
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setPosts(initialReportedPosts);
-      setRefreshing(false);
-    }, 700);
-  }, []);
+    refetch();
+  }, [refetch]);
 
   const handleReview = (postId: number | string) => {
     setAlertConfig({
@@ -63,12 +70,12 @@ export default function ReportedPosts() {
       const postId = String(alertConfig.postId);
       deletePostMutation.mutate(postId, {
         onSuccess: () => {
-          setPosts((prev) =>
+          setLocalPosts((prev) =>
             prev.filter((item) => item.id !== alertConfig.postId),
           );
         },
         onError: (err) => {
-          Alert.alert(
+          showAlert(
             "Error",
             err instanceof Error ? err.message : "Failed to delete post.",
           );
@@ -99,7 +106,7 @@ export default function ReportedPosts() {
           loading={loading}
           handleReview={handleReview}
           handleTakeDown={handleTakeDown}
-          initialReportedPosts={initialReportedPosts}
+          initialReportedPosts={posts as any}
         />
       </ScrollView>
 
@@ -109,9 +116,7 @@ export default function ReportedPosts() {
         message={alertConfig.message}
         onClose={() => setAlertVisible(false)}
         onConfirm={confirmAction}
-        confirmText={
-          alertConfig.action === "takedown" ? "Take Down" : "Review"
-        }
+        confirmText={alertConfig.action === "takedown" ? "Take Down" : "Review"}
       />
     </SafeAreaView>
   );

@@ -148,3 +148,33 @@ export interface RemoveMemberResponse {
   status: string;
   message: string;
 }
+
+export interface CommunityJoinRequest {
+  id: string;
+  name: string;
+  username: string;
+  avatar?: string;
+  time: string;
+  message?: string;
+  status: string;
+}
+
+export interface FetchCommunityRequestsResponse {
+  status: string;
+  requests: CommunityJoinRequest[];
+}
+
+export interface CommunityReport {
+  id: string;
+  type: string;
+  reportedBy: string;
+  reportedAt: string;
+  postPreview: string;
+  postId: string;
+  status: string;
+}
+
+export interface FetchCommunityReportsResponse {
+  status: string;
+  reports: CommunityReport[];
+}

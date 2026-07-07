@@ -6,7 +6,6 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,8 +16,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomAlert } from "@/components/CustomAlert";
 import { useUserProfile } from "@/providers/UserProfileProvider";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 export default function ProfileDetails() {
+  const { showAlert } = useAlert();
   const { profile } = useUserProfile();
   const [blinkTag, setBlinkTag] = useState(
     profile?.blinkTag ?? profile?.firstName ?? "",
@@ -48,7 +50,7 @@ export default function ProfileDetails() {
               {
                 onSuccess: () => setAlertVisible(true),
                 onError: (error) => {
-                  Alert.alert(
+                  showAlert(
                     "Error",
                     error instanceof Error ? error.message : "Failed to save bio.",
                   );
@@ -60,7 +62,7 @@ export default function ProfileDetails() {
           }
         },
         onError: (error) => {
-          Alert.alert(
+          showAlert(
             "Error",
             error instanceof Error ? error.message : "Failed to save Blink Tag.",
           );

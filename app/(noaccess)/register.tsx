@@ -1,6 +1,6 @@
 import { SolidMainButton } from "@/components/Btns";
 import { CountryPicker, Country, COUNTRIES } from "@/components/CountryPicker";
-import { GoogleIcon } from "@/components/GoogleIcon";
+
 import { Ionicons } from "@expo/vector-icons";
 import { ErrorMessage } from "@hookform/error-message";
 import { router } from "expo-router";
@@ -18,22 +18,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
-interface PhoneFormData {
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  email?: string;
-}
-
-interface EmailFormData {
+interface RegisterFormData {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber?: string;
+  phoneNumber: string;
 }
 
 const Register = () => {
-  const [activeTab, setActiveTab] = useState<"phone" | "email">("phone");
   const [joinAsBusiness, setJoinAsBusiness] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -42,36 +34,23 @@ const Register = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<PhoneFormData & EmailFormData>({
+  } = useForm<RegisterFormData>({
     defaultValues: {
       firstName: "",
       lastName: "",
-      phoneNumber: "",
       email: "",
+      phoneNumber: "",
     },
   });
 
-  const onPhoneSubmit = async (data: PhoneFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
     const normalizedPhone = data.phoneNumber.replace(/^0/, "");
 
     router.push({
       pathname: "/(noaccess)/create-password",
       params: {
-        method: "phone",
-        identifier: `${selectedCountry.code}${normalizedPhone}`,
-        firstName: data.firstName.trim(),
-        lastName: data.lastName.trim(),
-        business: joinAsBusiness ? "true" : "false",
-      },
-    });
-  };
-
-  const onEmailSubmit = async (data: EmailFormData) => {
-    router.push({
-      pathname: "/(noaccess)/create-password",
-      params: {
-        method: "email",
-        identifier: data.email.trim().toLowerCase(),
+        email: data.email.trim().toLowerCase(),
+        phone: `${selectedCountry.code}${normalizedPhone}`,
         firstName: data.firstName.trim(),
         lastName: data.lastName.trim(),
         business: joinAsBusiness ? "true" : "false",
@@ -116,13 +95,9 @@ const Register = () => {
 
         {/* Dynamic Titles */}
         <View style={styles.titleWrap}>
-          <Text style={styles.titleText}>
-            {activeTab === "phone" ? "Sign with Phone" : "Sign up with Email"}
-          </Text>
+          <Text style={styles.titleText}>Sign up</Text>
           <Text style={styles.subtitleText}>
-            Please provide a valid{" "}
-            {activeTab === "phone" ? "phone number" : "email address"} to
-            proceed
+            Please provide your details to proceed
           </Text>
         </View>
 
@@ -204,182 +179,138 @@ const Register = () => {
           </View>
         </View>
 
-        {activeTab === "phone" ? (
-          <View>
-            <Controller
-              name="phoneNumber"
-              control={control}
-              rules={{
-                required: "Phone Number is required",
-                pattern: {
-                  value: /^[0-9]{7,15}$/,
-                  message: "Please enter a valid phone number",
-                },
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <View
-                  style={[
-                    styles.inputContainer,
-                    focusedField === "phone" && styles.inputFocused,
-                  ]}
-                >
-                  <CountryPicker
-                    selectedCountry={selectedCountry}
-                    onSelectCountry={setSelectedCountry}
-                  />
-
-                  <View style={styles.verticalDivider} />
-
-                  <TextInput
-                    placeholder=""
-                    placeholderTextColor="#AFAFAF"
-                    onChangeText={onChange}
-                    onBlur={() => {
-                      onBlur();
-                      setFocusedField(null);
-                    }}
-                    onFocus={() => setFocusedField("phone")}
-                    value={value || ""}
-                    keyboardType="phone-pad"
-                    style={styles.textInput}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                </View>
-              )}
-            />
-
-            <ErrorMessage
-              errors={errors}
-              name="phoneNumber"
-              render={({ message }) => (
-                <Text style={styles.errorText}>{message}</Text>
-              )}
-            />
-
-            {/* Custom Premium Checkbox */}
-            <View style={styles.checkboxContainer}>
-              <Text style={styles.joinBusinessText}>Join as Business</Text>
-              <TouchableOpacity
-                onPress={() => setJoinAsBusiness((prev) => !prev)}
-                style={[
-                  styles.checkboxBox,
-                  joinAsBusiness && styles.checkboxChecked,
-                ]}
-                activeOpacity={0.8}
-              >
-                {joinAsBusiness && (
-                  <Ionicons name="checkmark" size={13} color="#FFFFFF" />
-                )}
-              </TouchableOpacity>
+        <Controller
+          name="email"
+          control={control}
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Please enter a valid email address",
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <View
+              style={[
+                styles.inputContainer,
+                focusedField === "email" && styles.inputFocused,
+              ]}
+            >
+              <TextInput
+                placeholder="Email address"
+                placeholderTextColor="#AFAFAF"
+                onChangeText={onChange}
+                onBlur={() => {
+                  onBlur();
+                  setFocusedField(null);
+                }}
+                onFocus={() => setFocusedField("email")}
+                value={value || ""}
+                keyboardType="email-address"
+                style={[styles.textInput, { paddingLeft: 4 }]}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
             </View>
+          )}
+        />
+        <ErrorMessage
+          errors={errors}
+          name="email"
+          render={({ message }) => (
+            <Text style={styles.errorText}>{message}</Text>
+          )}
+        />
 
-            <SolidMainButton
-              text="Continue"
-              onPress={handleSubmit(onPhoneSubmit)}
-            />
-          </View>
-        ) : (
-          <View>
-            <Controller
-              name="email"
-              control={control}
-              rules={{
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Please enter a valid email address",
-                },
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <View
-                  style={[
-                    styles.inputContainer,
-                    focusedField === "email" && styles.inputFocused,
-                  ]}
-                >
-                  <TextInput
-                    placeholder=""
-                    placeholderTextColor="#AFAFAF"
-                    onChangeText={onChange}
-                    onBlur={() => {
-                      onBlur();
-                      setFocusedField(null);
-                    }}
-                    onFocus={() => setFocusedField("email")}
-                    value={value || ""}
-                    keyboardType="email-address"
-                    style={[styles.textInput, { paddingLeft: 4 }]}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                </View>
-              )}
-            />
+        <Controller
+          name="phoneNumber"
+          control={control}
+          rules={{
+            required: "Phone Number is required",
+            pattern: {
+              value: /^[0-9]{7,15}$/,
+              message: "Please enter a valid phone number",
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <View
+              style={[
+                styles.inputContainer,
+                focusedField === "phone" && styles.inputFocused,
+              ]}
+            >
+              <CountryPicker
+                selectedCountry={selectedCountry}
+                onSelectCountry={setSelectedCountry}
+              />
 
-            <ErrorMessage
-              errors={errors}
-              name="email"
-              render={({ message }) => (
-                <Text style={styles.errorText}>{message}</Text>
-              )}
-            />
+              <View style={styles.verticalDivider} />
 
-            {/* Custom Premium Checkbox */}
-            <View style={styles.checkboxContainer}>
-              <Text style={styles.joinBusinessText}>Join as Business</Text>
-              <TouchableOpacity
-                onPress={() => setJoinAsBusiness((prev) => !prev)}
-                style={[
-                  styles.checkboxBox,
-                  joinAsBusiness && styles.checkboxChecked,
-                ]}
-                activeOpacity={0.8}
-              >
-                {joinAsBusiness && (
-                  <Ionicons name="checkmark" size={13} color="#FFFFFF" />
-                )}
-              </TouchableOpacity>
+              <TextInput
+                placeholder="Phone number"
+                placeholderTextColor="#AFAFAF"
+                onChangeText={onChange}
+                onBlur={() => {
+                  onBlur();
+                  setFocusedField(null);
+                }}
+                onFocus={() => setFocusedField("phone")}
+                value={value || ""}
+                keyboardType="phone-pad"
+                style={styles.textInput}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
             </View>
+          )}
+        />
 
-            <SolidMainButton
-              text="Continue"
-              onPress={handleSubmit(onEmailSubmit)}
-            />
-          </View>
-        )}
+        <ErrorMessage
+          errors={errors}
+          name="phoneNumber"
+          render={({ message }) => (
+            <Text style={styles.errorText}>{message}</Text>
+          )}
+        />
+
+        {/* Custom Premium Checkbox */}
+        <View style={styles.checkboxContainer}>
+          <Text style={styles.joinBusinessText}>Join as Business</Text>
+          <TouchableOpacity
+            onPress={() => setJoinAsBusiness((prev) => !prev)}
+            style={[
+              styles.checkboxBox,
+              joinAsBusiness && styles.checkboxChecked,
+            ]}
+            activeOpacity={0.8}
+          >
+            {joinAsBusiness && (
+              <Ionicons name="checkmark" size={13} color="#FFFFFF" />
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <SolidMainButton
+          text="Continue"
+          onPress={handleSubmit(onSubmit)}
+        />
 
         {/* Text Divider */}
+        {/*
         <View style={styles.dividerWrap}>
           <View style={styles.dividerLine} />
           <Text style={styles.orText}>or sign in with</Text>
           <View style={styles.dividerLine} />
         </View>
+        */}
 
         {/* Alternate Sign In Buttons */}
-        <TouchableOpacity
-          style={styles.alternateButton}
-          onPress={() => {
-            setActiveTab((prev) => (prev === "phone" ? "email" : "phone"));
-            setFocusedField(null);
-          }}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={activeTab === "phone" ? "mail" : "call"}
-            size={18}
-            color="#0066CC"
-            style={styles.altIcon}
-          />
-          <Text style={styles.alternateButtonText}>
-            Continue with {activeTab === "phone" ? "Email" : "Phone"}
-          </Text>
-        </TouchableOpacity>
-
+        {/*
         <TouchableOpacity style={styles.alternateButton} activeOpacity={0.7}>
           <GoogleIcon size={18} style={styles.altIcon} />
           <Text style={styles.alternateButtonText}>Continue with Google</Text>
         </TouchableOpacity>
+        */}
 
         {/* Terms and links footer */}
         <Text style={styles.termsText}>

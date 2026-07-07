@@ -17,7 +17,7 @@ const Onboarding = () => {
       <StatusBar style="light" />
 
       <ImageBackground
-        source={require("../../assets/images/map.png")}
+        source={require("../../assets/images/map.webp")}
         className="flex-1"
         resizeMode="cover"
       >

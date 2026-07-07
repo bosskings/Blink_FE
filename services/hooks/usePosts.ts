@@ -80,3 +80,14 @@ export function useReportPost() {
     },
   });
 }
+
+export function usePostComments(id: string) {
+  return useQuery({
+    queryKey: [...POSTS_KEY, id, "comments"],
+    queryFn: async () => {
+      const response = await postsApi.fetchPostComments(id);
+      return response.comments;
+    },
+    enabled: !!id,
+  });
+}

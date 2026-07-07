@@ -35,9 +35,9 @@ const Profile = () => {
 
   const avatarSource = profile?.avatar
     ? profile.avatar.startsWith("avatar")
-      ? require("../../../assets/avatars/avatar1.png")
+      ? require("../../../assets/avatars/avatar1.webp")
       : { uri: profile.avatar }
-    : require("../../../assets/avatars/avatar1.png");
+    : require("../../../assets/avatars/avatar1.webp");
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -49,7 +49,7 @@ const Profile = () => {
           <View className="flex-row items-center justify-between w-full gap-5 p-6 rounded-xl" style={{ backgroundColor: "#0066CC" }}>
             <View className="relative">
               <Image source={avatarSource} className="w-[6.5rem] h-[6.5rem] rounded-full" resizeMode="cover" />
-              <Image source={require("../../../assets/images/bronze.png")} className="w-14 h-14 rounded-full absolute right-[-20%] bottom-1" resizeMode="center" />
+              <Image source={require("../../../assets/images/bronze.webp")} className="w-14 h-14 rounded-full absolute right-[-20%] bottom-1" resizeMode="center" />
             </View>
             <View className="flex-col" style={{ gap: 10 }}>
               <Text className="text-xl text-white">{profile?.blinkTag ?? (displayName || "Your Name")}</Text>

@@ -1,10 +1,10 @@
+import { ApiError, ApiErrorResponse } from "@/types/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, {
   AxiosError,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import { ApiError, ApiErrorResponse } from "@/types/api";
 
 const AUTH_TOKEN_KEY = "blink_token";
 
@@ -50,20 +50,27 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
+    console.log(
+      `🚀 [API REQUEST] ${config.method?.toUpperCase()} ${config.url}`,
+      config.data ? JSON.stringify(config.data, null, 2) : "",
+    );
     const token = await getStoredToken();
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error: AxiosError) => Promise.reject(error),
+  (error: AxiosError) => {
+    console.error("❌ [API REQUEST ERROR]", error);
+    return Promise.reject(error);
+  },
 );
 
 let isRefreshing = false;
-let failedQueue: Array<{
+let failedQueue: {
   resolve: (token: string) => void;
   reject: (error: unknown) => void;
-}> = [];
+}[] = [];
 
 const processQueue = (error: unknown, token: string | null = null): void => {
   failedQueue.forEach((prom) => {
@@ -77,8 +84,22 @@ const processQueue = (error: unknown, token: string | null = null): void => {
 };
 
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => response,
+  (response: AxiosResponse) => {
+    console.log(
+      `✅ [API SUCCESS] ${response.config.method?.toUpperCase()} ${response.config.url}`,
+    );
+    console.log(JSON.stringify(response.data, null, 2));
+    return response;
+  },
   async (error: AxiosError<ApiErrorResponse>) => {
+    console.error(
+      `❌ [API ERROR] ${error.config?.method?.toUpperCase()} ${error.config?.url}`,
+    );
+    console.error(
+      "Details:",
+      JSON.stringify(error.response?.data || error.message, null, 2),
+    );
+
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
@@ -102,7 +123,10 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshResponse = await axios.post<{ status: string; token: string }>(
+        const refreshResponse = await axios.post<{
+          status: string;
+          token: string;
+        }>(
           `${apiClient.defaults.baseURL}/auth/refresh-token`,
           {},
           {
@@ -122,7 +146,11 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        await AsyncStorage.multiRemove([AUTH_TOKEN_KEY, "blink_profile", "blink_onboarding"]);
+        await AsyncStorage.multiRemove([
+          AUTH_TOKEN_KEY,
+          "blink_profile",
+          "blink_onboarding",
+        ]);
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -130,10 +158,7 @@ apiClient.interceptors.response.use(
     }
 
     if (error.response?.data) {
-      throw new ApiError(
-        error.response.status,
-        error.response.data,
-      );
+      throw new ApiError(error.response.status, error.response.data);
     }
 
     throw error;

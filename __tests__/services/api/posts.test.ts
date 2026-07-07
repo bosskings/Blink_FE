@@ -6,6 +6,7 @@ import {
   deletePost,
   voteOnPost,
   reportPost,
+  fetchPostComments,
 } from "@/services/api/posts";
 import { apiClient } from "@/services/api/client";
 import type {
@@ -99,5 +100,13 @@ describe("Posts API Service", () => {
     const result = await reportPost("post123");
     expect(mockedApiClient.post).toHaveBeenCalledWith("/posts/post123/report", {});
     expect(result.status).toBe("SUCCESS");
+  });
+  it("fetchPostComments calls GET /posts/:id/comments", async () => {
+    mockedApiClient.get.mockResolvedValueOnce({
+      data: { status: "SUCCESS", comments: [] },
+    });
+    const result = await fetchPostComments("post123");
+    expect(mockedApiClient.get).toHaveBeenCalledWith("/posts/post123/comments");
+    expect(result.comments).toEqual([]);
   });
 });

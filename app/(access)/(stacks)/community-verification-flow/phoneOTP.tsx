@@ -7,7 +7,6 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useRef, useState } from "react";
 import {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -15,10 +14,13 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 type OtpStatus = "default" | "error" | "success";
 
 const OTPPhone = () => {
+  const { showAlert } = useAlert();
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [status, setStatus] = useState<OtpStatus>("default");
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -66,7 +68,7 @@ const OTPPhone = () => {
         },
         onError: (err) => {
           setStatus("error");
-          Alert.alert("Verification Failed", err instanceof Error ? err.message : "Invalid OTP code.");
+          showAlert("Verification Failed", err instanceof Error ? err.message : "Invalid OTP code.");
         },
       },
     );
@@ -77,13 +79,13 @@ const OTPPhone = () => {
       { phone: userPhone, type: "phone" },
       {
         onSuccess: () => {
-          Alert.alert("Code Sent", "A new verification code has been sent to your phone.");
+          showAlert("Code Sent", "A new verification code has been sent to your phone.");
           setOtp(["", "", "", ""]);
           setStatus("default");
           inputRefs.current[0]?.focus();
         },
         onError: (err) => {
-          Alert.alert("Error", err instanceof Error ? err.message : "Failed to resend code.");
+          showAlert("Error", err instanceof Error ? err.message : "Failed to resend code.");
         },
       },
     );

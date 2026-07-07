@@ -7,15 +7,18 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
-import { Alert, Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import UpdateEmailModal from "./_components/profile/UpdateEmailModal";
 import UpdateNameModal from "./_components/profile/UpdateNameModal";
 import UpdatePhoneModal from "./_components/profile/UpdatePhoneModal";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 export default function EditProfileScreen() {
+  const { showAlert } = useAlert();
   const { profile } = useUserProfile();
   const uploadAvatarMutation = useUpdateAvatar();
   const [showNameModal, setShowNameModal] = useState(false);
@@ -32,7 +35,7 @@ export default function EditProfileScreen() {
 
   const avatarSource = displayAvatar
     ? { uri: displayAvatar }
-    : require("../../../../assets/avatars/avatar1.png");
+    : require("../../../../assets/avatars/avatar1.webp");
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -60,7 +63,7 @@ export default function EditProfileScreen() {
       uploadAvatarMutation.mutate(formData, {
         onError: (error) => {
           setLocalAvatarUri(null);
-          Alert.alert("Error", error instanceof Error ? error.message : "Failed to upload avatar.");
+          showAlert("Error", error instanceof Error ? error.message : "Failed to upload avatar.");
         },
       });
     }

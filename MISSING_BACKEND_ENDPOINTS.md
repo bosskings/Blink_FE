@@ -10,6 +10,7 @@
 ## 1. Events API (3 endpoints)
 
 **Frontend screens that need these:**
+
 - `all-events.tsx` — Lists all events for a community
 - `event/[id].tsx` — Single event detail with comments
 - `create-content.tsx` — Event creation form
@@ -24,6 +25,7 @@ POST /api/v1/events
 ```
 
 **Request Body (JSON):**
+
 ```json
 {
   "communityId": "string (required)",
@@ -40,6 +42,7 @@ POST /api/v1/events
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -79,6 +82,7 @@ GET /api/v1/events?communityId=comm_123
 | `communityId` | string | Optional | Filter events by community |
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -115,6 +119,7 @@ GET /api/v1/events/:id
 | `id` | string | Event ID |
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -140,6 +145,7 @@ GET /api/v1/events/:id
 ## 2. Hashtags API (2 endpoints)
 
 **Frontend screens that need these:**
+
 - `trending-hashtags.tsx` — Trending hashtags list
 - `hashtag/[tag].tsx` — Posts filtered by hashtag
 - `community.tsx` — Trending hashtags section
@@ -153,6 +159,7 @@ GET /api/v1/hashtags/trending
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -212,6 +219,7 @@ GET /api/v1/hashtags/:tag/posts
 | `tag` | string | Hashtag without `#` prefix (e.g. `CampusLife`) |
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -244,6 +252,7 @@ GET /api/v1/hashtags/:tag/posts
 ## 3. Support API (2 endpoints)
 
 **Frontend screens that need these:**
+
 - `contact-support.tsx` — Submit support ticket form
 
 ---
@@ -255,6 +264,7 @@ POST /api/v1/support/tickets
 ```
 
 **Request Body (JSON):**
+
 ```json
 {
   "topic": "string (required) — one of: Payments, Listings, Account, Other",
@@ -264,6 +274,7 @@ POST /api/v1/support/tickets
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -287,6 +298,7 @@ GET /api/v1/support/tickets
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -311,6 +323,7 @@ GET /api/v1/support/tickets
 ## 4. Community Join Requests Listing (1 endpoint)
 
 **Frontend screens that need this:**
+
 - `request.tsx` — Lists pending join requests for community admins
 - `community-membership.tsx` — Shows pending requests section
 
@@ -330,6 +343,7 @@ GET /api/v1/communities/:id/requests
 | `id` | string | Community ID |
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -372,6 +386,7 @@ GET /api/v1/communities/:id/requests
 ## 5. Community Reported Posts Listing (1 endpoint)
 
 **Frontend screens that need this:**
+
 - `reported-posts.tsx` — Lists reported posts for community admins
 - `community-membership.tsx` — Shows reported posts section
 
@@ -391,6 +406,7 @@ GET /api/v1/communities/:id/reports
 | `id` | string | Community ID |
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -433,6 +449,7 @@ GET /api/v1/communities/:id/reports
 ## 6. Post Comments Listing (1 endpoint)
 
 **Frontend screens that need this:**
+
 - `post/[id].tsx` — Shows comments under a post (currently hardcoded with 30 fake comments)
 
 **Note:** The `POST /posts/:id/comments` endpoint to ADD a comment already exists. Only the GET (listing) is missing.
@@ -451,6 +468,7 @@ GET /api/v1/posts/:id/comments
 | `id` | string | Post ID |
 
 **Response (200 OK):**
+
 ```json
 {
   "status": "SUCCESS",
@@ -489,22 +507,23 @@ GET /api/v1/posts/:id/comments
 
 ## Summary
 
-| # | Method | Endpoint | Priority | Description |
-|---|--------|----------|----------|-------------|
-| 1 | `POST` | `/api/v1/events` | High | Create event |
-| 2 | `GET` | `/api/v1/events?communityId=` | High | List events |
-| 3 | `GET` | `/api/v1/events/:id` | High | Get single event |
-| 4 | `GET` | `/api/v1/hashtags/trending` | Medium | Trending hashtags |
-| 5 | `GET` | `/api/v1/hashtags/:tag/posts` | Medium | Posts by hashtag |
-| 6 | `POST` | `/api/v1/support/tickets` | Medium | Create support ticket |
-| 7 | `GET` | `/api/v1/support/tickets` | Low | List my tickets |
-| 8 | `GET` | `/api/v1/communities/:id/requests` | High | List pending join requests |
-| 9 | `GET` | `/api/v1/communities/:id/reports` | High | List reported posts |
-| 10 | `GET` | `/api/v1/posts/:id/comments` | High | List post comments |
+| #   | Method | Endpoint                           | Priority | Description                |
+| --- | ------ | ---------------------------------- | -------- | -------------------------- |
+| 1   | `POST` | `/api/v1/events`                   | High     | Create event               |
+| 2   | `GET`  | `/api/v1/events?communityId=`      | High     | List events                |
+| 3   | `GET`  | `/api/v1/events/:id`               | High     | Get single event           |
+| 4   | `GET`  | `/api/v1/hashtags/trending`        | Medium   | Trending hashtags          |
+| 5   | `GET`  | `/api/v1/hashtags/:tag/posts`      | Medium   | Posts by hashtag           |
+| 6   | `POST` | `/api/v1/support/tickets`          | Medium   | Create support ticket      |
+| 7   | `GET`  | `/api/v1/support/tickets`          | Low      | List my tickets            |
+| 8   | `GET`  | `/api/v1/communities/:id/requests` | High     | List pending join requests |
+| 9   | `GET`  | `/api/v1/communities/:id/reports`  | High     | List reported posts        |
+| 10  | `GET`  | `/api/v1/posts/:id/comments`       | High     | List post comments         |
 
 **Total: 10 endpoints needed.**
 
 All endpoints should:
+
 - Use the same `Authorization: Bearer <token>` auth header pattern
 - Return `{ "status": "SUCCESS", ... }` on success
 - Return `{ "status": "ERROR", "message": "..." }` on failure

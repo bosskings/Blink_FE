@@ -4,9 +4,11 @@ import type { AuthUser } from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React from "react";
-import { Alert, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Path, Svg } from "react-native-svg";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 interface PendingRegistration {
   token: string;
@@ -14,13 +16,14 @@ interface PendingRegistration {
 }
 
 const CommunitySuccess = () => {
+  const { showAlert } = useAlert();
   const { login } = useAuth();
 
   const handleFindCommunities = async () => {
     try {
       const raw = await AsyncStorage.getItem("pending_registration");
       if (!raw) {
-        Alert.alert("Session expired", "Please register again.");
+        showAlert("Session expired", "Please register again.");
         router.replace("/(noaccess)/register");
         return;
       }
@@ -32,7 +35,7 @@ const CommunitySuccess = () => {
         "/(access)/(stacks)/community-verification-flow/findCommunity",
       );
     } catch {
-      Alert.alert("Sign in failed", "Please try again.");
+      showAlert("Sign in failed", "Please try again.");
     }
   };
 

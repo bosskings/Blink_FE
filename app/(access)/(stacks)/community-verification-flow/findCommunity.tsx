@@ -6,7 +6,6 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -17,8 +16,11 @@ import {
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCommunities } from "@/services";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 const FindCommunity = () => {
+  const { showAlert } = useAlert();
   const [selectedCommunity, setSelectedCommunity] = useState<string | null>(
     null,
   );
@@ -70,7 +72,7 @@ const FindCommunity = () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
 
         if (status !== "granted") {
-          Alert.alert(
+          showAlert(
             "Permission Denied",
             "Location permission is required to find communities near you.",
             [{ text: "OK" }],
@@ -111,14 +113,14 @@ const FindCommunity = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error getting location:", error);
-        Alert.alert(
+        showAlert(
           "Error",
           "Failed to get your location. Showing all communities.",
         );
         setLoading(false);
       }
     })();
-  }, [allCommunities]);
+  }, [allCommunities, showAlert]);
 
   const selectCommunity = (id: string) => {
     setSelectedCommunity(selectedCommunity === id ? null : id);

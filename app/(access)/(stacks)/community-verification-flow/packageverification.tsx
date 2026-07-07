@@ -22,7 +22,7 @@ const Packageverification = () => {
       name: "Bronze",
       subtitle: "(Basic Verification)",
       features: ["Phone number verification", "Email verification"],
-      image: require("../../../../assets/images/bronze.png"),
+      image: require("../../../../assets/images/bronze.webp"),
       link: "/(access)/(stacks)/community-verification-flow/verifyBronze",
     },
     {
@@ -34,7 +34,7 @@ const Packageverification = () => {
         "Business document upload",
         "Social media account linking",
       ],
-      image: require("../../../../assets/images/gold.png"),
+      image: require("../../../../assets/images/gold.webp"),
       link: "/(access)/(stacks)/community-verification-flow/verifyGold",
     },
   ];

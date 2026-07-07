@@ -15,6 +15,8 @@ import type {
   ApproveRejectResponse,
   UpdateMemberRoleResponse,
   RemoveMemberResponse,
+  FetchCommunityRequestsResponse,
+  FetchCommunityReportsResponse,
 } from "@/types/community";
 
 export async function fetchCommunities(): Promise<CommunitiesResponse> {
@@ -171,5 +173,19 @@ export async function removeMember(
   const response = await apiClient.delete<RemoveMemberResponse>(
     `/communities/${communityId}/members/${userId}`,
   );
+  return response.data;
+}
+
+export async function fetchCommunityRequests(
+  id: string,
+): Promise<FetchCommunityRequestsResponse> {
+  const response = await apiClient.get<FetchCommunityRequestsResponse>(`/communities/${id}/requests`);
+  return response.data;
+}
+
+export async function fetchCommunityReports(
+  id: string,
+): Promise<FetchCommunityReportsResponse> {
+  const response = await apiClient.get<FetchCommunityReportsResponse>(`/communities/${id}/reports`);
   return response.data;
 }

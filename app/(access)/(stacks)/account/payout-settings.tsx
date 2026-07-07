@@ -7,7 +7,6 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,8 +15,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomAlert } from "@/components/CustomAlert";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 export default function PayoutSettingsScreen() {
+  const { showAlert } = useAlert();
   const [bankName, setBankName] = useState("");
   const [bankCode, setBankCode] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -43,7 +45,7 @@ export default function PayoutSettingsScreen() {
       {
         onSuccess: () => setAlertVisible(true),
         onError: (error) => {
-          Alert.alert(
+          showAlert(
             "Error",
             error instanceof Error ? error.message : "Failed to save payout settings.",
           );
