@@ -1,40 +1,61 @@
 import { Headers } from "@/components/Headers";
-import { requests as initialRequests } from "@/dummyData/requestsData";
-import { router } from "expo-router";
+import LoadingOverlay from "@/components/LoadingOverlay";
+import { useCommunityRequests, useApproveJoinRequest, useRejectJoinRequest } from "@/services";
+import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RequestsList from "./_components/request/RequestsList";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 const Requests = () => {
-  const [requests, setRequests] = useState<typeof initialRequests>([]);
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { showAlert } = useAlert();
+  const { communityId } = useLocalSearchParams<{ communityId?: string }>();
+  const { data, isLoading, refetch, isRefetching } = useCommunityRequests(communityId || "");
+  const [localRequests, setLocalRequests] = useState<any[]>([]);
+  const approveMutation = useApproveJoinRequest();
+  const rejectMutation = useRejectJoinRequest();
 
   useEffect(() => {
-    setRequests(initialRequests);
-    setLoading(false);
-  }, []);
+    if (data) {
+      setLocalRequests(data);
+    }
+  }, [data]);
 
-  // Pull to refresh
+  const loading = isLoading;
+  const refreshing = isRefetching;
+  const requests = localRequests;
+
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRequests(initialRequests);
-      setRefreshing(false);
-    }, 700);
-  }, []);
+    refetch();
+  }, [refetch]);
 
   const handleRemove = (id: string | number) => {
-    setRequests((prev) => prev.filter((item) => item.id !== id));
+    if (!communityId) {
+      setLocalRequests((prev) => prev.filter((item) => item.id !== id));
+      return;
+    }
+
+    rejectMutation.mutate(
+      { communityId, userId: String(id) },
+      {
+        onSuccess: () => {
+          setLocalRequests((prev) => prev.filter((item) => item.id !== id));
+        },
+        onError: (err) => {
+          showAlert("Error", err instanceof Error ? err.message : "Failed to reject request.");
+        },
+      },
+    );
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <StatusBar style="dark" />
+      <LoadingOverlay visible={approveMutation.isPending || rejectMutation.isPending} />
 
-      {/* Header */}
       <View className="mt-6 mb-6 px-6">
         <Headers text="Requests" onPress={() => router.back()} />
       </View>

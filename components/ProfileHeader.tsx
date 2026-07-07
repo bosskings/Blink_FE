@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
-const BRONZE_BADGE = require("../assets/images/bronze.png");
+const BRONZE_BADGE = require("../assets/images/bronze.webp");
 
 interface ProfileHeaderProps {
   displayName: string;

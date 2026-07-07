@@ -8,18 +8,18 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { logoutUser } from "@/services/api/auth";
+import type { AuthUser } from "@/types/auth";
 
 export const AUTH_TOKEN_KEY = "blink_token";
 export const AUTH_PROFILE_KEY = "blink_profile";
 export const ONBOARDING_KEY = "blink_onboarding";
 
-type AuthProfile = Record<string, unknown> | null;
-
 type AuthContextValue = {
   token: string | null;
-  profile: AuthProfile;
+  profile: AuthUser | null;
   isLoading: boolean;
-  login: (token: string, profile?: AuthProfile) => Promise<void>;
+  login: (token: string, profile?: AuthUser | null) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -70,12 +70,12 @@ const authStorage = {
   },
 };
 
-const isValidToken = (token: string | null) =>
+const isValidToken = (token: string | null): token is string =>
   typeof token === "string" && token.trim().length > 0;
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [token, setToken] = useState<string | null>(null);
-  const [profile, setProfile] = useState<AuthProfile>(null);
+  const [profile, setProfile] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -92,7 +92,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
         if (isValidToken(storedToken)) {
           setToken(storedToken);
-          setProfile(storedProfile ? JSON.parse(storedProfile) : null);
+          setProfile(
+            storedProfile
+              ? (JSON.parse(storedProfile) as AuthUser)
+              : null,
+          );
         } else {
           setToken(null);
           setProfile(null);
@@ -112,7 +116,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   const login = useCallback(
-    async (nextToken: string, nextProfile: AuthProfile = null) => {
+    async (nextToken: string, nextProfile: AuthUser | null = null) => {
       if (!isValidToken(nextToken)) {
         throw new Error("A valid auth token is required.");
       }
@@ -135,6 +139,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
   );
 
   const logout = useCallback(async () => {
+    try {
+      await logoutUser();
+    } catch {
+      // proceed with local cleanup even if API call fails
+    }
+
     await Promise.all([
       authStorage.deleteItem(AUTH_TOKEN_KEY),
       authStorage.deleteItem(AUTH_PROFILE_KEY),

@@ -1,9 +1,11 @@
 import { SolidMainButton } from "@/components/Btns";
+import { useListing } from "@/services";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   Modal,
@@ -24,11 +26,50 @@ const Item = () => {
   const [showMessageEveryTime, setShowMessageEveryTime] = useState(true);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const { itemData } = useLocalSearchParams();
-  const eachItemData = JSON.parse(itemData as string);
-  console.log("itemData", JSON.parse(itemData as string));
+  const { id, itemData } = useLocalSearchParams<{ id: string; itemData?: string }>();
+  const { data: apiListing, isLoading: apiLoading } = useListing(id ?? "");
+
+  const parsedItemData = itemData ? JSON.parse(itemData) : null;
+
+  const eachItemData = apiListing
+    ? {
+        id: apiListing._id,
+        title: apiListing.title,
+        description: apiListing.description ?? "",
+        price: `₦ ${apiListing.price?.toLocaleString()}`,
+        rawPrice: apiListing.price,
+        images: apiListing.images ?? [],
+        image: apiListing.images?.[0] ?? "",
+        tag: apiListing.tag ?? apiListing.status,
+        condition: apiListing.condition ?? "",
+        category: apiListing.category ?? "",
+        distance: apiListing.distance ?? "",
+        timePosted: apiListing.timePosted ?? "",
+        isPromoted: apiListing.isPromoted ?? false,
+        seller: apiListing.seller,
+      }
+    : parsedItemData;
 
   const [isLoading, setIsLoading] = useState(false);
+
+  if (apiLoading && !parsedItemData) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FFFFFF" }}>
+        <ActivityIndicator size="large" color="#0066CC" />
+      </View>
+    );
+  }
+
+  if (!eachItemData) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FFFFFF" }}>
+        <Text style={{ color: "#6B7280", fontSize: 15 }}>Item not found.</Text>
+        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 16 }}>
+          <Text style={{ color: "#0066CC", fontWeight: "600" }}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   const startPaymentPolling = (reference: string) => {
     const secretKey =
@@ -325,7 +366,7 @@ const Item = () => {
           <View className="flex-row items-center gap-3">
             <View className="relative">
               <Image
-                source={require("../../../../assets/avatars/avatar1.png")}
+                source={eachItemData.seller?.avatar ? { uri: eachItemData.seller.avatar } : require("../../../../assets/avatars/avatar1.webp")}
                 style={{ width: 40, height: 40 }}
                 className="rounded-full"
               />
@@ -334,7 +375,7 @@ const Item = () => {
 
             <View>
               <Text className="text-sm font-semibold mb-1" style={{}}>
-                Alexa Johnson
+                {`${eachItemData.seller?.firstName ?? ""} ${eachItemData.seller?.lastName ?? ""}`.trim() || "Seller"}
               </Text>
               <View className="flex-row items-center gap-1">
                 <Ionicons name="star" size={10} color="#FBBF24" />
@@ -553,7 +594,7 @@ const Item = () => {
               <View className="items-center mb-6">
                 <View className="relative mb-3">
                   <Image
-                    source={require("../../../../assets/avatars/avatar1.png")}
+                    source={eachItemData.seller?.avatar ? { uri: eachItemData.seller.avatar } : require("../../../../assets/avatars/avatar1.webp")}
                     style={{ width: 80, height: 80 }}
                     className="rounded-full"
                   />
@@ -561,7 +602,7 @@ const Item = () => {
                 </View>
 
                 <Text className="text-lg font-bold mb-1" style={{}}>
-                  Alexa Johnson
+                  {`${eachItemData.seller?.firstName ?? ""} ${eachItemData.seller?.lastName ?? ""}`.trim() || "Seller"}
                 </Text>
                 <View className="flex-row items-center gap-1 mb-2">
                   <Ionicons name="star" size={14} color="#FBBF24" />

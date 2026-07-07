@@ -1,35 +1,101 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as listingsStaged from "../staged/listings";
+import * as listingsApi from "../api/listings";
+import type {
+  ListingsFilter,
+  CreateDraftRequest,
+  CreateAndPublishRequest,
+  UpdateListingRequest,
+  PublishListingRequest,
+} from "@/types/listing";
 
-const KEY = "listings";
+const LISTINGS_KEY = ["listings"] as const;
 
-export function useListings(filters?: any) {
+export function useListings(filters?: ListingsFilter) {
   return useQuery({
-    queryKey: [KEY, filters],
-    queryFn: () => listingsStaged.fetchListings(filters),
+    queryKey: [...LISTINGS_KEY, filters],
+    queryFn: async () => {
+      const response = await listingsApi.fetchListings(filters);
+      return response.listings;
+    },
   });
 }
 
 export function useListing(id: string) {
   return useQuery({
-    queryKey: [KEY, id],
-    queryFn: () => listingsStaged.fetchListing(id),
+    queryKey: [...LISTINGS_KEY, id],
+    queryFn: async () => {
+      const response = await listingsApi.fetchListing(id);
+      return response.listing;
+    },
     enabled: !!id,
   });
 }
 
-export function useCreateListing() {
-  const qc = useQueryClient();
+export function useCreateDraft() {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => listingsStaged.createListing(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: (data: CreateDraftRequest) => listingsApi.createDraft(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LISTINGS_KEY });
+    },
+  });
+}
+
+export function useCreateAndPublish() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateAndPublishRequest) =>
+      listingsApi.createAndPublish(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LISTINGS_KEY });
+    },
+  });
+}
+
+export function useUpdateListing() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateListingRequest }) =>
+      listingsApi.updateListing(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LISTINGS_KEY });
+    },
+  });
+}
+
+export function useUploadListingPhotos() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, formData }: { id: string; formData: FormData }) =>
+      listingsApi.uploadListingPhotos(id, formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LISTINGS_KEY });
+    },
+  });
+}
+
+export function usePublishListing() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data?: PublishListingRequest;
+    }) => listingsApi.publishListing(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LISTINGS_KEY });
+    },
   });
 }
 
 export function useDeleteListing() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => listingsStaged.deleteListing(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: (id: string) => listingsApi.deleteListing(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LISTINGS_KEY });
+    },
   });
 }

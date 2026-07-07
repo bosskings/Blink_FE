@@ -1,22 +1,59 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import * as auth from "../staged/auth";
+import { useMutation } from "@tanstack/react-query";
+import * as authApi from "../api/auth";
+import type {
+  RegisterRequest,
+  LoginRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  VerifyEmailRequest,
+  VerifyPhoneRequest,
+  ResendOtpRequest,
+} from "@/types/auth";
 
 export function useRegister() {
-  return useMutation({ mutationFn: (data: { method: string; identifier: string; isBusiness: boolean }) => auth.register(data) });
+  return useMutation({
+    mutationFn: (data: RegisterRequest) => authApi.registerUser(data),
+  });
 }
 
 export function useLogin() {
-  return useMutation({ mutationFn: (data: { identifier: string; password: string }) => auth.login(data.identifier, data.password) });
+  return useMutation({
+    mutationFn: (data: LoginRequest) => authApi.loginUser(data),
+  });
 }
 
-export function useSendOtp() {
-  return useMutation({ mutationFn: (contact: string) => auth.sendOtp(contact) });
+export function useLogout() {
+  return useMutation({
+    mutationFn: () => authApi.logoutUser(),
+  });
 }
 
-export function useVerifyOtp() {
-  return useMutation({ mutationFn: (data: { contact: string; otp: string }) => auth.verifyOtp(data.contact, data.otp) });
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (data: ForgotPasswordRequest) => authApi.forgotPassword(data),
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (data: ResetPasswordRequest) => authApi.resetPassword(data),
+  });
+}
+
+export function useVerifyEmail() {
+  return useMutation({
+    mutationFn: (data: VerifyEmailRequest) => authApi.verifyEmail(data),
+  });
+}
+
+export function useVerifyPhone() {
+  return useMutation({
+    mutationFn: (data: VerifyPhoneRequest) => authApi.verifyPhone(data),
+  });
 }
 
 export function useResendOtp() {
-  return useMutation({ mutationFn: (contact: string) => auth.resendOtp(contact) });
+  return useMutation({
+    mutationFn: (data: ResendOtpRequest) => authApi.resendOtp(data),
+  });
 }

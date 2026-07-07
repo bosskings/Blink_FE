@@ -2,11 +2,9 @@ import { Headers } from "@/components/Headers";
 import { EvilIcons, Feather, Ionicons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 
-import initialReportedPosts from "@/dummyData/reportedPostsData";
-import { requests as initialRequests } from "@/dummyData/requestsData";
 
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -21,10 +19,9 @@ import RequestsList from "../community-management-flow/_components/request/Reque
 import { CustomAlert } from "@/components/CustomAlert";
 
 const CommunityMembership = () => {
-  const [requests, setRequests] = useState<typeof initialRequests>(initialRequests);
-  const [posts, setPosts] = useState<typeof initialReportedPosts>(initialReportedPosts);
+  const [requests, setRequests] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ title: "", message: "", postId: null as number | string | null, action: null as "review" | "takedown" | null });
 
@@ -32,8 +29,8 @@ const CommunityMembership = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      setRequests(initialRequests);
-      setPosts(initialReportedPosts);
+      setRequests([]);
+      setPosts([]);
       setRefreshing(false);
     }, 600);
   }, []);
@@ -162,7 +159,7 @@ const CommunityMembership = () => {
             <RequestsList
               title="Requests"
               requests={requests}
-              loading={loading}
+              loading={false}
               handleRemove={handleRemove}
             />
           </View>
@@ -170,10 +167,10 @@ const CommunityMembership = () => {
             <ReportedPostsList
               title="Reported Posts"
               posts={posts}
-              loading={loading}
+              loading={false}
               handleReview={handleReview}
               handleTakeDown={handleTakeDown}
-              initialReportedPosts={initialReportedPosts}
+              initialReportedPosts={posts as any}
             />
           </View>
         </Animated.View>

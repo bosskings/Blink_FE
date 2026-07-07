@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Animated,
   Dimensions,
   Image,
@@ -16,6 +17,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PostItem } from "../community-details/[id]";
+import { usePost } from "@/services";
 
 interface Comment {
   id: string;
@@ -29,6 +31,7 @@ const { height } = Dimensions.get("window");
 
 const PostDetail = () => {
   const { id } = useLocalSearchParams();
+  const { data: apiPost, isLoading } = usePost(id as string ?? "");
   const [likedPost, setLikedPost] = useState(false);
   const [postLikes, setPostLikes] = useState(61);
   const [commentText, setCommentText] = useState("");
@@ -71,24 +74,40 @@ const PostDetail = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showAllComments]);
 
-  // Mock post data - in a real app, this would come from an API
-  const post: PostItem = {
-    id: id as string,
-    type: "post",
-    user: "Mike Berger",
-    time: "2 hours ago",
-    community: "DevFest 2.0",
-    content:
-      "During the DevFest 2.0 yesterday, we had an amazing session with the co-founder of Google, Mr Irish Yak. His presence alone lit up the entire room, but what truly stood out was the depth of insights he shared about innovation, technology, and the future of digital transformation. From the early days of building Google to the company's continuous impact on billions of lives today, he walked us through stories, challenges, and bold decisions that shaped one of the world's most influential tech companies. The energy in the hall was unmatched. ✨ Developers, students, and tech enthusiasts left feeling inspired, motivated, and challenged to build solutions that can create real impact in their communities and beyond. Truly, this was a day to remember – one that will keep fueling our drive for innovation and creativity in tech.",
-    tags: ["#DevTechFest", "#Google"],
-    likes: 61,
-    comments: 30,
-    avatar:
-      "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fHVzZXJ8ZW58MHx8MHx8fDA%3D",
-    images: [
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop",
-    ],
-  };
+  // Post data - uses API data when available, falls back to hardcoded data
+  const post: PostItem = apiPost
+    ? {
+        id: apiPost._id ?? (id as string),
+        type: "post",
+        user: apiPost.author?.firstName
+          ? `${apiPost.author.firstName} ${apiPost.author.lastName ?? ""}`.trim()
+          : "Unknown",
+        time: apiPost.createdAt ?? "",
+        community: apiPost.community?.name ?? "",
+        content: apiPost.content ?? "",
+        tags: apiPost.tags ?? [],
+        likes: apiPost.likesCount ?? 0,
+        comments: apiPost.commentsCount ?? 0,
+        avatar: apiPost.author?.avatar ?? "",
+        images: apiPost.images ?? [],
+      }
+    : {
+        id: id as string,
+        type: "post",
+        user: "Mike Berger",
+        time: "2 hours ago",
+        community: "DevFest 2.0",
+        content:
+          "During the DevFest 2.0 yesterday, we had an amazing session with the co-founder of Google, Mr Irish Yak. His presence alone lit up the entire room, but what truly stood out was the depth of insights he shared about innovation, technology, and the future of digital transformation. From the early days of building Google to the company's continuous impact on billions of lives today, he walked us through stories, challenges, and bold decisions that shaped one of the world's most influential tech companies. The energy in the hall was unmatched. ✨ Developers, students, and tech enthusiasts left feeling inspired, motivated, and challenged to build solutions that can create real impact in their communities and beyond. Truly, this was a day to remember – one that will keep fueling our drive for innovation and creativity in tech.",
+        tags: ["#DevTechFest", "#Google"],
+        likes: 61,
+        comments: 30,
+        avatar:
+          "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fHVzZXJ8ZW58MHx8MHx8fDA%3D",
+        images: [
+          "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop",
+        ],
+      };
 
   const comments: Comment[] = [
     {
@@ -362,6 +381,11 @@ const PostDetail = () => {
         <Headers text="Post" onPress={() => router.back()} />
       </View>
 
+      {isLoading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      ) : (
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 20 }}
@@ -529,6 +553,7 @@ const PostDetail = () => {
           </View>
         </View>
       </ScrollView>
+      )}
 
       {/* All Comments Modal */}
       <Modal

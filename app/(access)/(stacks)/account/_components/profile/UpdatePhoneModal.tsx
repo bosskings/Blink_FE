@@ -1,6 +1,6 @@
 import { SolidMainButton } from "@/components/Btns";
 import React, { useState } from "react";
-import { Image, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Animated, { SlideInDown } from "react-native-reanimated";
 
 interface Props {

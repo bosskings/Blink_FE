@@ -1,19 +1,36 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as staged from "../staged/events";
+import * as eventsApi from "../api/events";
+import type { CreateEventRequest } from "@/types/event";
 
-const KEY = "events";
+const EVENTS_KEY = ["events"] as const;
 
 export function useEvents(filters?: any) {
   return useQuery({
-    queryKey: [KEY, filters],
-    queryFn: () => staged.fetchEvents(filters),
+    queryKey: [...EVENTS_KEY, filters],
+    queryFn: async () => {
+      const response = await eventsApi.fetchEvents(filters);
+      return response.events;
+    },
+  });
+}
+
+export function useEvent(id: string) {
+  return useQuery({
+    queryKey: [...EVENTS_KEY, id],
+    queryFn: async () => {
+      const response = await eventsApi.fetchEvent(id);
+      return response.event;
+    },
+    enabled: !!id,
   });
 }
 
 export function useCreateEvent() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => staged.createEvent(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: (data: CreateEventRequest) => eventsApi.createEvent(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EVENTS_KEY });
+    },
   });
 }

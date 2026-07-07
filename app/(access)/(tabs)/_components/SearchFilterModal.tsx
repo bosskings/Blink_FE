@@ -1,7 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
-  Animated,
-  Dimensions,
   Modal,
   ScrollView,
   Text,
@@ -11,8 +9,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SolidMainButton } from "@/components/Btns";
-
-const { height } = Dimensions.get("window");
 
 interface SearchFilterModalProps {
   visible: boolean;

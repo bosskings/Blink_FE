@@ -36,8 +36,8 @@ export default function VerifyGold() {
   const [addressUploaded, setAddressUploaded] = useState(false);
   const [socialLinked, setSocialLinked] = useState(false);
   const [socialHandle, setSocialHandle] = useState("");
-  const [idImageUri, setIdImageUri] = useState<string | null>(null);
-  const [addressImageUri, setAddressImageUri] = useState<string | null>(null);
+  const [, setIdImageUri] = useState<string | null>(null);
+  const [, setAddressImageUri] = useState<string | null>(null);
 
   const allVerified = idUploaded && addressUploaded && socialLinked;
 
@@ -69,7 +69,7 @@ export default function VerifyGold() {
 
         <View style={s.medalWrap}>
           <Image
-            source={allVerified ? require("../../../../assets/images/bronze.png") : require("../../../../assets/images/bronzegray.png")}
+            source={allVerified ? require("../../../../assets/images/bronze.webp") : require("../../../../assets/images/bronzegray.webp")}
             style={[s.medalImage, { opacity: allVerified ? 1 : 0.5 }]}
             resizeMode="contain"
           />

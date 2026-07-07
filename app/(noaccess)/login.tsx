@@ -1,19 +1,16 @@
 import { SolidMainButton } from "@/components/Btns";
-import { CountryPicker, Country, COUNTRIES } from "@/components/CountryPicker";
+import LoadingOverlay from "@/components/LoadingOverlay";
+
 import { GoogleIcon } from "@/components/GoogleIcon";
 import { useAuth } from "@/providers/AuthProvider";
+import { useLogin as useLoginMutation } from "@/services/hooks/useAuth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  clearPendingSignupSession,
-  createLoginSession,
-} from "@/utils/fake-auth";
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useMemo, useState } from "react";
 import {
-  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -24,31 +21,29 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 type LoginVariant = "signup" | "returning";
 
-const isEmailOrPhone = (value: string): boolean => {
-  const trimmed = value.trim();
+const isValidEmail = (value: string): boolean => {
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  const phoneRegex = /^\+?[0-9]{7,15}$/;
-  return emailRegex.test(trimmed) || phoneRegex.test(trimmed);
+  return emailRegex.test(value.trim());
 };
 
 const Login = () => {
+  const { showAlert } = useAlert();
   const params = useLocalSearchParams<{ variant?: string; method?: "email" | "phone" }>();
   const queryClient = useQueryClient();
   const { login } = useAuth();
+  const loginMutation = useLoginMutation();
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // Focus States
   const [isIdentifierFocused, setIsIdentifierFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-
-  // Country Picker State
-  const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
 
   const variant: LoginVariant =
     params.variant === "signup" ? "signup" : "returning";
@@ -59,50 +54,35 @@ const Login = () => {
     [identifier],
   );
 
-  // Smart Input Detection: Hide flag prefix if they write letters (email address)
-  const isEnteringEmail = useMemo(() => {
-    if (params.method === "email") return true;
-    if (params.method === "phone") return false;
-    return /[a-zA-Z]/.test(identifier.trim().substring(0, 1));
-  }, [identifier, params.method]);
-
   const handleLogin = async () => {
-    if (
-      !isEmailOrPhone(normalizedIdentifier) &&
-      !/^[0-9]/.test(normalizedIdentifier)
-    ) {
-      Alert.alert("Invalid input", "Enter a valid email or phone number.");
+    if (!isValidEmail(normalizedIdentifier)) {
+      showAlert("Invalid email", "Please enter a valid email address.");
       return;
     }
 
     if (password.trim().length < 1) {
-      Alert.alert("Password required", "Enter your password to continue.");
+      showAlert("Password required", "Enter your password to continue.");
       return;
     }
 
-    // Attach country code to identifier if input looks like a phone number and prefix is showing
-    let finalIdentifier = normalizedIdentifier;
-    if (!isEnteringEmail && /^[0-9]/.test(normalizedIdentifier)) {
-      const cleanPhone = normalizedIdentifier.replace(/^0/, "");
-      finalIdentifier = `${selectedCountry.code}${cleanPhone}`;
-    }
+    const finalIdentifier = normalizedIdentifier;
 
-    const session = createLoginSession(finalIdentifier);
-    await AsyncStorage.setItem("has_onboarded", "true");
-
-    // Save Blink Tag from login identifier
-    const calculatedTag = isEnteringEmail
-      ? finalIdentifier.split("@")[0]
-      : finalIdentifier;
-    await AsyncStorage.setItem("blink_tag", calculatedTag);
-    if (isEnteringEmail) {
-      await AsyncStorage.setItem("user_email", finalIdentifier);
-    }
-
-    await clearPendingSignupSession();
-    await queryClient.clear();
-    await login(session.token, session.profile);
-    router.replace("/(access)/(tabs)/home");
+    loginMutation.mutate(
+      { email: finalIdentifier, password },
+      {
+        onSuccess: async (response) => {
+          await AsyncStorage.setItem("has_onboarded", "true");
+          await queryClient.clear();
+          await login(response.token, response.user);
+          router.replace("/(access)/(tabs)/home");
+        },
+        onError: (error) => {
+          const message =
+            error instanceof Error ? error.message : "Invalid email or password.";
+          showAlert("Login failed", message);
+        },
+      },
+    );
   };
 
   // ==========================================
@@ -112,6 +92,7 @@ const Login = () => {
     return (
       <SafeAreaView className="flex-1 bg-white">
         <StatusBar style="dark" />
+        <LoadingOverlay visible={loginMutation.isPending} />
 
         <View style={styles.signupContainer}>
           {/* Header Navigation */}
@@ -197,13 +178,18 @@ const Login = () => {
           <TouchableOpacity
             style={styles.forgotPasswordButton}
             activeOpacity={0.7}
+            onPress={() => router.push("/(noaccess)/forgot-password")}
           >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
           <View style={{ flex: 1 }} />
 
-          <SolidMainButton text="Login" onPress={handleLogin} />
+          <SolidMainButton
+            text="Login"
+            onPress={handleLogin}
+            disabled={loginMutation.isPending}
+          />
         </View>
       </SafeAreaView>
     );
@@ -215,6 +201,7 @@ const Login = () => {
   return (
     <SafeAreaView className="flex-1" style={styles.returningContainer}>
       <StatusBar style="dark" />
+      <LoadingOverlay visible={loginMutation.isPending} />
 
       <ScrollView
         contentContainerStyle={styles.returningScroll}
@@ -236,10 +223,8 @@ const Login = () => {
 
         {/* Rising Card Container */}
         <View style={styles.formCard}>
-          {/* Email or Phone Number Input */}
-          <Text style={styles.cardFieldLabel}>
-            {params.method === "email" ? "Email Address" : params.method === "phone" ? "Phone Number" : "Email or Phone Number"}
-          </Text>
+          {/* Email Input */}
+          <Text style={styles.cardFieldLabel}>Email Address</Text>
           <View
             style={[
               styles.inputWrapper,
@@ -247,16 +232,6 @@ const Login = () => {
               { marginBottom: 20 },
             ]}
           >
-            {/* Real Dynamic Flag Selector: Hide flag selector if typing an email address */}
-            {!isEnteringEmail && (
-              <>
-                <CountryPicker
-                  selectedCountry={selectedCountry}
-                  onSelectCountry={setSelectedCountry}
-                />
-                <View style={styles.verticalDivider} />
-              </>
-            )}
 
             <TextInput
               style={styles.textInputStyle}
@@ -264,7 +239,7 @@ const Login = () => {
               onChangeText={setIdentifier}
               placeholder=""
               autoCapitalize="none"
-              keyboardType={isEnteringEmail ? "email-address" : "phone-pad"}
+              keyboardType="email-address"
               onFocus={() => setIsIdentifierFocused(true)}
               onBlur={() => setIsIdentifierFocused(false)}
             />
@@ -276,7 +251,7 @@ const Login = () => {
             style={[
               styles.inputWrapper,
               isPasswordFocused && styles.inputWrapperFocused,
-              { marginBottom: 32 },
+              { marginBottom: 12 },
             ]}
           >
             <TextInput
@@ -301,7 +276,19 @@ const Login = () => {
             </Pressable>
           </View>
 
-          <SolidMainButton text="Log in" onPress={handleLogin} />
+          <TouchableOpacity
+            style={[styles.forgotPasswordButton, { marginBottom: 24 }]}
+            activeOpacity={0.7}
+            onPress={() => router.push("/(noaccess)/forgot-password")}
+          >
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <SolidMainButton
+            text="Log in"
+            onPress={handleLogin}
+            disabled={loginMutation.isPending}
+          />
 
           {/* Text Divider */}
           <View style={styles.dividerWrap}>

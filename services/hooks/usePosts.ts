@@ -1,27 +1,93 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as staged from "../staged/posts";
+import * as postsApi from "../api/posts";
+import type {
+  CreatePostRequest,
+  AddCommentRequest,
+  VotePostRequest,
+} from "@/types/post";
 
-const KEY = "posts";
+const POSTS_KEY = ["posts"] as const;
 
-export function usePosts(communityId?: string) {
+export function usePost(id: string) {
   return useQuery({
-    queryKey: [KEY, communityId],
-    queryFn: () => staged.fetchPosts(communityId),
+    queryKey: [...POSTS_KEY, id],
+    queryFn: async () => {
+      const response = await postsApi.fetchPost(id);
+      return response.post;
+    },
+    enabled: !!id,
   });
 }
 
 export function useCreatePost() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => staged.createPost(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: (data: CreatePostRequest) => postsApi.createPost(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: POSTS_KEY });
+    },
+  });
+}
+
+export function useLikePost() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => postsApi.likePost(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: POSTS_KEY });
+    },
+  });
+}
+
+export function useAddComment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ postId, data }: { postId: string; data: AddCommentRequest }) =>
+      postsApi.addComment(postId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: POSTS_KEY });
+    },
   });
 }
 
 export function useDeletePost() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => staged.deletePost(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: (id: string) => postsApi.deletePost(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: POSTS_KEY });
+    },
+  });
+}
+
+export function useVotePost() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: VotePostRequest }) =>
+      postsApi.voteOnPost(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: POSTS_KEY });
+    },
+  });
+}
+
+export function useReportPost() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => postsApi.reportPost(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: POSTS_KEY });
+    },
+  });
+}
+
+export function usePostComments(id: string) {
+  return useQuery({
+    queryKey: [...POSTS_KEY, id, "comments"],
+    queryFn: async () => {
+      const response = await postsApi.fetchPostComments(id);
+      return response.comments;
+    },
+    enabled: !!id,
   });
 }

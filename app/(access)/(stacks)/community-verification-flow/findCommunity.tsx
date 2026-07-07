@@ -3,10 +3,9 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -16,9 +15,13 @@ import {
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useCommunities } from "@/services";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 const FindCommunity = () => {
-  const [selectedCommunity, setSelectedCommunity] = useState<number | null>(
+  const { showAlert } = useAlert();
+  const [selectedCommunity, setSelectedCommunity] = useState<string | null>(
     null,
   );
   const [, setLocation] = useState<Location.LocationObject | null>(
@@ -27,57 +30,18 @@ const FindCommunity = () => {
   const [loading, setLoading] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // All available communities with their coordinates
-  const allCommunities = [
-    {
-      id: 1,
-      name: "Covenant University",
-      latitude: 6.6745,
-      longitude: 3.1686,
-      image:
-        "https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=80",
-    },
-    {
-      id: 2,
-      name: "Landmark University",
-      latitude: 6.5074,
-      longitude: 3.3758,
-      image:
-        "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=80",
-    },
-    {
-      id: 3,
-      name: "University of Lagos",
-      latitude: 6.5158,
-      longitude: 3.3885,
-      image:
-        "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80",
-    },
-    {
-      id: 4,
-      name: "Pan-Atlantic University",
-      latitude: 6.4698,
-      longitude: 3.5852,
-      image:
-        "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800&q=80",
-    },
-    {
-      id: 5,
-      name: "Lagos Business School",
-      latitude: 6.4407,
-      longitude: 3.4326,
-      image:
-        "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?w=800&q=80",
-    },
-    {
-      id: 6,
-      name: "Redeemers University",
-      latitude: 6.8333,
-      longitude: 3.9167,
-      image:
-        "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=800&q=80",
-    },
-  ];
+  const { data: apiCommunities } = useCommunities();
+
+  const allCommunities = useMemo(() => {
+    if (!apiCommunities) return [];
+    return apiCommunities.map((c) => ({
+      id: c._id,
+      name: c.name,
+      latitude: c.location?.coordinates?.[1] ?? 0,
+      longitude: c.location?.coordinates?.[0] ?? 0,
+      image: c.image ?? "",
+    }));
+  }, [apiCommunities]);
 
   const [communities, setCommunities] = useState(allCommunities);
 
@@ -108,7 +72,7 @@ const FindCommunity = () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
 
         if (status !== "granted") {
-          Alert.alert(
+          showAlert(
             "Permission Denied",
             "Location permission is required to find communities near you.",
             [{ text: "OK" }],
@@ -149,16 +113,16 @@ const FindCommunity = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error getting location:", error);
-        Alert.alert(
+        showAlert(
           "Error",
           "Failed to get your location. Showing all communities.",
         );
         setLoading(false);
       }
     })();
-  }, [allCommunities]);
+  }, [allCommunities, showAlert]);
 
-  const selectCommunity = (id: number) => {
+  const selectCommunity = (id: string) => {
     setSelectedCommunity(selectedCommunity === id ? null : id);
   };
 

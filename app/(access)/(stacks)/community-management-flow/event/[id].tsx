@@ -15,7 +15,6 @@ import {
   View,
   Share,
 } from "react-native";
-import { CustomAlert } from "@/components/CustomAlert";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { EventItem } from "../community-details/[id]";
 
@@ -39,14 +38,6 @@ const EventDetail = () => {
   const [showAllComments, setShowAllComments] = useState(false);
   const slideAnim = useRef(new Animated.Value(height)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [alertConfig, setAlertConfig] = useState({ title: "", message: "" });
-
-  const showAlert = (title: string, message: string) => {
-    setAlertConfig({ title, message });
-    setAlertVisible(true);
-  };
 
   useEffect(() => {
     setEventLikes(45);
@@ -376,10 +367,6 @@ const EventDetail = () => {
     } catch (error) {
       console.log("Error sharing:", error);
     }
-  };
-
-  const handleMessageOrganizer = () => {
-    showAlert("Coming Soon", "Direct messaging the event organizer will be available in the next update.");
   };
 
   const handleSendComment = () => {
@@ -751,13 +738,6 @@ const EventDetail = () => {
           </Animated.View>
         </View>
       </Modal>
-
-      <CustomAlert
-        visible={alertVisible}
-        title={alertConfig.title}
-        message={alertConfig.message}
-        onClose={() => setAlertVisible(false)}
-      />
     </SafeAreaView>
   );
 };

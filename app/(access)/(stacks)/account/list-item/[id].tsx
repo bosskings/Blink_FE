@@ -3,6 +3,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
@@ -16,6 +17,7 @@ import Animated, {
   FadeOutDown,
 } from "react-native-reanimated";
 import CountdownTimer from "../_components/CountdownTimer";
+import { useListing } from "@/services";
 
 const { width } = Dimensions.get("window");
 const ListItem = () => {
@@ -25,9 +27,45 @@ const ListItem = () => {
   const [returnedStatus, setReturnedStatus] = useState<"yes" | "no" | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const { itemData } = useLocalSearchParams();
-  const eachItemData = JSON.parse(itemData as string);
-  console.log("itemData", JSON.parse(itemData as string));
+  const { id, itemData } = useLocalSearchParams<{ id: string; itemData?: string }>();
+  const { data: apiListing, isLoading: apiLoading } = useListing(id ?? "");
+
+  const parsedItemData = itemData ? JSON.parse(itemData) : null;
+
+  const eachItemData = apiListing
+    ? {
+        id: apiListing._id,
+        title: apiListing.title,
+        description: apiListing.description ?? "",
+        price: `₦ ${apiListing.price?.toLocaleString()}`,
+        images: apiListing.images ?? [],
+        image: apiListing.images?.[0] ?? "",
+        tag: apiListing.tag ?? apiListing.status,
+        condition: apiListing.condition ?? "",
+        category: apiListing.category ?? "",
+        distance: apiListing.distance ?? "",
+        timePosted: apiListing.timePosted ?? "",
+      }
+    : parsedItemData;
+
+  if (apiLoading && !parsedItemData) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FFFFFF" }}>
+        <ActivityIndicator size="large" color="#0066CC" />
+      </View>
+    );
+  }
+
+  if (!eachItemData) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FFFFFF" }}>
+        <Text style={{ color: "#6B7280", fontSize: 15 }}>Item not found.</Text>
+        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 16 }}>
+          <Text style={{ color: "#0066CC", fontWeight: "600" }}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   const handleThumbnailPress = (index: number) => {
     setCurrentImageIndex(index);

@@ -52,14 +52,7 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
-      "expo-sqlite",
-      [
-        "expo-video",
-        {
-          "supportsBackgroundPlayback": true,
-          "supportsPictureInPicture": true
-        }
-      ],
+
       "expo-secure-store"
     ],
     "experiments": {

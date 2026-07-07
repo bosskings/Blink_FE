@@ -1,27 +1,38 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as staged from "../staged/requests";
+import * as feedApi from "../api/feed";
+import * as postsApi from "../api/posts";
+import type { CreatePostRequest } from "@/types/post";
 
-const KEY = "requests";
+const REQUESTS_KEY = ["feed", "requests"] as const;
 
-export function useRequests(filters?: any) {
+export function useRequests() {
   return useQuery({
-    queryKey: [KEY, filters],
-    queryFn: () => staged.fetchRequests(filters),
+    queryKey: REQUESTS_KEY,
+    queryFn: async () => {
+      const response = await feedApi.fetchFeedRequests();
+      return response.requests;
+    },
   });
 }
 
 export function useCreateRequest() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => staged.createRequest(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: (data: CreatePostRequest) =>
+      postsApi.createPost({ ...data, type: "request" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: REQUESTS_KEY });
+    },
   });
 }
 
 export function useUpdateRequest() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: { id: string; changes: any }) => staged.updateRequest(data.id, data.changes),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: ({ id }: { id: string; changes: Record<string, unknown> }) =>
+      postsApi.deletePost(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: REQUESTS_KEY });
+    },
   });
 }

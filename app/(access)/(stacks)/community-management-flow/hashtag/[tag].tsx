@@ -11,13 +11,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DiscussionCard } from "@/components/cards/DiscussionCard";
-import trendingHashtagsData from "@/dummyData/trendingHashtagsData";
+import { useTrendingHashtags } from "@/services";
 
 export default function HashtagFeed() {
   const { tag } = useLocalSearchParams<{ tag: string }>();
   
   const [searchQuery, setSearchQuery] = useState("");
   const [likedDiscussions, setLikedDiscussions] = useState<Set<string>>(new Set());
+  const { data: trendingData } = useTrendingHashtags();
+  const relatedHashtags = trendingData?.slice(0, 5) || [];
 
   const toggleLikeDiscussion = (discussionId: string) => {
     setLikedDiscussions((prev) => {
@@ -117,7 +119,7 @@ export default function HashtagFeed() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 24 }}
         >
-          {trendingHashtagsData.slice(0, 5).map((hashtag) => (
+          {relatedHashtags.map((hashtag: any) => (
             <TouchableOpacity
               key={hashtag.id}
               className="bg-[#E6F2FF] px-4 py-2 rounded-full mr-3 border border-[#0066CC]/20"

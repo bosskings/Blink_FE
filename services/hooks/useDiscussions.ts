@@ -1,19 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as staged from "../staged/discussions";
+import * as feedApi from "../api/feed";
+import * as postsApi from "../api/posts";
 
-const KEY = "discussions";
+const DISCUSSIONS_KEY = ["feed", "discussions"] as const;
 
-export function useDiscussions(filters?: any) {
+export function useDiscussions() {
   return useQuery({
-    queryKey: [KEY, filters],
-    queryFn: () => staged.fetchDiscussions(filters),
+    queryKey: DISCUSSIONS_KEY,
+    queryFn: async () => {
+      const response = await feedApi.fetchFeedDiscussions();
+      return response.discussions;
+    },
   });
 }
 
 export function useLikeDiscussion() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => staged.likeDiscussion(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: (id: string) => postsApi.likePost(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: DISCUSSIONS_KEY });
+    },
   });
 }

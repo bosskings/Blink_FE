@@ -12,28 +12,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-// Mock user profiles based on ID
-const MOCK_PROFILES: Record<
-  string,
-  { name: string; avatar: string; isOnline: boolean }
-> = {
-  "mike-berger": {
-    name: "Mike Berger",
-    avatar: "https://i.pravatar.cc/150?u=mike",
-    isOnline: true,
-  },
-  "jay-blazier": {
-    name: "Jay Blazier",
-    avatar: "https://i.pravatar.cc/150?u=jay",
-    isOnline: false,
-  },
-  "augustus-anna": {
-    name: "Augustus Anna",
-    avatar: "https://i.pravatar.cc/150?u=anna",
-    isOnline: false,
-  },
-};
+import { useChatMessages } from "@/services";
+import type { ChatMessage } from "@/types/chat";
 
 type Message = {
   id: string;
@@ -43,57 +23,36 @@ type Message = {
   type?: "text" | "location";
 };
 
-const INITIAL_MESSAGES: Message[] = [
-  {
-    id: "1",
-    text: "Hi there! I'm interested in the vintage camera. Is it available",
-    sender: "me",
-    time: "10:32 AM",
-    type: "text",
-  },
-  {
-    id: "2",
-    text: "Yes! It is in a great condition.",
-    sender: "them",
-    time: "10:33 AM",
-    type: "text",
-  },
-  {
-    id: "3",
-    text: "Okay. I've just made the payment.\nCan you confirm please",
-    sender: "me",
-    time: "10:45 AM",
-    type: "text",
-  },
-  {
-    id: "4",
-    text: "I'll be in the Central Park in the next 30 minutes to deliver your purchase",
-    sender: "them",
-    time: "10:49 AM",
-    type: "text",
-  },
-  {
-    id: "5",
-    sender: "them",
-    time: "10:51 AM",
-    type: "location",
-  },
-  {
-    id: "6",
-    text: "Thanks! See you there in 30 minutes",
-    sender: "me",
-    time: "10:59 AM",
-    type: "text",
-  },
-];
+const mapApiMessage = (msg: ChatMessage, currentUserId?: string): Message => ({
+  id: msg._id,
+  text: msg.text,
+  sender: msg.sender === currentUserId ? "me" : "them",
+  time: msg.createdAt
+    ? new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    : "",
+  type: "text",
+});
 
 export default function ActiveChat() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
+  const { id, name, avatar } = useLocalSearchParams<{
+    id: string;
+    name?: string;
+    avatar?: string;
+  }>();
+  const { data: apiMessages } = useChatMessages(id ?? "");
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const profile = MOCK_PROFILES[id || "mike-berger"] || MOCK_PROFILES["mike-berger"];
+  const displayName = name || "Chat";
+  const displayAvatar = avatar || "https://i.pravatar.cc/150?u=default";
+  const isOnline = false;
+
+  const mappedApiMessages: Message[] = apiMessages
+    ? apiMessages.map((msg) => mapApiMessage(msg))
+    : [];
+
+  const messages = [...mappedApiMessages, ...localMessages];
 
   const handleSend = () => {
     if (!inputText.trim()) return;
@@ -109,31 +68,15 @@ export default function ActiveChat() {
       type: "text",
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    setLocalMessages((prev) => [...prev, newMessage]);
     setInputText("");
-
-    // Simulate bot reply
-    setTimeout(() => {
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "That sounds great! Got it.",
-        sender: "them",
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        type: "text",
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    }, 1500);
   };
 
   useEffect(() => {
-    // Scroll to bottom when messages update
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 100);
-  }, [messages]);
+  }, [messages.length]);
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]">
@@ -149,18 +92,18 @@ export default function ActiveChat() {
           <View className="flex-row items-center gap-3">
             <View className="relative">
               <Image
-                source={{ uri: profile.avatar }}
+                source={{ uri: displayAvatar }}
                 className="w-12 h-12 rounded-full"
               />
-              {profile.isOnline && (
+              {isOnline && (
                 <View className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#00C851] rounded-full border-2 border-white" />
               )}
             </View>
             <View>
               <Text className="text-[17px] text-black font-bold" style={{}}>
-                {profile.name}
+                {displayName}
               </Text>
-              {profile.isOnline && (
+              {isOnline && (
                 <Text
                   className="text-[13px] text-[#00C851]"
                   style={{ fontFamily: "HankenGrotesk_500Medium" }}

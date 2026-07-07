@@ -37,9 +37,9 @@ export default function TabTwoScreen() {
   const [likedDiscussions, setLikedDiscussions] = useState<Set<string>>(
     new Set(),
   );
-  const [discussionLikes, setDiscussionLikes] = useState<
-    Record<string, number>
-  >({});
+const [, setDiscussionLikes] = useState<
+  Record<string, number>
+>({});
 
   const { data: communities } = useCommunities();
   const { data: discussions } = useDiscussions();

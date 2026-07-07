@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Dimensions, ImageBackground, Text, View } from "react-native";
+import { ImageBackground, Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 
@@ -17,7 +17,7 @@ const Onboarding = () => {
       <StatusBar style="light" />
 
       <ImageBackground
-        source={require("../../assets/images/map.png")}
+        source={require("../../assets/images/map.webp")}
         className="flex-1"
         resizeMode="cover"
       >

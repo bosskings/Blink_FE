@@ -90,7 +90,7 @@ export default function LeaseCloset() {
             <View className="items-center py-12">
               <MaterialIcons name="inventory" size={72} color="#d1d1d1" />
               <Text className="text-[15px] text-gray-700 mt-4 font-bold" style={{ fontFamily: "HankenGrotesk_700Bold" }}>No listings yet</Text>
-              <Text className="text-[13px] text-gray-500 mt-2 text-center px-10">You haven't listed any items yet.</Text>
+              <Text className="text-[13px] text-gray-500 mt-2 text-center px-10">You haven&apos;t listed any items yet.</Text>
               <View className="w-full px-6 mt-8">
                 <SolidMainButton text="Create your first listing" onPress={() => {
                   // TODO: Navigate to create listing flow

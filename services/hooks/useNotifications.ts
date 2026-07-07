@@ -1,16 +1,35 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as staged from "../staged/notifications";
+import * as notificationsApi from "../api/notifications";
 
-const KEY = "notifications";
+const NOTIFICATIONS_KEY = ["notifications"] as const;
 
 export function useNotifications() {
-  return useQuery({ queryKey: [KEY], queryFn: () => staged.fetchNotifications() });
+  return useQuery({
+    queryKey: NOTIFICATIONS_KEY,
+    queryFn: async () => {
+      const response = await notificationsApi.fetchNotifications();
+      return response.notifications;
+    },
+  });
+}
+
+export function useMarkNotificationRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (notifId: string) =>
+      notificationsApi.markNotificationRead(notifId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY });
+    },
+  });
 }
 
 export function useClearNotifications() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => staged.clearNotifications(),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    mutationFn: () => notificationsApi.markAllNotificationsRead(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY });
+    },
   });
 }

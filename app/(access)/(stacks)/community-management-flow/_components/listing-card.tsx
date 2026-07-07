@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import React from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { ListingItem } from "../community-details/[id]";
 

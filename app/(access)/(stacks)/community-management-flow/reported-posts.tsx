@@ -1,41 +1,55 @@
+import { CustomAlert } from "@/components/CustomAlert";
 import { Headers } from "@/components/Headers";
-import initialReportedPosts from "@/dummyData/reportedPostsData";
-import { useRouter } from "expo-router";
+import LoadingOverlay from "@/components/LoadingOverlay";
+import { useCommunityReports, useDeletePost } from "@/services";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import ReportedPostsList from "./_components/report/ReportedPostsList";
-import { CustomAlert } from "@/components/CustomAlert";
+import { useAlert } from "@/providers/AlertProvider";
+
 
 export default function ReportedPosts() {
+  const { showAlert } = useAlert();
   const router = useRouter();
-  const [posts, setPosts] = useState<typeof initialReportedPosts>([]);
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { communityId } = useLocalSearchParams<{ communityId?: string }>();
+
   const [alertVisible, setAlertVisible] = useState(false);
-  const [alertConfig, setAlertConfig] = useState({ title: "", message: "", postId: null as number | string | null, action: null as "review" | "takedown" | null });
+  const [alertConfig, setAlertConfig] = useState({
+    title: "",
+    message: "",
+    postId: null as number | string | null,
+    action: null as "review" | "takedown" | null,
+  });
+  const deletePostMutation = useDeletePost();
+
+  const { data, isLoading, refetch, isRefetching } = useCommunityReports(
+    communityId || "",
+  );
+  const [localPosts, setLocalPosts] = useState<any[]>([]);
 
   useEffect(() => {
-    setPosts(initialReportedPosts);
-    setLoading(false);
-  }, []);
+    if (data) {
+      setLocalPosts(data);
+    }
+  }, [data]);
+
+  const loading = isLoading;
+  const refreshing = isRefetching;
+  const posts = localPosts;
 
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setPosts(initialReportedPosts);
-      setRefreshing(false);
-    }, 700);
-  }, []);
+    refetch();
+  }, [refetch]);
 
   const handleReview = (postId: number | string) => {
     setAlertConfig({
       title: "Review Post",
       message: "Are you sure you want to review this post?",
       postId,
-      action: "review"
+      action: "review",
     });
     setAlertVisible(true);
   };
@@ -43,24 +57,38 @@ export default function ReportedPosts() {
   const handleTakeDown = (postId: number | string) => {
     setAlertConfig({
       title: "Take Down Post",
-      message: "Are you sure you want to take down this post? This action cannot be undone.",
+      message:
+        "Are you sure you want to take down this post? This action cannot be undone.",
       postId,
-      action: "takedown"
+      action: "takedown",
     });
     setAlertVisible(true);
   };
 
   const confirmAction = () => {
     if (alertConfig.action === "takedown" && alertConfig.postId) {
-      setPosts((prev) => prev.filter((item) => item.id !== alertConfig.postId));
+      const postId = String(alertConfig.postId);
+      deletePostMutation.mutate(postId, {
+        onSuccess: () => {
+          setLocalPosts((prev) =>
+            prev.filter((item) => item.id !== alertConfig.postId),
+          );
+        },
+        onError: (err) => {
+          showAlert(
+            "Error",
+            err instanceof Error ? err.message : "Failed to delete post.",
+          );
+        },
+      });
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <StatusBar style="dark" />
+      <LoadingOverlay visible={deletePostMutation.isPending} />
 
-      {/* Header */}
       <View className="mt-6 mb-6 px-6">
         <Headers text="Reported Posts" onPress={() => router.back()} />
       </View>
@@ -78,7 +106,7 @@ export default function ReportedPosts() {
           loading={loading}
           handleReview={handleReview}
           handleTakeDown={handleTakeDown}
-          initialReportedPosts={initialReportedPosts}
+          initialReportedPosts={posts as any}
         />
       </ScrollView>
 
